@@ -20,6 +20,8 @@ This website is <TODO>
 ### Features
 Creation of cards template using bootstrap card template and adapting to our needs
 
+Creation of a cookie system to store the icons used in the navbar and the logo to avoid loading them each time the page is refreshed
+
 ### Graphic specifications
 Creation of a custom margin top (mt-6) to fit to our needs
 
