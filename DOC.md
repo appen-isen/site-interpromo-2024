@@ -20,6 +20,15 @@ This website is <TODO>
 ### Features
 Creation of cards template using bootstrap card template and adapting to our needs
 
+### Icons
+We use icons from [Google Material Icons](https://fonts.google.com/icons)
+How to put an icon left to a text with a gool alignment using Bootstrap and Flex :
+`<p class="d-inline-flex align-items-center">
+    <span class="material-symbols-outlined">sports_basketball<span>
+    Basket
+</p>`
+Works with p, a, and all h HTML tags
+
 ### Graphic specifications
 Creation of a custom margin top (mt-6) to fit to our needs
 
