@@ -3,8 +3,8 @@ document.cookie = "icons=wifi_tethering,trophy,fitness_center,login; expires=Fri
 document.cookie = "hideImage=true; expires=Fri, 10 Nov 2023 12:00:00 UTC; path=/";
 
 function getCookie(name){
-    var value = "; " + document.cookie;
-    var parts = value.split("; " + name + "=");
+    let value = "; " + document.cookie;
+    let parts = value.split("; " + name + "=");
     if(parts.length === 2) return parts.pop().split(";").shift();
 }
 
