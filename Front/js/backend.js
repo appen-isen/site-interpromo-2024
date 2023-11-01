@@ -13,7 +13,6 @@ loginButton.addEventListener('click', async function(event) {
 
     try {
         const authData = await pb.collection('users').authWithPassword(loginID, loginPassword);
-        console.log('Authentification réussie :', authData);
 
         if (pb.authStore.isValid) {
             console.log('Le token est valide.');
@@ -23,11 +22,12 @@ loginButton.addEventListener('click', async function(event) {
         }
     } catch (error) {
         console.error('Erreur d\'authentification :', error);
+        //Affiche la div d'erreur d'authentification
+        document.getElementById("LoginImposible").style.display = "block";
     }
 });
 
 
-//Check if the user is already logged in
 if (pb.authStore.isValid) {
     const logoutButton = document.getElementById('disconect');
     logoutButton.addEventListener('click', async function(event) {
