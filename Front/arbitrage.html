@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="style.css" />
     <script src="js/cookie.js" defer></script>
     <link rel="icon" href="assets/appen.png">
-    <script src="js/backend.js" type="module"></script>
+    <script src="js/backend/login.js" type="module" defer></script>
+    <script src="js/backend/match.js" type="module" defer></script>
   </head>
   <body>
     <header>
@@ -29,7 +30,7 @@
           <div class="collapse text-bg-dark" id="navbarToggleExternalContent" data-bs-theme="dark">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li class="nav-item">
-                <a class="nav-link active d-inline-flex align-items-center" aria-current="page" href="index.html">
+                <a class="nav-link d-inline-flex align-items-center" aria-current="page" href="index.html">
                   <!--
                   <span class="material-symbols-outlined pe-3">wifi_tethering</span>
                   --->
@@ -67,62 +68,12 @@
 
 
     <div class="container">
-      <div class="col-8 offset-2 mt-6">
+      <div class="col-8 offset-2 mt-6" id="cardContainer">
         <div class="text-center align-items-center"><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMatch">Ajouter un match</button></div>
         <br>
         <div class="text-center align-items-center"><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalRemoveMatch">Supprimer un match</button></div>
         <div class="modal" tabindex="-1" id="modalAddMatch">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Ajouter un match</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <form>
-                  <div class="mb-3">
-                    <label for="promo1" class="form-label">Equipe 1</label>
-                    <select class="form-control" id="promo1">
-                      <option selected>Veillez choisir une équipe</option>
-                      <option>Equipe X</option>
-                      <option>Equipe Y</option>
-                      <option>Equipe Z</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="promo2" class="form-label">Promo 2</label>
-                    <select class="form-control" id="promo2">
-                      <option selected>Veillez choisir une équipe</option>
-                      <option>Equipe X</option>
-                      <option>Equipe Y</option>
-                      <option>Equipe Z</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="sport" class="form-label">Sport</label>
-                    <select class="form-control" id="sport">
-                      <option selected>Veillez choisir un sport</option>
-                      <option>Badminton</option>
-                      <option>Basketball</option>
-                      <option>Handball</option>
-                      <option>Football</option>
-                      <option>Volley</option>
-                      <option>Defi Enduro</option>
-                    </select>
-                  </div>
-                  <div class="mb-3">
-                    <label for="date" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="date">
-                  </div>
-                  <div class="mb-3">
-                    <label for="time" class="form-label">Heure</label>
-                    <input type="time" class="form-control" id="time">
-                  </div>
-                  <button type="submit" class="btn btn-primary">Ajouter ce match</button>
-                </form>
-              </div>
-            </div>
-          </div>
+
         </div>
         <div class="modal" tabindex="-2" id="modalRemoveMatch" aria-hidden="true">
           <div class="modal-dialog">
@@ -132,53 +83,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
               </div>
               <div class="modal-body">
-                <form>
-                  <div class="mb-3">
-                    <label for="matchdel" class="form-label">Match a supprimer</label>
-                    <select class="form-control" id="matchdel">
-                      <option selected>Veillez choisir une équipe</option>
-                      <option>Match 1</option>
-                      <option>Match 2</option>
-                      <option>Match 3</option>
-                    </select>
+                <form id="delMatchForm">
+                  <div class="mb-3" id="matchdelJS">
+
                   </div>
                   <button type="submit" class="btn btn-danger">Supprimer ce match (attention cette action est irréversible)</button>
                 </form>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="card my-3">
-          <div class="card-header text-center bg-light-subtle text-emphasis-light">
-            Date and time
-          </div>
-          <div class="card-body bg-light-subtle text-emphasis-light">
-            <h5 class="card-title text-center">Promo X  VS  Promo Y</h5>
-            <h6 class="card-subtitle text-center">Type de matchs (quarts de final)</h6>
-            <p class="card-text text-center">Sport</p>
-            <div class="text-center"><a href="#" class="btn btn-primary ">Démarrer et arbitrer ce match</a></div>
-          </div>
-        </div>
-        <div class="card my-3">
-          <div class="card-header text-center bg-light-subtle text-emphasis-light">
-            Date and time
-          </div>
-          <div class="card-body bg-light-subtle text-emphasis-light">
-            <h5 class="card-title text-center">Promo X  VS  Promo Y</h5>
-            <h6 class="card-subtitle text-center">Type de matchs (quarts de final)</h6>
-            <p class="card-text text-center">Sport</p>
-            <div class="text-center"><a href="#" class="btn btn-primary ">Démarrer et arbitrer ce match</a></div>
-          </div>
-        </div>
-        <div class="card my-3">
-          <div class="card-header text-center bg-light-subtle text-emphasis-light">
-            Date and time
-          </div>
-          <div class="card-body bg-light-subtle text-emphasis-light">
-            <h5 class="card-title text-center">Promo X  VS  Promo Y</h5>
-            <h6 class="card-subtitle text-center">Type de matchs (quarts de final)</h6>
-            <p class="card-text text-center">Sport</p>
-            <div class="text-center"><a href="#" class="btn btn-primary ">Démarrer et arbitrer ce match</a></div>
           </div>
         </div>
       </div>
