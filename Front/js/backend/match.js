@@ -1,5 +1,4 @@
 console.log("Backend match start loading...");
-import PocketBase from '../pocketbase.es.mjs'
 import pb from './login.js'
 
 const records = await pb.collection('match').getFullList({
@@ -33,6 +32,10 @@ if(window.location.href.includes("index.html")){
         }
         const time_start = new Date(record.heure_debut);
         cardHeader.innerText = time_start.toLocaleString();
+        /*
+        if(record.status === "in_progress"){
+            cardHeader.innerText = "";
+        */
         const cardBody = document.createElement('div');
         cardBody.className = "card-body bg-light-subtle text-emphasis-light";
         const cardTitle = document.createElement('h5');
@@ -94,6 +97,9 @@ if(window.location.href.includes("arbitrage.html")){
             arbitrageButtonLink.className = "btn btn-secondary";
             arbitrageButtonLink.innerHTML = "Erreur de statut";
         }
+        arbitrageButtonLink.addEventListener('click', async function(event) {
+            window.location.href = "arbimatch.html?id=" + record.id;
+        });
         arbitrageButton.appendChild(arbitrageButtonLink);
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
@@ -313,7 +319,5 @@ if(window.location.href.includes("arbitrage.html")){
         }
     });
 }
-
-console.log(records);
 
 console.log("Backend match loaded!");
