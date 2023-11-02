@@ -14,6 +14,26 @@ const currentStatus = await pb.collection('match').getOne(idMatch, {
     expand: 'sport,team1,team2',
 });
 
+const classBasketballList = await pb.collection('class_basketball').getFullList({
+    expand: 'team',
+});
+
+const classVoleyballList = await pb.collection('class_voleyball').getFullList({
+    expand: 'team',
+});
+
+const classFootballList = await pb.collection('class_football').getFullList({
+    expand: 'team',
+});
+
+const classHandballList = await pb.collection('class_handball').getFullList({
+    expand: 'team',
+});
+
+const classDefiList = await pb.collection('class_defi').getFullList({
+    expand: 'team',
+});
+
 //Affichage des données initial du match
 const textPoint1 = document.getElementById("textPoint1")
 const textPoint2 = document.getElementById("textPoint2")
@@ -223,8 +243,190 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     };
     //Envoi de la requête
     const record = await pb.collection('match').update(idMatch, data);
+    //Verification du gagnant
+    if(currentStatus.point1 > currentStatus.point2){
+        //Mise à jour du classement de l'équipe 1
+        if(currentStatus.expand.sport.name === "football") {
+            classFootballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_football').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "handball") {
+            classHandballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_handball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "basketball") {
+            classBasketballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_basketball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "volleyball") {
+            classVoleyballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_voleyball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "defi enduro") {
+            classDefiList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_defi').update(classe.id, data);
+                }
+            });
+        }
+    }
+    else if(currentStatus.point1 < currentStatus.point2){
+        //Mise à jour du classement de l'équipe 2
+        if(currentStatus.expand.sport.name === "football") {
+            classFootballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_football').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "handball") {
+            classHandballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_handball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "basketball") {
+            classBasketballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_basketball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "volleyball") {
+            classVoleyballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_voleyball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "defi enduro") {
+            classDefiList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 3,
+                    };
+                    const record = pb.collection('class_defi').update(classe.id, data);
+                }
+            });
+        }
+    }
+    else if(currentStatus.point1 === currentStatus.point2){
+        //Mise à jour du classement de l'équipe 1 et 2
+        if(currentStatus.expand.sport.name === "football") {
+            classFootballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_football').update(classe.id, data);
+                }
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_football').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "handball") {
+            classHandballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_handball').update(classe.id, data);
+                }
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_handball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "basketball") {
+            classBasketballList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_basketball').update(classe.id, data);
+                }
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_basketball').update(classe.id, data);
+                }
+            });
+        }
+        else if(currentStatus.expand.sport.name === "defi enduro") {
+            classDefiList.forEach(classe => {
+                if (classe.expand.team.name === currentStatus.expand.team1.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_defi').update(classe.id, data);
+                }
+                if (classe.expand.team.name === currentStatus.expand.team2.name) {
+                    const data = {
+                        "point": classe.point + 1,
+                    };
+                    const record = pb.collection('class_defi').update(classe.id, data);
+                }
+            });
+        }
+    }
+    //Calcul du classement de chaque équipe
+    if(currentStatus.expand.sport.name === "football"){
+        const classFootballListUp = await pb.collection('class_football').getFullList({
+            expand: 'sport',
+        });
+        //Regarde quel equipe a le plus de points
+
+    }
     //Redirection vers la page d'arbitrage
-    window.location.href = "arbitrage.html";
+    //window.location.href = "arbitrage.html";
 });
 
 console.log("Backend arbitrage loaded!");
