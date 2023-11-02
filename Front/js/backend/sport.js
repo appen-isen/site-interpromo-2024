@@ -19,12 +19,7 @@ SportList.forEach(sport => {
     const cardTitle = document.createElement('h5');
     cardTitle.classList.add('card-title');
     cardTitle.innerHTML = "En tête : " + "BACK A FAIRE";
-    //Affichage de la phase la plus avancée
-    const cardText = document.createElement('p');
-    cardText.classList.add('card-text');
-    cardText.innerHTML = "(PHASE A REMPLACER PAR LE BACK QUAND IL SERA FAIT)";
     cardBody.appendChild(cardTitle);
-    cardBody.appendChild(cardText);
     card.appendChild(cardBody);
     //Affichage du prochain match
     const cardFooter = document.createElement('div');

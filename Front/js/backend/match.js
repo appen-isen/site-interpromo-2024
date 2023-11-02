@@ -105,10 +105,6 @@ if(window.location.href.includes("index.html")){
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
         cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
-        //Affichage de la phase
-        const cardSubtitle = document.createElement('h6');
-        cardSubtitle.className = "card-subtitle text-center";
-        cardSubtitle.innerText = match.phase;
         //Affichage du sport
         const cardText = document.createElement('p');
         cardText.className = "card-text text-center";
@@ -138,7 +134,6 @@ if(window.location.href.includes("index.html")){
         //Ajout des éléments à la carte
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
-        cardBody.appendChild(cardSubtitle);
         cardBody.appendChild(cardText);
         card.appendChild(cardBody);
         card.appendChild(cardFooter);
@@ -166,10 +161,6 @@ if(window.location.href.includes("arbitrage.html")){
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
         cardTitle.innerText = record.expand.team1.name + " VS " + record.expand.team2.name;
-        //Affichage de la phase
-        const cardSubtitle = document.createElement('h6');
-        cardSubtitle.className = "card-subtitle text-center";
-        cardSubtitle.innerText = record.phase;
         //Affichage du sport
         const cardText = document.createElement('p');
         cardText.className = "card-text text-center";
@@ -203,7 +194,6 @@ if(window.location.href.includes("arbitrage.html")){
         arbitrageButton.appendChild(arbitrageButtonLink);
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
-        cardBody.appendChild(cardSubtitle);
         cardBody.appendChild(cardText);
         cardBody.appendChild(arbitrageButton);
         card.appendChild(cardBody);
@@ -317,19 +307,6 @@ if(window.location.href.includes("arbitrage.html")){
     modalFormDivTime.appendChild(modalFormLabelTime);
     modalFormDivTime.appendChild(modalFormInputTime);
     modalForm.appendChild(modalFormDivTime);
-    const modalFormDivPhase = document.createElement('div');
-    modalFormDivPhase.className = "mb-3";
-    const modalFormLabelPhase = document.createElement('label');
-    modalFormLabelPhase.htmlFor = "phase";
-    modalFormLabelPhase.className = "form-label";
-    modalFormLabelPhase.innerHTML = "Phase";
-    const modalFormInputPhase = document.createElement('input');
-    modalFormInputPhase.type = "text";
-    modalFormInputPhase.className = "form-control";
-    modalFormInputPhase.id = "phase";
-    modalFormDivPhase.appendChild(modalFormLabelPhase);
-    modalFormDivPhase.appendChild(modalFormInputPhase);
-    modalForm.appendChild(modalFormDivPhase);
     const modalFormButtonSubmit = document.createElement('button');
     modalFormButtonSubmit.type = "submit";
     modalFormButtonSubmit.className = "btn btn-primary";
@@ -361,7 +338,6 @@ if(window.location.href.includes("arbitrage.html")){
         sportID = sportList.find(sport => sport.name === sportID);
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
-        const phase = document.getElementById('phase').value;
         //Création de la date de début du match
         const time_start = new Date(date + " " + time + ":00.000Z");
         //Décalage de l'heure de début de 1h pour la gestion du fuseau horaire
@@ -374,7 +350,6 @@ if(window.location.href.includes("arbitrage.html")){
             "point1": 0,
             "point2": 0,
             "status": "waiting",
-            "phase": phase,
         };
 
         try {

@@ -5,7 +5,32 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport,membres',
 });
 
+const classBasketballList = await pb.collection('class_basketball').getFullList({
+    expand: 'team',
+});
+
+const classVoleyballList = await pb.collection('class_voleyball').getFullList({
+    expand: 'team',
+});
+
+const classFootballList = await pb.collection('class_football').getFullList({
+    expand: 'team',
+});
+
+const classHandballList = await pb.collection('class_handball').getFullList({
+    expand: 'team',
+});
+
+const classDefiList = await pb.collection('class_defi').getFullList({
+    expand: 'team',
+});
+
 const PromoList = await pb.collection('promo').getFullList({
+});
+
+const matchList = await pb.collection('match').getFullList({
+    sort: '+heure_debut',
+    expand: 'team1,team2,sport',
 });
 
 const promoCardContainer = document.getElementById("promoCardContainer");
@@ -26,24 +51,54 @@ PromoList.forEach(promo => {
     //Pour chaque équipe, verif si elle est dans la promo et affichage du sport et du nom de l'équipe et du classement
     EquipeList.forEach(equipe => {
         if(equipe.expand.promo.name === promo.name){
-            console.log(equipe.expand.sport.name);
             if(equipe.expand.sport.name === "basketball") {
-                cardText.innerHTML += "Basketball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                //Affichage du classement
+                let classement = 0;
+                classBasketballList.forEach(classe => {
+                    if(classe.expand.team.name === equipe.name){
+                        classement = classe.classement;
+                    }
+                });
+                card.innerHTML += "Basketball : " + equipe.name + " : " + classement + "e <br> ";
             }
             else if(equipe.expand.sport.name === "football") {
-                cardText.innerHTML += "Football : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                let classement = 0;
+                classFootballList.forEach(classe => {
+                    if(classe.expand.team.name === equipe.name){
+                        classement = classe.classement;
+                    }
+                });
+                cardText.innerHTML += "Football : " + equipe.name + " : " + classement + "e <br> ";
             }
             else if(equipe.expand.sport.name === "handball") {
-                cardText.innerHTML += "Handball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                let classement = 0;
+                classHandballList.forEach(classe => {
+                    if(classe.expand.team.name === equipe.name){
+                        classement = classe.classement;
+                    }
+                });
+                cardText.innerHTML += "Handball : " + equipe.name + " : " + classement + "e <br> ";
             }
             else if(equipe.expand.sport.name === "volleyball") {
-                cardText.innerHTML += "Volleyball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                let classement = 0;
+                classVoleyballList.forEach(classe => {
+                    if(classe.expand.team.name === equipe.name){
+                        classement = classe.classement;
+                    }
+                });
+                cardText.innerHTML += "Volleyball : " + equipe.name + " : " + classement + "e <br> ";
             }
             else if(equipe.expand.sport.name === "defi enduro"){
-                cardText.innerHTML += "Defi Enduro : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                let classement = 0;
+                classDefiList.forEach(classe => {
+                    if(classe.expand.team.name === equipe.name){
+                        classement = classe.classement;
+                    }
+                });
+                cardText.innerHTML += "Défi Enduro : " + equipe.name + " : " + classement + "e <br> ";
             }
             else if(equipe.expand.sport.name === "badminton"){
-                cardText.innerHTML += "Badminton : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+                cardText.innerHTML += "Badminton : " + equipe.name + " : " + "BACK A FAIRE" + "e <br> ";
             }
         }
     });
@@ -79,6 +134,49 @@ EquipeList.forEach(equipe => {
     equipe.expand.membres.forEach(membre => {
         cardMember.innerHTML += " " + membre.name + " ,";
     });
+    //Affichage du classement
+    const cardClassement = document.createElement('p');
+    cardClassement.classList.add('card-text');
+    let classement = 0;
+    if(equipe.expand.sport.name === "basketball") {
+        classBasketballList.forEach(classe => {
+            if(classe.expand.team.name === equipe.name){
+                classement = classe.classement;
+            }
+        });
+    }
+    else if(equipe.expand.sport.name === "football") {
+        classFootballList.forEach(classe => {
+            if(classe.expand.team.name === equipe.name){
+                classement = classe.classement;
+            }
+        });
+    }
+    else if(equipe.expand.sport.name === "handball") {
+        classHandballList.forEach(classe => {
+            if(classe.expand.team.name === equipe.name){
+                classement = classe.classement;
+            }
+        });
+    }
+    else if(equipe.expand.sport.name === "volleyball") {
+        classVoleyballList.forEach(classe => {
+            if(classe.expand.team.name === equipe.name){
+                classement = classe.classement;
+            }
+        });
+    }
+    else if(equipe.expand.sport.name === "defi enduro"){
+        classDefiList.forEach(classe => {
+            if(classe.expand.team.name === equipe.name){
+                classement = classe.classement;
+            }
+        });
+    }
+    else if(equipe.expand.sport.name === "badminton"){
+        classement = "BACK A FAIRE";
+    }
+    cardClassement.innerHTML += " Classement : " + classement +"e";
     //Suppression de la dernière virgule
     cardMember.innerHTML = cardMember.innerHTML.slice(0, -1);
     //Suppression du dernier espace
@@ -86,10 +184,13 @@ EquipeList.forEach(equipe => {
     //Affichage du prochain match
     const cardFooter = document.createElement('div');
     cardFooter.classList.add('card-footer', 'bg-light-subtle', 'text-emphasis-light');
-    cardFooter.innerHTML = "Prochain match : " + equipe.nextMatch;
+    const nextMatch = matchList.find(match => match.expand.team1.name === equipe.name || match.expand.team2.name === equipe.name);
+    const time_start = new Date(nextMatch.heure_debut);
+    cardFooter.innerHTML = "Prochain match : " + nextMatch.expand.team1.name + " vs " + nextMatch.expand.team2.name + " à " + time_start.getHours() + "h" + time_start.getMinutes();
 
     cardBody.appendChild(cardText1);
     cardBody.appendChild(cardText2);
+    cardBody.appendChild(cardClassement);
     cardBody.appendChild(cardMember);
 
     card.appendChild(cardHeader);
