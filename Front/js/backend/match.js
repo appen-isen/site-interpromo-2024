@@ -24,20 +24,16 @@ matchList.forEach(match => {
                         document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
                     }
                     document.getElementById("pointT1" + match.id).innerHTML = e.record.point1;
-                    matchList = await pb.collection('match').getFullList({
-                        sort: '+heure_debut',
-                        expand: 'team1,team2,sport',
-                    });
+                    match.point1 = e.record.point1
+                    newGoalAlert(match, "team1")
                 }
                 if (e.record.point2 !== match.point2) {
                     if (!document.getElementById("cardHeader" + match.id).classList.contains("text-warning-emphasis")) {
                         document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
                     }
                     document.getElementById("pointT2" + match.id).innerHTML = e.record.point2;
-                    matchList = await pb.collection('match').getFullList({
-                        sort: '+heure_debut',
-                        expand: 'team1,team2,sport',
-                    });
+                    match.point2 = e.record.point2
+                    newGoalAlert(match, "team2")
                 }
                 //Mise à jour du statut si le match est terminé
                 if (e.record.status === "finished") {

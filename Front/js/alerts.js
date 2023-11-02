@@ -26,36 +26,27 @@ function deleteAlert(alertId){
     alert.close()
 }
 
-function newGoalAlert(){
-    //CHANGE THIS PART WITH REAL VALUE WHEN LINKING TO DATABASE
-    let sportName = "Football"
-    let teamA = "FCFOUCHE"
-    let teamB = "A3 Grammes"
-    let scoreTeamA = 1
-    let scoreTeamB = 2
-    let goalTeamName = "FCFOUCHE"
-    let noGoalTeamName = "A3 Grammes"
-    let alertId = "testId"
+function newGoalAlert(match, goalTeam){
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
-    <div id="${alertId}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-success alert-dismissible fade show" role="alert">
         <div class="d-flex align-items-center justify-content-between">
           <h4 class="alert-heading d-inline-flex align-items-center"><span class="material-symbols-outlined">
             scoreboard
           </span>BUT !</h4>
-          <h4>${scoreTeamA} - ${scoreTeamB}</h4>
+          <h4>${match.point1} - ${match.point2}</h4>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <p>${goalTeamName} vient de marquer un but en ${sportName} face à ${noGoalTeamName} !</p>
+        <p>${goalTeam == "team1" ? match.expand.team1.name : match.expand.team2.name} vient de marquer un but en ${match.expand.sport.name} face à ${goalTeam == "team1" ? match.expand.team2.name : match.expand.team1.name} !</p>
         <hr>
         <div class="d-flex align-items-center justify-content-between">
-          <p class="mb-0 d-inline-flex align-items-center">${getSportIconHTML(sportName)}${sportName}</p>
-          <p class="mb-0">${teamA}</p>
-          <b><p class="mb-0">${scoreTeamA} - ${scoreTeamB}</p></b>
-          <p class="mb-0">${teamB}</p>
+          <p class="mb-0 d-inline-flex align-items-center">${getSportIconHTML(match.expand.sport.name)}${match.expand.sport.name}</p>
+          <p class="mb-0">${match.expand.team1.name}</p>
+          <b><p class="mb-0">${match.point1} - ${match.point2}</p></b>
+          <p class="mb-0">${match.expand.team2.name}</p>
         </div>
     </div>
     `
     alertsContainer.insertAdjacentHTML("beforeend", alert)
-    setTimeout(deleteAlert, 5000, alertId)
+    setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
 }
