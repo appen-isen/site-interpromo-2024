@@ -13,7 +13,7 @@ const sportList = await pb.collection('sport').getFullList({});
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
     //Si le match est en cours
-    if(match.status === "in_progress" && match.status === "waiting"){
+    if(match.status === "in_progress" || match.status === "waiting"){
         //Abonnement au match
         pb.collection('match').subscribe(match.id, function (e){
             //Si le match a été mis à jour

@@ -108,6 +108,7 @@ PromoList.forEach(promo => {
 });
 
 
+
 const teamCardContainer = document.getElementById("teamCardContainer");
 EquipeList.forEach(equipe => {
     const card = document.createElement('div');
