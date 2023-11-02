@@ -1,7 +1,3 @@
-const alertsList = document.querySelectorAll('.alert')// récupère toue les éléments HTML avec la classe alert 
-const alerts = [...alertsList].map(elem => new bootstrap.Alert(elem));//instancie des classes Alert pour chaque élément (nécessaire pour que le bouton fermer fonctionne)
-
-
 function getSportIconHTML(sportName){
     switch(sportName.toLowerCase()){
         case "football":
@@ -25,6 +21,11 @@ function getSportIconHTML(sportName){
     }
 }
 
+function deleteAlert(alertId){
+    const alert = bootstrap.Alert.getOrCreateInstance(`body #alertsContainer #${alertId}`)
+    alert.close()
+}
+
 function newGoalAlert(){
     //CHANGE THIS PART WITH REAL VALUE WHEN LINKING TO DATABASE
     let sportName = "Football"
@@ -34,9 +35,10 @@ function newGoalAlert(){
     let scoreTeamB = 2
     let goalTeamName = "FCFOUCHE"
     let noGoalTeamName = "A3 Grammes"
+    let alertId = "testId"
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div id="${alertId}" class="alert alert-success alert-dismissible fade show" role="alert">
         <div class="d-flex align-items-center justify-content-between">
           <h4 class="alert-heading d-inline-flex align-items-center"><span class="material-symbols-outlined">
             scoreboard
@@ -55,4 +57,5 @@ function newGoalAlert(){
     </div>
     `
     alertsContainer.insertAdjacentHTML("beforeend", alert)
+    setTimeout(deleteAlert, 5000, alertId)
 }
