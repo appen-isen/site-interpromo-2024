@@ -10,13 +10,14 @@
     <!--- Ajout d'un fichier css pour les classes personalisé  --->
     <link rel="stylesheet" href="style.css" />
     <script src="alerts.js"></script>
+    <script src="js/cookie.js" defer></script>
   </head>
   <body>
     <header>
       <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
           <a class="navbar-brand" href="index.html">
-            <img src="/Front/assets/appen.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+            <img src="/Front/assets/appen.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top logo-appen">
             Interpromos 2023
           </a>
 
@@ -28,25 +29,25 @@
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
               <li class="nav-item">
                 <a class="nav-link active d-inline-flex align-items-center" aria-current="page" href="index.html">
-                  <span class="material-symbols-outlined pe-3">wifi_tethering</span>
+                  <div class="pe-3 icons-display"></div>
                   Matchs en direct
                   </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link d-inline-flex align-items-center" href="teams.html">
-                  <span class="material-symbols-outlined pe-3">trophy</span>
+                  <div class="pe-3 icons-display"></div>
                   Classement et équipes
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link d-inline-flex align-items-center" href="sports.html">
-                  <span class="material-symbols-outlined pe-3">fitness_center</span>
+                  <div class="pe-3 icons-display"></div>
                   Liste des sports
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link d-inline-flex align-items-center" href="login.html">
-                  <span class="material-symbols-outlined">login</span>
+                  <div class="pe-3 icons-display"></div>
                   Connexion
                 </a>
               </li>
@@ -63,7 +64,7 @@
 
     <div class="container">
       <div class="col-8 offset-2 mt-6">
-        <div class="card my-1">
+        <div class="card my-3">
           <div class="card-header text-center bg-light-subtle text-emphasis-light">
             Date and time
           </div>
@@ -73,7 +74,7 @@
             <p class="card-text text-center">Sport</p>
           </div>
         </div>
-        <div class="card my-1">
+        <div class="card my-3">
           <div class="card-header text-center bg-light-subtle text-emphasis-light">
             Date and time
           </div>
@@ -83,7 +84,7 @@
             <p class="card-text text-center">Sport</p>
           </div>
         </div>
-        <div class="card my-1">
+        <div class="card my-3">
           <div class="card-header text-center bg-light-subtle text-emphasis-light">
             Date and time
           </div>

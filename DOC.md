@@ -29,6 +29,8 @@ How to put an icon left to a text with a gool alignment using Bootstrap and Flex
 </p>`
 Works with p, a, and all h HTML tags
 
+The icons used in the navbar and the logo are cached in a cookies system to avoid loading them each time the page is refreshed
+
 ### Graphic specifications
 Creation of a custom margin top (mt-6) to fit to our needs
 
