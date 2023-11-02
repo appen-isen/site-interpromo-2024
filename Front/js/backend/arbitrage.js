@@ -1,17 +1,20 @@
 console.log("Backend arbitrage start loading...");
 import pb from './login.js'
 
+//Récupération de l'id du match dans l'url
 const idMatch = window.location.href.split("=")[1];
+//Mise à jour du statut du match
 const data = {
     "status": "in_progress",
 };
-
 const record = await pb.collection('match').update(idMatch, data);
 
+//Récupération des données du match
 const currentStatus = await pb.collection('match').getOne(idMatch, {
     expand: 'sport,team1,team2',
 });
 
+//Affichage des données initial du match
 const textPoint1 = document.getElementById("textPoint1")
 const textPoint2 = document.getElementById("textPoint2")
 
@@ -21,10 +24,12 @@ textPoint2.innerHTML = currentStatus.point2;
 const buttonPoint1 = document.getElementById("btnPoint1")
 const buttonPoint2 = document.getElementById("btnPoint2")
 
-
+//Gestion du cas basketball
 if(currentStatus.expand.sport.name === "basketball"){
+    //Suppression des boutons de points
     document.getElementById("arbitrage").innerHTML = "";
     const arbitrageDiv = document.getElementById("arbitrage");
+    //Création des boutons pour les différents points
     const arbitragePoint1 = document.createElement("div");
     arbitragePoint1.className = "text-center d-flex justify-content-evenly";
     const arbitragePoint1Btn1 = document.createElement("a");
@@ -43,17 +48,20 @@ if(currentStatus.expand.sport.name === "basketball"){
     arbitragePoint1.appendChild(arbitragePoint1Btn2);
     arbitragePoint1.appendChild(arbitragePoint1Btn3);
     arbitrageDiv.appendChild(arbitragePoint1);
+    //Création de l'affichage des points
     const arbitrageDisplayPoint1 = document.createElement("h5");
     arbitrageDisplayPoint1.className = "text-center";
     arbitrageDisplayPoint1.id = "textPoint1";
     arbitrageDisplayPoint1.innerHTML = currentStatus.point1;
     arbitrageDiv.appendChild(arbitrageDisplayPoint1);
     arbitrageDiv.appendChild(document.createElement("br"));
+    //Création de l'affichage des points
     const arbitrageDisplayPoint2 = document.createElement("h5");
     arbitrageDisplayPoint2.className = "text-center";
     arbitrageDisplayPoint2.id = "textPoint2";
     arbitrageDisplayPoint2.innerHTML = currentStatus.point2;
     arbitrageDiv.appendChild(arbitrageDisplayPoint2);
+    //Création des boutons pour les différents points
     const arbitragePoint2 = document.createElement("div");
     arbitragePoint2.className = "text-center d-flex justify-content-evenly";
     const arbitragePoint2Btn1 = document.createElement("a");
@@ -73,6 +81,7 @@ if(currentStatus.expand.sport.name === "basketball"){
     arbitragePoint2.appendChild(arbitragePoint2Btn3);
     arbitrageDiv.appendChild(arbitragePoint2);
     arbitrageDiv.appendChild(document.createElement("br"));
+    //Création du bouton pour arrêter le match
     const arbitrageStopForm = document.createElement("form");
     arbitrageStopForm.id = "stopMatch";
     const arbitrageStopFormDiv = document.createElement("div");
@@ -82,6 +91,7 @@ if(currentStatus.expand.sport.name === "basketball"){
     arbitrageStopFormBtn.className = "btn btn-danger";
     arbitrageStopFormBtn.id = "btnStop";
     arbitrageStopFormBtn.innerHTML = "Arrêter le match";
+    //Gestion de l'arrêt du match
     arbitrageStopFormDiv.appendChild(arbitrageStopFormBtn);
     arbitrageStopForm.appendChild(arbitrageStopFormDiv);
     arbitrageDiv.appendChild(arbitrageStopForm);
@@ -95,16 +105,24 @@ if(currentStatus.expand.sport.name === "basketball"){
     const point2Team2 = document.getElementById("btnPoint2Btn2");
     const point3Team2 = document.getElementById("btnPoint2Btn3");
 
+    //Gestion des points
     point1Team1.addEventListener('click', async function(event) {
+        //Annulation du comportement par défaut
         event.preventDefault();
+
+        //Mise à jour du nombre de points
         const data = {
             "point1": currentStatus.point1 + 1,
         };
+        //Envoi de la requête
         const record = await pb.collection('match').update(idMatch, data);
+        //Mise à jour de l'affichage
         textPoint1.innerHTML = currentStatus.point1 + 1;
+        //Rechargement de la page pour mettre à jour les données
         location.reload();
     });
 
+    //Même chose pour les autres boutons
     point2Team1.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -115,6 +133,7 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 
+    //Même chose pour les autres boutons
     point3Team1.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -125,6 +144,7 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 
+    //Même chose pour les autres boutons
     point1Team2.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -135,6 +155,7 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 
+    //Même chose pour les autres boutons
     point2Team2.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -145,6 +166,7 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 
+    //Même chose pour les autres boutons
     point3Team2.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -155,20 +177,30 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 }
+//Gestion des autres sports
 else{
+    //Mise à jour de l'affichage des boutons
     buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
     buttonPoint2.innerHTML = "1 point pour " + currentStatus.expand.team2.name;
 
+    //Comptage des points
     buttonPoint1.addEventListener('click', async function(event) {
+        //Annulation du comportement par défaut
         event.preventDefault();
+
+        //Mise à jour du nombre de points
         const data = {
             "point1": currentStatus.point1 + 1,
         };
+        //Envoi de la requête
         const record = await pb.collection('match').update(idMatch, data);
+        //Mise à jour de l'affichage
         textPoint1.innerHTML = currentStatus.point1 + 1;
+        //Rechargement de la page pour mettre à jour les données
         location.reload();
     });
 
+    //Même chose pour l'autre bouton
     buttonPoint2.addEventListener('click', async function(event) {
         event.preventDefault();
         const data = {
@@ -180,12 +212,18 @@ else{
     });
 }
 
+//Gestion de l'arrêt du match
 document.getElementById("btnStop").addEventListener('click', async function(event) {
+    //Annulation du comportement par défaut
     event.preventDefault();
+
+    //Mise à jour du statut du match
     const data = {
         "status": "finished",
     };
+    //Envoi de la requête
     const record = await pb.collection('match').update(idMatch, data);
+    //Redirection vers la page d'arbitrage
     window.location.href = "arbitrage.html";
 });
 
