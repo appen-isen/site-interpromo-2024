@@ -1,7 +1,7 @@
 console.log("Backend match start loading...");
 import pb from './login.js'
 
-const matchList = await pb.collection('match').getFullList({
+let matchList = await pb.collection('match').getFullList({
     sort: '+heure_debut',
     expand: 'team1,team2,sport',
 });
@@ -15,21 +15,32 @@ matchList.forEach(match => {
     //Si le match est en cours
     if(match.status === "in_progress" || match.status === "waiting"){
         //Abonnement au match
-        pb.collection('match').subscribe(match.id, function (e){
+        pb.collection('match').subscribe(match.id, async function (e) {
             //Si le match a été mis à jour
-            if(e.action === "update"){
+            if (e.action === "update") {
                 //Mise à jour des points
-                if(e.record.point1 !== match.point1){
-                    if(!document.getElementById("cardHeader" + match.id).classList.contains("text-warning-emphasis")){
+                if (e.record.point1 !== match.point1) {
+                    if (!document.getElementById("cardHeader" + match.id).classList.contains("text-warning-emphasis")) {
                         document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
                     }
                     document.getElementById("pointT1" + match.id).innerHTML = e.record.point1;
+                    matchList = await pb.collection('match').getFullList({
+                        sort: '+heure_debut',
+                        expand: 'team1,team2,sport',
+                    });
                 }
-                if(e.record.point2 !== match.point2){
+                if (e.record.point2 !== match.point2) {
+                    if (!document.getElementById("cardHeader" + match.id).classList.contains("text-warning-emphasis")) {
+                        document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
+                    }
                     document.getElementById("pointT2" + match.id).innerHTML = e.record.point2;
+                    matchList = await pb.collection('match').getFullList({
+                        sort: '+heure_debut',
+                        expand: 'team1,team2,sport',
+                    });
                 }
                 //Mise à jour du statut si le match est terminé
-                if(e.record.status === "finished"){
+                if (e.record.status === "finished") {
                     document.getElementById("cardHeader" + match.id).classList.remove("text-warning-emphasis");
                     document.getElementById("cardHeader" + match.id).classList.add("text-success-emphasis");
                     document.getElementById("cardFooter" + match.id).innerHTML = "Match terminé";
