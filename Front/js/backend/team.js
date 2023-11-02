@@ -2,7 +2,7 @@ console.log("Backend team start loading...");
 import pb from './login.js'
 
 const EquipeList = await pb.collection('equipes').getFullList({
-    expand: 'promo,sport',
+    expand: 'promo,sport,membres',
 });
 
 const PromoList = await pb.collection('promo').getFullList({
@@ -26,7 +26,25 @@ PromoList.forEach(promo => {
     //Pour chaque équipe, verif si elle est dans la promo et affichage du sport et du nom de l'équipe et du classement
     EquipeList.forEach(equipe => {
         if(equipe.expand.promo.name === promo.name){
-            cardText.innerHTML += equipe.expand.sport.name + ": " + equipe.name + " (" + "CLASSEMENT A REMPLACER PAR LE BACK QUAND IL SERA FAIT" + ")" + "<br>";
+            console.log(equipe.expand.sport.name);
+            if(equipe.expand.sport.name === "basketball") {
+                cardText.innerHTML += "Basketball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
+            else if(equipe.expand.sport.name === "football") {
+                cardText.innerHTML += "Football : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
+            else if(equipe.expand.sport.name === "handball") {
+                cardText.innerHTML += "Handball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
+            else if(equipe.expand.sport.name === "volleyball") {
+                cardText.innerHTML += "Volleyball : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
+            else if(equipe.expand.sport.name === "defi enduro"){
+                cardText.innerHTML += "Defi Enduro : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
+            else if(equipe.expand.sport.name === "badminton"){
+                cardText.innerHTML += "Badminton : " + equipe.name + " : " + "BACK A FAIRE" + " <br> ";
+            }
         }
     });
     cardBody.appendChild(cardText);
@@ -57,7 +75,14 @@ EquipeList.forEach(equipe => {
     //Affichage des membres
     const cardMember = document.createElement('p');
     cardMember.classList.add('card-text');
-    cardMember.innerHTML = "Membres : " + equipe.capitaine + ", " + equipe.membres;
+    cardMember.innerHTML = "Membres : " + equipe.capitaine + " ,";
+    equipe.expand.membres.forEach(membre => {
+        cardMember.innerHTML += " " + membre.name + " ,";
+    });
+    //Suppression de la dernière virgule
+    cardMember.innerHTML = cardMember.innerHTML.slice(0, -1);
+    //Suppression du dernier espace
+    cardMember.innerHTML = cardMember.innerHTML.slice(0, -1);
     //Affichage du prochain match
     const cardFooter = document.createElement('div');
     cardFooter.classList.add('card-footer', 'bg-light-subtle', 'text-emphasis-light');

@@ -13,7 +13,7 @@ const sportList = await pb.collection('sport').getFullList({});
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
     //Si le match est en cours
-    if(match.status === "in_progress"){
+    if(match.status === "in_progress" && match.status === "waiting"){
         //Abonnement au match
         pb.collection('match').subscribe(match.id, function (e){
             //Si le match a été mis à jour
@@ -32,6 +32,7 @@ matchList.forEach(match => {
                 if(e.record.status === "finished"){
                     document.getElementById("cardHeader" + match.id).classList.remove("text-warning-emphasis");
                     document.getElementById("cardHeader" + match.id).classList.add("text-success-emphasis");
+                    document.getElementById("cardFooter" + match.id).innerHTML = "Match terminé";
                 }
             }
         });
@@ -116,18 +117,22 @@ if(window.location.href.includes("index.html")){
         const cardFooter = document.createElement('div');
         if(match.status === "waiting") {
             cardFooter.className = "card-footer bg-light-subtle text-primary-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match en attente";
         }
         else if(match.status === "in_progress") {
             cardFooter.className = "card-footer bg-light-subtle text-warning-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match en cours";
         }
         else if(match.status === "finished") {
             cardFooter.className = "card-footer bg-light-subtle text-success-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match terminé";
         }
         else{
             cardFooter.className = "card-footer bg-light-subtle text-emphasis-light";
+            cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Erreur de statut";
         }
         //Ajout des éléments à la carte
