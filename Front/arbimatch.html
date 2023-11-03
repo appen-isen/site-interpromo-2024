@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="style.css" />
     <script src="js/cookie.js" defer></script>
     <link rel="icon" href="assets/appen.png">
+    <script src="js/backend/login.js" type="module" defer></script>
+    <script src="js/backend/arbitrage.js" type="module" defer></script>
 </head>
 <body>
     <header>
@@ -29,26 +31,32 @@
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
                             <a class="nav-link d-inline-flex align-items-center" aria-current="page" href="index.html">
+                                <!--
+                                <span class="material-symbols-outlined pe-3">wifi_tethering</span>
+                                --->
                                 <div class="pe-3 icons-display"></div>
                                 Matchs en direct
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-inline-flex align-items-center" href="teams.html">
+                                <!---<span class="material-symbols-outlined pe-3">trophy</span>--->
                                 <div class="pe-3 icons-display"></div>
                                 Classement et équipes
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-inline-flex align-items-center" href="sports.html">
+                                <!---<span class="material-symbols-outlined pe-3">fitness_center</span>--->
                                 <div class="pe-3 icons-display"></div>
                                 Liste des sports
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link d-inline-flex align-items-center" href="login.html">
+                            <a class="nav-link d-inline-flex align-items-center" role="button" id="disconect">
+                                <!---<span class="material-symbols-outlined">login</span>--->
                                 <div class="pe-3 icons-display"></div>
-                                Connexion
+                                Déconnexion
                             </a>
                         </li>
                     </ul>
@@ -57,17 +65,16 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <div class="col-8 offset-2">
-            <h3 class="text-center text-emphasis-light">Temps écoulé:</h3>
-            <h4 class="text-center text-emphasis-light">2:33</h4>
-            <div class="text-center"><a href="#" class="btn btn-primary ">But pour promo X</a></div>
-            <h5 class="text-center">2</h5>
+        <div class="col-8 offset-2 mt-6" id="arbitrage">
+            <div class="text-center"><a href="" class="btn btn-primary" id="btnPoint1">But pour promo X</a></div>
+            <h5 class="text-center" id="textPoint1"></h5>
             <br>
-            <h5 class="text-center">1</h5>
-            <div class="text-center"><a href="#" class="btn btn-primary ">But pour promo Y</a></div>
+            <h5 class="text-center" id="textPoint2"></h5>
+            <div class="text-center"><a href="" class="btn btn-primary" id="btnPoint2">But pour promo Y</a></div>
             <br>
-            <form><div class="text-center"><button type="submit" class="btn btn-danger">Supprimer un match</button></div></form>
+            <form id="stopMatch"><div class="text-center"><button type="submit" class="btn btn-danger" id="btnStop">Arrêter le match</button></div></form>
         </div>
     </div>
 </body>
