@@ -6,22 +6,27 @@ const EquipeList = await pb.collection('equipes').getFullList({
 });
 
 const classBasketballList = await pb.collection('class_basketball').getFullList({
+    sort: '+classement',
     expand: 'team',
 });
 
 const classVoleyballList = await pb.collection('class_voleyball').getFullList({
+    sort: '+classement',
     expand: 'team',
 });
 
 const classFootballList = await pb.collection('class_football').getFullList({
+    sort: '+classement',
     expand: 'team',
 });
 
 const classHandballList = await pb.collection('class_handball').getFullList({
+    sort: '+classement',
     expand: 'team',
 });
 
 const classDefiList = await pb.collection('class_defi').getFullList({
+    sort: '+classement',
     expand: 'team',
 });
 
@@ -33,42 +38,32 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'team1,team2,sport',
 });
 
+function findClassementInClassementList(classementList, equipe){
+    if(classementList.length != 0){
+        classementList.forEach(classe => {
+            if (classe.expand.team.name === equipe.name) {
+                return classe.classement;
+            }
+        });
+    }
+    return 0;
+}
+
 function getTeamClassement(equipe){
     switch(equipe.expand.sport.name){
         case "football":
-            classFootballList.forEach(classe => {
-                if (classe.expand.team.name === equipe.name) {
-                    return classe.classement;
-                }
-            });
+            return findClassementInClassementList(classFootballList, equipe);
         case "handball":
-            classHandballList.forEach(classe => {
-                if (classe.expand.team.name === equipe.name) {
-                    return classe.classement;
-                }
-            });
+            return findClassementInClassementList(classHandballList, equipe);
         case "volleyball":
-            classVoleyballList.forEach(classe => {
-                if (classe.expand.team.name === equipe.name) {
-                    return classe.classement;
-                }
-            });
+            return findClassementInClassementList(classVoleyballList, equipe);
         case "basketball":
-            classBasketballList.forEach(classe => {
-                if (classe.expand.team.name === equipe.name) {
-                    return classe.classement;
-                }
-            });
+            return findClassementInClassementList(classBasketballList, equipe);
         case "badminton":
-            //return ``
+            return 0;
         case "defi enduro":
-            classDefiList.forEach(classe => {
-                if (classe.expand.team.name === equipe.name) {
-                    return classe.classement;
-                }
-            });
+            return findClassementInClassementList(classDefiList, equipe);
     }
-    return 0;
 }
 
 function getTeamRow(equipe){
