@@ -66,30 +66,34 @@ function getTeamClassement(equipe){
     }
 }
 
-function getTeamRow(equipe){
+function getTeamsRow(sport, teams){
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
-            <div class="fw-bold">${equipe.expand.sport.name}</div>
-            ${equipe.name}
-        </div>`
-    let classement = getTeamClassement(equipe);
-    if(classement != 0){
-        result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
-    }
-    result += `</li>`
+            <div class="fw-bold">${sport}</div>`
+    teams.forEach(equipe => {
+        result += `<div>${equipe.name}`
+        let classement = getTeamClassement(equipe);
+        if(classement != 0){
+            result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
+        }
+        result += `</div>`
+    })
+    result += `
+        </div>
+    </li>`
     return result
 }
 
-function getPromoCard(promo, teamsList){
+function getPromoCard(promo, teamsBySport){
     let cardHtml = `
     <div class="card my-3">
         <div class="card-header text-center bg-light-subtle text-emphasis-light">${promo.name}</div>
         <ul class="list-group list-group-flush list-group-item">
     `
-    teamsList.forEach(equipe => {
-        cardHtml += getTeamRow(equipe)
-    })
+    for(let [sport, teams] of Object.entries(teamsBySport)){
+        cardHtml += getTeamsRow(sport, teams)
+    }
     cardHtml += `</ul>`
     const nextMatch = matchList.find(match => match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id);
     if(nextMatch){
@@ -101,12 +105,10 @@ function getPromoCard(promo, teamsList){
 }
 
 function getSportRow(equipe){
-    console.log(equipe)
     let members = `Membres : ${equipe.capitaine} ,`;
     equipe.membres.forEach(membre => {
         members += membre.name + " ,";
     });
-    console.log(members)
     members = members.slice(0, -2)
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -145,26 +147,31 @@ function getTeamCard(teamBySport){
 const promoCardContainer = document.getElementById("promoCardContainer");
 const teamCardContainer = document.getElementById("teamCardContainer");
 
-const promoTeams = {} // Object key = promo name, value = array of promo teams objects
+const promoTeamsbySport = {} // Object key = promo name, value = array of promo teams objects
 const teamSports = {} // Object key = team name, value = Object key = sport name, value = team object
 
 EquipeList.forEach(equipe => {
-    if(!(equipe.expand.promo.name in promoTeams)){
-        promoTeams[equipe.expand.promo.name] = [];
+    if(!(equipe.expand.promo.name in promoTeamsbySport)){
+        promoTeamsbySport[equipe.expand.promo.name] = {};
     }
-    promoTeams[equipe.expand.promo.name].push(equipe);
-    if(!(equipe.name in teamSports)){
-        teamSports[equipe.name] = {'team': equipe};
+    if(!(equipe.expand.sport.name in promoTeamsbySport[equipe.expand.promo.name])){
+        promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name] = [];
     }
-    teamSports[equipe.name][equipe.expand.sport.name] = equipe;
+    promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name].push(equipe);
+    if(!(equipe.expand.sport.name === "badminton")){
+        if(!(equipe.name in teamSports)){
+            teamSports[equipe.name] = {'team': equipe};
+        }
+        teamSports[equipe.name][equipe.expand.sport.name] = equipe;
+    }
 })
 
 //Affichage des équipes par promo
 PromoList.forEach(promo => {
-    if(!(promo.name in promoTeams)){
-        promoTeams[promo.name] = []
+    if(!(promo.name in promoTeamsbySport)){
+        promoTeamsbySport[promo.name] = {}
     }
-    promoCardContainer.insertAdjacentHTML("beforeend", getPromoCard(promo, promoTeams[promo.name]));
+    promoCardContainer.insertAdjacentHTML("beforeend", getPromoCard(promo, promoTeamsbySport[promo.name]));
 });
 
 Object.values(teamSports).forEach(teamBySport => {
