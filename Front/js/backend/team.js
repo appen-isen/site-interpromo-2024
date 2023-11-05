@@ -2,7 +2,7 @@ console.log("Backend team start loading...");
 import pb from './login.js'
 
 const EquipeList = await pb.collection('equipes').getFullList({
-    expand: 'promo,sport,membres',
+    expand: 'promo,sport,membres,capitaine',
 });
 
 const classBasketballList = await pb.collection('class_basketball').getFullList({
@@ -105,16 +105,24 @@ function getPromoCard(promo, teamsBySport){
 }
 
 function getSportRow(equipe){
-    let members = `Membres : ${equipe.capitaine} ,`;
-    equipe.membres.forEach(membre => {
-        members += membre.name + " ,";
-    });
-    members = members.slice(0, -2)
+    let members = ""
+    if(equipe.capitaine != ""){
+        members += `<u>${equipe.expand.capitaine.prenom} ${equipe.expand.capitaine.name}</u>, `;
+    }
+    if(equipe.membres.length !== 0){
+        equipe.expand.membres.forEach(membre => {
+            members += `${membre.prenom[0]}. ${membre.name}, `;
+        });
+        console.log(members)
+        members = members.slice(0, -2)
+    } else {
+        members = "non renseignés"
+    }
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="ms-2 me-auto">
             <div class="fw-bold">${equipe.expand.sport.name}</div>
-            ${members}
+            Membres : ${members}
         </div>`
     let classement = getTeamClassement(equipe);
     if(classement != 0){
