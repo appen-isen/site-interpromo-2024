@@ -148,7 +148,7 @@ function getPromoCard(promo, teamsBySport){
     const nextMatch = matchList.find(match => match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id);
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
-        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
     }
     cardHtml += `</div>`
     return cardHtml
@@ -195,7 +195,7 @@ function getTeamCard(teamBySport){
     const nextMatch = matchList.find(match => match.expand.team1.name === equipe.name || match.expand.team2.name === equipe.name);
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
-        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
     }
     cardHtml += `</div>`
     return cardHtml
@@ -215,10 +215,12 @@ EquipeList.forEach(equipe => {
         promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name] = [];
     }
     promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name].push(equipe);
-    if(!(equipe.name in teamSports)){
-        teamSports[equipe.name] = {'team': equipe};
+    if(!(equipe.expand.sport.name === "badminton")){
+        if(!(equipe.name in teamSports)){
+            teamSports[equipe.name] = {'team': equipe};
+        }
+        teamSports[equipe.name][equipe.expand.sport.name] = equipe;
     }
-    teamSports[equipe.name][equipe.expand.sport.name] = equipe;
 })
 
 DuoBadList.forEach(duo => {
