@@ -5,7 +5,6 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport,membres,capitaine',
 });
 
-
 const PromoList = await pb.collection('promo').getFullList({
 });
 
@@ -14,28 +13,52 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'team1,team2,sport',
 });
 
-function findClassementInClassementList(classementList, equipe){
-    if(classementList.length != 0){
-        classementList.forEach(classe => {
-            if (classe.expand.team.name === equipe.name) {
-                return classe.classement;
+function getTeamClassementBadge(equipe){
+    if(equipe.classement != 0){
+        return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
+    } else if(equipe.stade != ""){
+        let stade = ""
+            switch(equipe.stade){
+                case "16":
+                    stade = "16èmes"
+                    break;
+                case "8":
+                    stade = "8èmes"
+                    break;
+                case "4":
+                    stade = "Quarts"
+                    break;
+                case "2":
+                    stade = "Demies"
+                    break;
+                case "1":
+                    stade = "Finale"
+                    break;
             }
-        });
+            let color = ""
+            if(equipe.eliminated){
+                color = "bg-danger"
+            } else {
+                color = "bg-primary"
+            }
+            return `<span class="badge ${color} rounded-pill">${stade}</span>`
     }
-    return 0;
 }
 
-function getTeamRow(equipe){
+function getTeamsRow(sport, teams){
     let result =  `
-    <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-            <div class="fw-bold">${equipe.expand.sport.name}</div>
-            ${equipe.name}
-        </div>`
-    if(equipe.classement != 0){
-        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
-    }
-    result += `</li>`
+    <li class="list-group-item">
+        <div class="mx-2">
+            <div class="fw-bold">${sport[0].toUpperCase()}${sport.slice(1)}</div>`
+    teams.forEach(equipe => {
+        result += `<div class="d-flex justify-content-between align-items-start">${equipe.name}`
+        if(equipe.classement !== 0 || equipe.stade !== ""){
+            result += getTeamClassementBadge(equipe)
+        }
+        result += `</div>`
+    })    
+    result += `</div>
+    </li>`
     return result
 }
 
@@ -46,11 +69,7 @@ function getPromoCard(promo, teamsBySport){
         <ul class="list-group list-group-flush">
     `
     for(let [sport, teams] of Object.entries(teamsBySport)){
-        if(sport === "badminton"){
-            cardHtml += getDuosRow(teams)
-        } else {
-            cardHtml += getTeamsRow(sport, teams)
-        }
+        cardHtml += getTeamsRow(sport, teams)
     }
     cardHtml += `</ul>`
     const nextMatch = matchList.find(match => match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id);
@@ -78,7 +97,7 @@ function getSportRow(equipe){
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="mx-2">
-            <div class="fw-bold">${equipe.expand.sport.name}</div>
+            <div class="fw-bold">${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)}</div>
             Membres : ${members}
         </div>`
     if(equipe.classement != 0){
@@ -129,20 +148,10 @@ EquipeList.forEach(equipe => {
         }
         teamSports[equipe.name][equipe.expand.sport.name] = equipe;
     }
-})
-
-DuoBadList.forEach(duo => {
-    if(!(duo.expand.promo.name in promoTeamsbySport)){
-        promoTeamsbySport[duo.expand.promo.name] = {};
-    }
-    if(!("badminton" in promoTeamsbySport[duo.expand.promo.name])){
-        promoTeamsbySport[duo.expand.promo.name]["badminton"] = [];
-    }
-    teamSports[equipe.name][equipe.expand.sport.name] = equipe;
     if(!(equipe.expand.sport.name in numOfTeamsBySport)){
-        numOfTeamsBySport[equipe.expand.sport.name] = 0
+        numOfTeamsBySport[equipe.expand.sport.name] = 0;
     }
-    numOfTeamsBySport[equipe.expand.sport.name] += 1
+    numOfTeamsBySport[equipe.expand.sport.name] += 1;
 })
 
 //Affichage des équipes par promo
