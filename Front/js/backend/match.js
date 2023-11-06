@@ -39,6 +39,8 @@ matchList.forEach(match => {
                 if (e.record.status === "finished") {
                     document.getElementById("cardHeader" + match.id).classList.remove("text-warning-emphasis");
                     document.getElementById("cardHeader" + match.id).classList.add("text-success-emphasis");
+                    document.getElementById("cardFooter" + match.id).classList.remove("text-warning-emphasis");
+                    document.getElementById("cardFooter" + match.id).classList.add("text-success-emphasis");
                     document.getElementById("cardFooter" + match.id).innerHTML = "Match terminé";
                 }
             }

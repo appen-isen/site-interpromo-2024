@@ -80,12 +80,27 @@ function getSportNextMatchText(sport){
     return "Prochain match : " + match.expand.team1.name + " vs " + match.expand.team2.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
 }
 
+function getSportIcon(sport){
+    switch(sport.name) {
+        case "basketball":
+            return ` <span class="material-symbols-outlined">sports_basketball</span>`
+        case "volleyball":
+            return ` <span class="material-symbols-outlined">sports_volleyball</span>`
+        case "football":
+            return ` <span class="material-symbols-outlined">sports_soccer</span>`
+        case "handball":
+            return ` <span class="material-symbols-outlined">sports_handball</span>`
+        case "badminton":
+            return ` <img src="assets/shuttlecock.svg" alt="shuttlecock" width="24" height="24">`
+    }
+}
+
 function getSportCard(sport){
     let winner = getSportWinningTeam(sport)
     let title = winner === "" ? "La compétition n'a pas commencé" : ("Equipe en tête : " + winner)
     return `
     <div class="card my-3">
-        <div class="card-header text-center bg-light-subtle text-emphasis-light">${sport.name.toUpperCase()}</div>
+        <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-center">${sport.name.toUpperCase()}${getSportIcon(sport)}</div></div>
         <div class="card-body bg-light-subtle text-emphasis-light">
             <h5 class="card-title">${title}</h5>
         </div>
