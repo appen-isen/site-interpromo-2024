@@ -1,6 +1,5 @@
 console.log("Backend arbitrage start loading...");
-import pb from './login.js'
-pb.autoCancellation(false);
+import pb from './login.js';
 
 //Récupération de l'id du match dans l'url
 const idMatch = window.location.href.split("=")[1];
@@ -228,53 +227,44 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     };
     //Envoi de la requête
     const record = await pb.collection('match').update(idMatch, data);
-    console.log("deleted")
-    console.log(currentStatus)
     if(currentStatus.mode == "poules"){
         //Ajout des points victoire ou égalité
         if(currentStatus.point1 === currentStatus.point2){
-            addPoints(currentStatus.team1, 1)
-            addPoints(currentStatus.team2, 1)
+            await addPoints(currentStatus.team1, 1)
+            await addPoints(currentStatus.team2, 1)
         } else if(currentStatus.point1 > currentStatus.point2) {
-            addPoints(currentStatus.team1, 3)
+            await addPoints(currentStatus.team1, 3)
         } else if(currentStatus.point1 < currentStatus.point2) {
-            addPoints(currentStatus.team2, 3)
+            await addPoints(currentStatus.team2, 3)
         }
         //Calcul du classement de chaque équipe
-        setTeamClassement(currentStatus.expand.sport.name)
+        await setTeamClassement(currentStatus.expand.sport.name)
     } else if(currentStatus.mode === "tournoi") {
-        console.log("tournoi sa mère")
         if(currentStatus.point1 > currentStatus.point2) {
-            console.log("1 gagne")
-            eliminateTeam(currentStatus.team2)
-            promoteNextStade(currentStatus.team1)
+            await eliminateTeam(currentStatus.team2)
+            await promoteNextStade(currentStatus.team1)
         } else if(currentStatus.point1 < currentStatus.point2) {
-            console.log("2 gagne")
-            eliminateTeam(currentStatus.team1)
-            promoteNextStade(currentStatus.team2)
+            await eliminateTeam(currentStatus.team1)
+            await promoteNextStade(currentStatus.team2)
         }
     }
+    
 
     //Redirection vers la page d'arbitrage
     window.location.href = "arbitrage.html";
 });
 
-function addPoints(teamId, points){
-    console.log(teamId)
-    console.log(EquipeList)
+async function addPoints(teamId, points){
     const equipe = EquipeList.find(equipe => equipe.id === teamId)
-    console.log(equipe)
     if(equipe){
         const data = {
             "points": equipe.points + points,
         };
-        console.log(data)
-        const record = pb.collection("equipes").update(equipe.id, data);
+        const record = await pb.collection("equipes").update(equipe.id, data);
     }
-    console.log("add points")
 }
 
-function setTeamClassement(sport){
+async function setTeamClassement(sport){
     let sportTeams = []
     EquipeList.forEach(equipe => {
         if(equipe.expand.sport.name === sport){
@@ -282,32 +272,29 @@ function setTeamClassement(sport){
         }
     })
     sportTeams.sort((teamA, teamB) => parseInt(teamB.points, 10) - parseInt(teamA.points, 10))//On range les équipes par ordre de points décroissant
-    console.log(sportTeams)
     for(let i = 1; i <= sportTeams.length; i++){
-        console.log(i)
         const data = {
             "classement": i,
         };
-        const record = pb.collection("equipes").update(sportTeams[i-1].id, data);
+        const record = await pb.collection("equipes").update(sportTeams[i-1].id, data);
     }
-    console.log("set team classement")
 }
 
-function eliminateTeam(teamId){
+async function eliminateTeam(teamId){
     const data = {
         "eliminated": true,
     };
-    const record = pb.collection("equipes").update(teamId, data);
+    const record = await pb.collection("equipes").update(teamId, data);
 }
 
-function promoteNextStade(teamId){
+async function promoteNextStade(teamId){
     let equipe = EquipeList.find(equipe => equipe.id === teamId)
     if(equipe){
         if(equipe.stade !== '1'){
             const data = {
                 "stade": (parseInt(equipe.stade, 10)/2).toString(),
             };
-            const record = pb.collection("equipes").update(equipe.id, data);
+            const record = await pb.collection("equipes").update(equipe.id, data);
         }
     }
 }
