@@ -109,7 +109,6 @@ function getSportRow(equipe){
         equipe.expand.membres.forEach(membre => {
             members += `${membre.prenom[0]}. ${membre.name}, `;
         });
-        console.log(members)
         members = members.slice(0, -2)
     } else {
         members = "non renseignés"
@@ -159,10 +158,12 @@ EquipeList.forEach(equipe => {
         promoTeams[equipe.expand.promo.name] = [];
     }
     promoTeams[equipe.expand.promo.name].push(equipe);
-    if(!(equipe.name in teamSports)){
-        teamSports[equipe.name] = {'team': equipe};
+    if(!(equipe.expand.sport.name === "badminton")){
+        if(!(equipe.name in teamSports)){
+            teamSports[equipe.name] = {'team': equipe};
+        }
+        teamSports[equipe.name][equipe.expand.sport.name] = equipe;
     }
-    teamSports[equipe.name][equipe.expand.sport.name] = equipe;
 })
 
 //Affichage des équipes par promo
