@@ -268,7 +268,7 @@ function addPoints(teamId, points){
 }
 
 function setTeamClassement(sport){
-    sportTeams = []
+    let sportTeams = []
     EquipeList.forEach(equipe => {
         if(equipe.expand.sport.name === sport){
             sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
@@ -293,7 +293,7 @@ function eliminateTeam(teamId){
 
 function promoteNextStade(teamId){
     console.log("promote")
-    equipe = EquipeList.find(equipe => equipe.id === teamId)
+    let equipe = EquipeList.find(equipe => equipe.id === teamId)
     if(equipe){
         if(equipe.stade !== '1'){
             const data = {
