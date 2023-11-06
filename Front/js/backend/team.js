@@ -5,6 +5,10 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport,membres,capitaine',
 });
 
+const DuoBadList = await pb.collection('duo_bad').getFullList({
+    expand: 'promo',
+});
+
 const classBasketballList = await pb.collection('class_basketball').getFullList({
     sort: '+classement',
     expand: 'team',
@@ -66,30 +70,80 @@ function getTeamClassement(equipe){
     }
 }
 
-function getTeamRow(equipe){
+function getDuosRow(duos){
     let result =  `
-    <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
-            <div class="fw-bold">${equipe.expand.sport.name}</div>
-            ${equipe.name}
-        </div>`
-    let classement = getTeamClassement(equipe);
-    if(classement != 0){
-        result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
-    }
-    result += `</li>`
+    <li class="list-group-item">
+        <div class="mx-2">
+            <div class="fw-bold">Badminton</div>`
+    duos.forEach(duo => {
+        result += `<div class="d-flex justify-content-between align-items-start">${duo.name}`
+        if(duo.stade){
+            let stade = ""
+            switch(duo.stade){
+                case "16":
+                    stade = "16èmes"
+                    break;
+                case "8":
+                    stade = "8èmes"
+                    break;
+                case "4":
+                    stade = "Quarts"
+                    break;
+                case "2":
+                    stade = "Demies"
+                    break;
+                case "1":
+                    stade = "Finale"
+                    break;
+            }
+            let color = ""
+            if(duo.eliminated){
+                color = "bg-danger"
+            } else {
+                color = "bg-primary"
+            }
+            result += `<span class="badge ${color} rounded-pill">${stade}</span>`
+        }
+        result += `</div>`
+    })
+    result += `
+        </div>
+    </li>`
     return result
 }
 
-function getPromoCard(promo, teamsList){
+function getTeamsRow(sport, teams){
+    let result =  `
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="mx-2">
+            <div class="fw-bold">${sport[0].toUpperCase()}${sport.slice(1)}</div>`
+    teams.forEach(equipe => {
+        result += `<div>${equipe.name}`
+        let classement = getTeamClassement(equipe);
+        if(classement != 0){
+            result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
+        }
+        result += `</div>`
+    })
+    result += `
+        </div>
+    </li>`
+    return result
+}
+
+function getPromoCard(promo, teamsBySport){
     let cardHtml = `
     <div class="card my-3">
         <div class="card-header text-center bg-light-subtle text-emphasis-light">${promo.name}</div>
-        <ul class="list-group list-group-flush list-group-item">
+        <ul class="list-group list-group-flush">
     `
-    teamsList.forEach(equipe => {
-        cardHtml += getTeamRow(equipe)
-    })
+    for(let [sport, teams] of Object.entries(teamsBySport)){
+        if(sport === "badminton"){
+            cardHtml += getDuosRow(teams)
+        } else {
+            cardHtml += getTeamsRow(sport, teams)
+        }
+    }
     cardHtml += `</ul>`
     const nextMatch = matchList.find(match => match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id);
     if(nextMatch){
@@ -115,7 +169,7 @@ function getSportRow(equipe){
     }
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="ms-2 me-auto">
+        <div class="mx-2">
             <div class="fw-bold">${equipe.expand.sport.name}</div>
             Membres : ${members}
         </div>`
@@ -132,7 +186,7 @@ function getTeamCard(teamBySport){
     let cardHtml = `
     <div class="card my-3">
         <div class="card-header text-center bg-light-subtle text-emphasis-light">${equipe.name}(${equipe.expand.promo.name})</div>
-        <ul class="list-group list-group-flush list-group-item">
+        <ul class="list-group list-group-flush">
     `
     for(const [sportName, team] of Object.entries(teamBySport).filter(([sportName, team]) => sportName != "team")){
         cardHtml += getSportRow(team)
@@ -150,14 +204,17 @@ function getTeamCard(teamBySport){
 const promoCardContainer = document.getElementById("promoCardContainer");
 const teamCardContainer = document.getElementById("teamCardContainer");
 
-const promoTeams = {} // Object key = promo name, value = array of promo teams objects
+const promoTeamsbySport = {} // Object key = promo name, value = array of promo teams objects
 const teamSports = {} // Object key = team name, value = Object key = sport name, value = team object
 
 EquipeList.forEach(equipe => {
-    if(!(equipe.expand.promo.name in promoTeams)){
-        promoTeams[equipe.expand.promo.name] = [];
+    if(!(equipe.expand.promo.name in promoTeamsbySport)){
+        promoTeamsbySport[equipe.expand.promo.name] = {};
     }
-    promoTeams[equipe.expand.promo.name].push(equipe);
+    if(!(equipe.expand.sport.name in promoTeamsbySport[equipe.expand.promo.name])){
+        promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name] = [];
+    }
+    promoTeamsbySport[equipe.expand.promo.name][equipe.expand.sport.name].push(equipe);
     if(!(equipe.expand.sport.name === "badminton")){
         if(!(equipe.name in teamSports)){
             teamSports[equipe.name] = {'team': equipe};
@@ -166,12 +223,22 @@ EquipeList.forEach(equipe => {
     }
 })
 
+DuoBadList.forEach(duo => {
+    if(!(duo.expand.promo.name in promoTeamsbySport)){
+        promoTeamsbySport[duo.expand.promo.name] = {};
+    }
+    if(!("badminton" in promoTeamsbySport[duo.expand.promo.name])){
+        promoTeamsbySport[duo.expand.promo.name]["badminton"] = [];
+    }
+    promoTeamsbySport[duo.expand.promo.name]["badminton"].push(duo);
+})
+
 //Affichage des équipes par promo
 PromoList.forEach(promo => {
-    if(!(promo.name in promoTeams)){
-        promoTeams[promo.name] = []
+    if(!(promo.name in promoTeamsbySport)){
+        promoTeamsbySport[promo.name] = {}
     }
-    promoCardContainer.insertAdjacentHTML("beforeend", getPromoCard(promo, promoTeams[promo.name]));
+    promoCardContainer.insertAdjacentHTML("beforeend", getPromoCard(promo, promoTeamsbySport[promo.name]));
 });
 
 Object.values(teamSports).forEach(teamBySport => {
