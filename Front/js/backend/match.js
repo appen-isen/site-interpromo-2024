@@ -49,7 +49,7 @@ matchList.forEach(match => {
 });
 
 //Affichage des matchs sur la page d'accueil
-if(window.location.href.includes("index.html")){
+if(window.location.href.includes("index.html") || window.location.href.includes("")){
     //Affichage des matchs
     matchList.forEach(match => {
         const container = document.getElementById('cardContainer');
