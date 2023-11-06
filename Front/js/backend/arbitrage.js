@@ -7,7 +7,10 @@ const idMatch = window.location.href.split("=")[1];
 const data = {
     "status": "in_progress",
 };
+
 const record = await pb.collection('match').update(idMatch, data);
+
+
 
 //Récupération des données du match
 const currentStatus = await pb.collection('match').getOne(idMatch, {
@@ -115,7 +118,6 @@ if(currentStatus.expand.sport.name === "basketball"){
     arbitrageStopFormDiv.appendChild(arbitrageStopFormBtn);
     arbitrageStopForm.appendChild(arbitrageStopFormDiv);
     arbitrageDiv.appendChild(arbitrageStopForm);
-
 
     //Comptage des points
     const point1Team1 = document.getElementById("btnPoint1Btn1");
