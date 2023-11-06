@@ -5,34 +5,6 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport,membres,capitaine',
 });
 
-const DuoBadList = await pb.collection('duo_bad').getFullList({
-    expand: 'promo',
-});
-
-const classBasketballList = await pb.collection('class_basketball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classVoleyballList = await pb.collection('class_voleyball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classFootballList = await pb.collection('class_football').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classHandballList = await pb.collection('class_handball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classDefiList = await pb.collection('class_defi').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
 
 const PromoList = await pb.collection('promo').getFullList({
 });
@@ -53,81 +25,17 @@ function findClassementInClassementList(classementList, equipe){
     return 0;
 }
 
-function getTeamClassement(equipe){
-    switch(equipe.expand.sport.name){
-        case "football":
-            return findClassementInClassementList(classFootballList, equipe);
-        case "handball":
-            return findClassementInClassementList(classHandballList, equipe);
-        case "volleyball":
-            return findClassementInClassementList(classVoleyballList, equipe);
-        case "basketball":
-            return findClassementInClassementList(classBasketballList, equipe);
-        case "badminton":
-            return 0;
-        case "defi enduro":
-            return findClassementInClassementList(classDefiList, equipe);
-    }
-}
-
-function getDuosRow(duos){
-    let result =  `
-    <li class="list-group-item">
-        <div class="mx-2">
-            <div class="fw-bold">Badminton</div>`
-    duos.forEach(duo => {
-        result += `<div class="d-flex justify-content-between align-items-start">${duo.name}`
-        if(duo.stade){
-            let stade = ""
-            switch(duo.stade){
-                case "16":
-                    stade = "16èmes"
-                    break;
-                case "8":
-                    stade = "8èmes"
-                    break;
-                case "4":
-                    stade = "Quarts"
-                    break;
-                case "2":
-                    stade = "Demies"
-                    break;
-                case "1":
-                    stade = "Finale"
-                    break;
-            }
-            let color = ""
-            if(duo.eliminated){
-                color = "bg-danger"
-            } else {
-                color = "bg-primary"
-            }
-            result += `<span class="badge ${color} rounded-pill">${stade}</span>`
-        }
-        result += `</div>`
-    })
-    result += `
-        </div>
-    </li>`
-    return result
-}
-
-function getTeamsRow(sport, teams){
+function getTeamRow(equipe){
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
-        <div class="mx-2">
-            <div class="fw-bold">${sport[0].toUpperCase()}${sport.slice(1)}</div>`
-    teams.forEach(equipe => {
-        result += `<div>${equipe.name}`
-        let classement = getTeamClassement(equipe);
-        if(classement != 0){
-            result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
-        }
-        result += `</div>`
-    })
-    result += `
-        </div>
-    </li>`
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">${equipe.expand.sport.name}</div>
+            ${equipe.name}
+        </div>`
+    if(equipe.classement != 0){
+        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
+    }
+    result += `</li>`
     return result
 }
 
@@ -173,9 +81,8 @@ function getSportRow(equipe){
             <div class="fw-bold">${equipe.expand.sport.name}</div>
             Membres : ${members}
         </div>`
-    let classement = getTeamClassement(equipe);
-    if(classement != 0){
-        result += `<span class="badge bg-primary rounded-pill">${classement}/...</span>`
+    if(equipe.classement != 0){
+        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
     }
     result += `</li>`
     return result
@@ -206,6 +113,7 @@ const teamCardContainer = document.getElementById("teamCardContainer");
 
 const promoTeamsbySport = {} // Object key = promo name, value = array of promo teams objects
 const teamSports = {} // Object key = team name, value = Object key = sport name, value = team object
+const numOfTeamsBySport = {}
 
 EquipeList.forEach(equipe => {
     if(!(equipe.expand.promo.name in promoTeamsbySport)){
@@ -230,7 +138,11 @@ DuoBadList.forEach(duo => {
     if(!("badminton" in promoTeamsbySport[duo.expand.promo.name])){
         promoTeamsbySport[duo.expand.promo.name]["badminton"] = [];
     }
-    promoTeamsbySport[duo.expand.promo.name]["badminton"].push(duo);
+    teamSports[equipe.name][equipe.expand.sport.name] = equipe;
+    if(!(equipe.expand.sport.name in numOfTeamsBySport)){
+        numOfTeamsBySport[equipe.expand.sport.name] = 0
+    }
+    numOfTeamsBySport[equipe.expand.sport.name] += 1
 })
 
 //Affichage des équipes par promo

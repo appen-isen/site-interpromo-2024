@@ -1,5 +1,5 @@
 console.log("Backend arbitrage start loading...");
-import pb from './login.js'
+import pb from './login.js';
 
 //Récupération de l'id du match dans l'url
 const idMatch = window.location.href.split("=")[1];
@@ -17,24 +17,8 @@ const currentStatus = await pb.collection('match').getOne(idMatch, {
     expand: 'sport,team1,team2',
 });
 
-const classBasketballList = await pb.collection('class_basketball').getFullList({
-    expand: 'team',
-});
-
-const classVoleyballList = await pb.collection('class_voleyball').getFullList({
-    expand: 'team',
-});
-
-const classFootballList = await pb.collection('class_football').getFullList({
-    expand: 'team',
-});
-
-const classHandballList = await pb.collection('class_handball').getFullList({
-    expand: 'team',
-});
-
-const classDefiList = await pb.collection('class_defi').getFullList({
-    expand: 'team',
+const EquipeList = await pb.collection('equipes').getFullList({
+    expand: 'promo,sport',
 });
 
 //Affichage des données initial du match
@@ -238,197 +222,82 @@ else{
 document.getElementById("btnStop").addEventListener('click', async function(event) {
     //Annulation du comportement par défaut
     event.preventDefault();
-
     //Mise à jour du statut du match
     const data = {
         "status": "finished",
     };
     //Envoi de la requête
     const record = await pb.collection('match').update(idMatch, data);
-    //Verification du gagnant
-    if(currentStatus.point1 > currentStatus.point2){
-        //Mise à jour du classement de l'équipe 1
-        if(currentStatus.expand.sport.name === "football") {
-            classFootballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_football').update(classe.id, data);
-                }
-            });
+    if(currentStatus.mode == "poules"){
+        //Ajout des points victoire ou égalité
+        if(currentStatus.point1 === currentStatus.point2){
+            await addPoints(currentStatus.team1, 1)
+            await addPoints(currentStatus.team2, 1)
+        } else if(currentStatus.point1 > currentStatus.point2) {
+            await addPoints(currentStatus.team1, 3)
+        } else if(currentStatus.point1 < currentStatus.point2) {
+            await addPoints(currentStatus.team2, 3)
         }
-        else if(currentStatus.expand.sport.name === "handball") {
-            classHandballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_handball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "basketball") {
-            classBasketballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_basketball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "volleyball") {
-            classVoleyballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_voleyball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "defi enduro") {
-            classDefiList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_defi').update(classe.id, data);
-                }
-            });
+        //Calcul du classement de chaque équipe
+        await setTeamClassement(currentStatus.expand.sport.name)
+    } else if(currentStatus.mode === "tournoi") {
+        if(currentStatus.point1 > currentStatus.point2) {
+            await eliminateTeam(currentStatus.team2)
+            await promoteNextStade(currentStatus.team1)
+        } else if(currentStatus.point1 < currentStatus.point2) {
+            await eliminateTeam(currentStatus.team1)
+            await promoteNextStade(currentStatus.team2)
         }
     }
-    else if(currentStatus.point1 < currentStatus.point2){
-        //Mise à jour du classement de l'équipe 2
-        if(currentStatus.expand.sport.name === "football") {
-            classFootballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_football').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "handball") {
-            classHandballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_handball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "basketball") {
-            classBasketballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_basketball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "volleyball") {
-            classVoleyballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_voleyball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "defi enduro") {
-            classDefiList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 3,
-                    };
-                    const record = pb.collection('class_defi').update(classe.id, data);
-                }
-            });
-        }
-    }
-    else if(currentStatus.point1 === currentStatus.point2){
-        //Mise à jour du classement de l'équipe 1 et 2
-        if(currentStatus.expand.sport.name === "football") {
-            classFootballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_football').update(classe.id, data);
-                }
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_football').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "handball") {
-            classHandballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_handball').update(classe.id, data);
-                }
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_handball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "basketball") {
-            classBasketballList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_basketball').update(classe.id, data);
-                }
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_basketball').update(classe.id, data);
-                }
-            });
-        }
-        else if(currentStatus.expand.sport.name === "defi enduro") {
-            classDefiList.forEach(classe => {
-                if (classe.expand.team.name === currentStatus.expand.team1.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_defi').update(classe.id, data);
-                }
-                if (classe.expand.team.name === currentStatus.expand.team2.name) {
-                    const data = {
-                        "point": classe.point + 1,
-                    };
-                    const record = pb.collection('class_defi').update(classe.id, data);
-                }
-            });
-        }
-    }
-    //Calcul du classement de chaque équipe
-    if(currentStatus.expand.sport.name === "football"){
-        const classFootballListUp = await pb.collection('class_football').getFullList({
-            expand: 'sport',
-        });
-        //Regarde quel equipe a le plus de points
+    
 
-    }
     //Redirection vers la page d'arbitrage
     window.location.href = "arbitrage.html";
 });
+
+async function addPoints(teamId, points){
+    const equipe = EquipeList.find(equipe => equipe.id === teamId)
+    if(equipe){
+        const data = {
+            "points": equipe.points + points,
+        };
+        const record = await pb.collection("equipes").update(equipe.id, data);
+    }
+}
+
+async function setTeamClassement(sport){
+    let sportTeams = []
+    EquipeList.forEach(equipe => {
+        if(equipe.expand.sport.name === sport){
+            sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
+        }
+    })
+    sportTeams.sort((teamA, teamB) => parseInt(teamB.points, 10) - parseInt(teamA.points, 10))//On range les équipes par ordre de points décroissant
+    for(let i = 1; i <= sportTeams.length; i++){
+        const data = {
+            "classement": i,
+        };
+        const record = await pb.collection("equipes").update(sportTeams[i-1].id, data);
+    }
+}
+
+async function eliminateTeam(teamId){
+    const data = {
+        "eliminated": true,
+    };
+    const record = await pb.collection("equipes").update(teamId, data);
+}
+
+async function promoteNextStade(teamId){
+    let equipe = EquipeList.find(equipe => equipe.id === teamId)
+    if(equipe){
+        if(equipe.stade !== '1'){
+            const data = {
+                "stade": (parseInt(equipe.stade, 10)/2).toString(),
+            };
+            const record = await pb.collection("equipes").update(equipe.id, data);
+        }
+    }
+}
 
 console.log("Backend arbitrage loaded!");
