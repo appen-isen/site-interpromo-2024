@@ -1,5 +1,6 @@
 console.log("Backend arbitrage start loading...");
 import pb from './login.js'
+pb.autoCancellation(false);
 
 //Récupération de l'id du match dans l'url
 const idMatch = window.location.href.split("=")[1];
@@ -7,11 +8,12 @@ const idMatch = window.location.href.split("=")[1];
 const data = {
     "status": "in_progress",
 };
+
 const record = await pb.collection('match').update(idMatch, data);
 
 //Récupération des données du match
 const currentStatus = await pb.collection('match').getOne(idMatch, {
-    expand: 'sport,team1,team2,mode',
+    expand: 'sport,team1,team2',
 });
 
 const EquipeList = await pb.collection('equipes').getFullList({
@@ -228,7 +230,7 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     const record = await pb.collection('match').update(idMatch, data);
     console.log("deleted")
     console.log(currentStatus)
-    if(currentStatus.expand.mode == "poules"){
+    if(currentStatus.mode == "poules"){
         //Ajout des points victoire ou égalité
         if(currentStatus.point1 === currentStatus.point2){
             addPoints(currentStatus.team1, 1)
@@ -240,7 +242,7 @@ document.getElementById("btnStop").addEventListener('click', async function(even
         }
         //Calcul du classement de chaque équipe
         setTeamClassement(currentStatus.expand.sport.name)
-    } else if(currentStatus.expand.mode == "tournoi") {
+    } else if(currentStatus.mode === "tournoi") {
         console.log("tournoi sa mère")
         if(currentStatus.point1 > currentStatus.point2) {
             console.log("1 gagne")
@@ -254,17 +256,22 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     }
 
     //Redirection vers la page d'arbitrage
-    //window.location.href = "arbitrage.html";
+    window.location.href = "arbitrage.html";
 });
 
 function addPoints(teamId, points){
+    console.log(teamId)
+    console.log(EquipeList)
     const equipe = EquipeList.find(equipe => equipe.id === teamId)
+    console.log(equipe)
     if(equipe){
         const data = {
-            "point": equipe.points + points,
+            "points": equipe.points + points,
         };
-        const record = pb.collection(EquipeList).update(equipe.id, data);
+        console.log(data)
+        const record = pb.collection("equipes").update(equipe.id, data);
     }
+    console.log("add points")
 }
 
 function setTeamClassement(sport){
@@ -275,31 +282,32 @@ function setTeamClassement(sport){
         }
     })
     sportTeams.sort((teamA, teamB) => parseInt(teamB.points, 10) - parseInt(teamA.points, 10))//On range les équipes par ordre de points décroissant
+    console.log(sportTeams)
     for(let i = 1; i <= sportTeams.length; i++){
+        console.log(i)
         const data = {
             "classement": i,
         };
-        const record = pb.collection(EquipeList).update(sportTeams[i-1].id, data);
+        const record = pb.collection("equipes").update(sportTeams[i-1].id, data);
     }
+    console.log("set team classement")
 }
 
 function eliminateTeam(teamId){
-    console.log("eliminate")
     const data = {
         "eliminated": true,
     };
-    const record = pb.collection(EquipeList).update(teamId, data);
+    const record = pb.collection("equipes").update(teamId, data);
 }
 
 function promoteNextStade(teamId){
-    console.log("promote")
     let equipe = EquipeList.find(equipe => equipe.id === teamId)
     if(equipe){
         if(equipe.stade !== '1'){
             const data = {
                 "stade": (parseInt(equipe.stade, 10)/2).toString(),
             };
-            const record = pb.collection(EquipeList).update(equipe.id, data);
+            const record = pb.collection("equipes").update(equipe.id, data);
         }
     }
 }
