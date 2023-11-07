@@ -183,7 +183,7 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 }
-else if(currentStatus.expand.sport.name === "volleyball"){
+else if(currentStatus.expand.sport.name === "volleyball" || currentStatus.expand.sport.name === "badminton"){
     //Mise à jour de l'affichage des boutons
     buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
     buttonPoint2.innerHTML = "1 point pour " + currentStatus.expand.team2.name;
