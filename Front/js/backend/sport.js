@@ -29,7 +29,7 @@ function getOrderedTableTeams(sport){
             if(teams[i].classement <= sport.qualified){
                 color = "bg-success"
             } else {
-                color = "bg-primary"
+                color = "bg-danger"
             }
             result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts</span></div>`
         }
