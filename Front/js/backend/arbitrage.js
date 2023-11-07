@@ -183,6 +183,98 @@ if(currentStatus.expand.sport.name === "basketball"){
         location.reload();
     });
 }
+else if(currentStatus.expand.sport.name === "volleyball"){
+    //Mise à jour de l'affichage des boutons
+    buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
+    buttonPoint2.innerHTML = "1 point pour " + currentStatus.expand.team2.name;
+
+    //Comptage des points
+    buttonPoint1.addEventListener('click', async function(event) {
+        //Annulation du comportement par défaut
+        event.preventDefault();
+
+        //Mise à jour du nombre de points
+        const data = {
+            "point1": currentStatus.point1 + 1,
+        };
+        //Envoi de la requête
+        const record = await pb.collection('match').update(idMatch, data);
+        //Mise à jour de l'affichage
+        textPoint1.innerHTML = currentStatus.point1 + 1;
+        //Rechargement de la page pour mettre à jour les données
+        location.reload();
+    });
+
+    //Même chose pour l'autre bouton
+    buttonPoint2.addEventListener('click', async function(event) {
+        event.preventDefault();
+        const data = {
+            "point2": currentStatus.point2 + 1,
+        };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint2.innerHTML = currentStatus.point2 + 1;
+        location.reload();
+    });
+
+    //Ajoute un bouton pour le set sous le button pour finir le match
+    //Un set remets les scores à 0 et affiche le nombre de set gagné par chaque équipe a coté du nom de l'équipe
+    const arbitrageDiv = document.getElementById("arbitrage");
+    const arbitrageSet = document.createElement("div");
+    arbitrageSet.className = "text-center d-flex justify-content-evenly";
+    const arbitrageSetBtn1 = document.createElement("a");
+    arbitrageSetBtn1.className = "btn btn-primary";
+    arbitrageSetBtn1.id = "btnSet1";
+    arbitrageSetBtn1.innerHTML = "1 set pour " + currentStatus.expand.team1.name;
+    const arbitrageSetBtn2 = document.createElement("a");
+    arbitrageSetBtn2.className = "btn btn-primary";
+    arbitrageSetBtn2.id = "btnSet2";
+    arbitrageSetBtn2.innerHTML = "1 set pour " + currentStatus.expand.team2.name;
+    arbitrageSet.appendChild(arbitrageSetBtn1);
+    arbitrageSet.appendChild(arbitrageSetBtn2);
+    arbitrageDiv.appendChild(arbitrageSet);
+    const pointTeam1 = document.getElementById("textPoint1");
+    const pointTeam2 = document.getElementById("textPoint2");
+    pointTeam1.innerHTML = currentStatus.point1 + " (" + currentStatus.set1 + ")";
+    pointTeam2.innerHTML = currentStatus.point2 + " (" + currentStatus.set2 + ")";
+    const set1Team1 = document.getElementById("btnSet1");
+    const set1Team2 = document.getElementById("btnSet2");
+    set1Team1.addEventListener('click', async function(event) {
+        //Annulation du comportement par défaut
+        event.preventDefault();
+
+        //Mise à jour du nombre de points
+        const data = {
+            "set1": currentStatus.set1 + 1,
+            "point1": 0,
+            "point2": 0,
+        };
+        //Envoi de la requête
+        const record = await pb.collection('match').update(idMatch, data);
+        //Mise à jour de l'affichage
+        textPoint1.innerHTML = 0;
+        textPoint2.innerHTML = 0;
+        //Rechargement de la page pour mettre à jour les données
+        location.reload();
+    });
+    set1Team2.addEventListener('click', async function(event) {
+        //Annulation du comportement par défaut
+        event.preventDefault();
+
+        //Mise à jour du nombre de points
+        const data = {
+            "set2": currentStatus.set2 + 1,
+            "point1": 0,
+            "point2": 0,
+        };
+        //Envoi de la requête
+        const record = await pb.collection('match').update(idMatch, data);
+        //Mise à jour de l'affichage
+        textPoint1.innerHTML = 0;
+        textPoint2.innerHTML = 0;
+        //Rechargement de la page pour mettre à jour les données
+        location.reload();
+    });
+}
 //Gestion des autres sports
 else{
     //Mise à jour de l'affichage des boutons
