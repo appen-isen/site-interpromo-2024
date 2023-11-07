@@ -48,120 +48,6 @@ matchList.forEach(match => {
     }
 });
 
-//Affichage des matchs sur la page d'accueil
-if(window.location.href.includes("index.html") || window.location.href.includes("")){
-    //Affichage des matchs
-    matchList.forEach(match => {
-        const container = document.getElementById('cardContainer');
-        const card = document.createElement('div');
-        card.className = "card my-3";
-        const cardHeader = document.createElement('div');
-        cardHeader.className = "card-header text-center bg-light-subtle ";
-        cardHeader.id = "cardHeader" + match.id;
-        if(match.status === "waiting") {
-            cardHeader.classList.add("text-primary-emphasis");
-        }
-        else if(match.status === "in_progress") {
-            cardHeader.classList.add("text-warning-emphasis");
-        }
-        else if(match.status === "finished") {
-            cardHeader.classList.add("text-success-emphasis");
-        }
-        else{
-            cardHeader.classList.add("text-emphasis-light");
-        }
-        //Affichage de l'heure de début si le match n'est pas en cours ou a une erreur de statut
-        const time_start = new Date(match.heure_debut);
-        cardHeader.innerText = time_start.toLocaleString();
-        //Affichage des points si le match est en cours ou terminé
-        if(match.status === "in_progress"){
-            cardHeader.innerText = "";
-            const cardHeaderPointDiv = document.createElement('div');
-            cardHeaderPointDiv.className = "d-flex justify-content-evenly";
-            const cardHeaderPointT1 = document.createElement('p');
-            cardHeaderPointT1.id = "pointT1" + match.id;
-            cardHeaderPointT1.innerText = match.point1;
-            const cardHeaderSeparator = document.createElement('p');
-            cardHeaderSeparator.innerText = "-";
-            const cardHeaderPointT2 = document.createElement('p');
-            cardHeaderPointT2.id = "pointT2" + match.id;
-            cardHeaderPointT2.innerText = match.point2;
-            cardHeaderPointDiv.appendChild(cardHeaderPointT1);
-            cardHeaderPointDiv.appendChild(cardHeaderSeparator);
-            cardHeaderPointDiv.appendChild(cardHeaderPointT2);
-            cardHeader.appendChild(cardHeaderPointDiv);
-        }
-        if(match.status === "finished"){
-            cardHeader.innerText = "";
-            const cardHeaderPointDiv = document.createElement('div');
-            cardHeaderPointDiv.className = "d-flex justify-content-evenly";
-            const cardHeaderPointT1 = document.createElement('p');
-            cardHeaderPointT1.id = "pointT1" + match.id;
-            cardHeaderPointT1.innerText = match.point1;
-            const cardHeaderSeparator = document.createElement('p');
-            cardHeaderSeparator.innerText = "-";
-            const cardHeaderPointT2 = document.createElement('p');
-            cardHeaderPointT2.id = "pointT2" + match.id;
-            cardHeaderPointT2.innerText = match.point2;
-            cardHeaderPointDiv.appendChild(cardHeaderPointT1);
-            cardHeaderPointDiv.appendChild(cardHeaderSeparator);
-            cardHeaderPointDiv.appendChild(cardHeaderPointT2);
-            cardHeader.appendChild(cardHeaderPointDiv);
-        }
-        const cardBody = document.createElement('div');
-        cardBody.className = "card-body bg-light-subtle text-emphasis-light";
-        //Affichage du nom des équipes
-        const cardTitle = document.createElement('h5');
-        cardTitle.className = "card-title text-center";
-        cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
-        //Affichage du sport
-        const cardSport = document.createElement('p');
-        cardSport.innerText = match.expand.sport.name;
-        cardSport.className = "card-text text-center fw-semibold text-capitalize"
-        //Affichage du tableau
-        const cardTable = document.createElement('p');
-        if(match.expand.sport.tableau !== ""){
-            cardSport.className = "card-text text-center fw-semibold text-capitalize mb-0";
-            cardTable.className = "card-text text-center text-secondary-emphasis fw-semibold";
-            cardTable.innerText = match.expand.sport.tableau;
-        }
-        //Affichage du statut
-        const cardFooter = document.createElement('div');
-        if(match.status === "waiting") {
-            cardFooter.className = "card-footer bg-light-subtle text-primary-emphasis";
-            cardFooter.id = "cardFooter" + match.id;
-            cardFooter.innerHTML = "Match en attente";
-        }
-        else if(match.status === "in_progress") {
-            cardFooter.className = "card-footer bg-light-subtle text-warning-emphasis";
-            cardFooter.id = "cardFooter" + match.id;
-            cardFooter.innerHTML = "Match en cours";
-        }
-        else if(match.status === "finished") {
-            cardFooter.className = "card-footer bg-light-subtle text-success-emphasis";
-            cardFooter.id = "cardFooter" + match.id;
-            cardFooter.innerHTML = "Match terminé";
-        }
-        else{
-            cardFooter.className = "card-footer bg-light-subtle text-emphasis-light";
-            cardFooter.id = "cardFooter" + match.id;
-            cardFooter.innerHTML = "Erreur de statut";
-        }
-        //Ajout des éléments à la carte
-        card.appendChild(cardHeader);
-        cardBody.appendChild(cardTitle);
-        cardBody.appendChild(cardSport);
-        if(match.expand.sport.tableau !== ""){
-            cardBody.appendChild(cardTable);
-        }
-        card.appendChild(cardBody);
-        card.appendChild(cardFooter);
-        //Ajout de la carte au container
-        container.appendChild(card);
-    });
-}
-
-
 //Affichage des matchs sur la page d'arbitrage
 if(window.location.href.includes("arbitrage.html")){
     //Affichage des matchs
@@ -448,5 +334,111 @@ if(window.location.href.includes("arbitrage.html")){
         }
     });
 }
+
+//Affichage des matchs sur la page d'accueil
+if(window.location.href.includes("index.html") || window.location.href.includes("")){
+    //Affichage des matchs
+    matchList.forEach(match => {
+        const container = document.getElementById('cardContainer');
+        const card = document.createElement('div');
+        card.className = "card my-3";
+        const cardHeader = document.createElement('div');
+        cardHeader.className = "card-header text-center bg-light-subtle ";
+        cardHeader.id = "cardHeader" + match.id;
+        if(match.status === "waiting") {
+            cardHeader.classList.add("text-primary-emphasis");
+        }
+        else if(match.status === "in_progress") {
+            cardHeader.classList.add("text-warning-emphasis");
+        }
+        else if(match.status === "finished") {
+            cardHeader.classList.add("text-success-emphasis");
+        }
+        else{
+            cardHeader.classList.add("text-emphasis-light");
+        }
+        //Affichage de l'heure de début si le match n'est pas en cours ou a une erreur de statut
+        const time_start = new Date(match.heure_debut);
+        cardHeader.innerText = time_start.toLocaleString();
+        //Affichage des points si le match est en cours ou terminé
+        if(match.status === "in_progress"){
+            cardHeader.innerText = "";
+            const cardHeaderPointDiv = document.createElement('div');
+            cardHeaderPointDiv.className = "d-flex justify-content-evenly";
+            const cardHeaderPointT1 = document.createElement('p');
+            cardHeaderPointT1.id = "pointT1" + match.id;
+            cardHeaderPointT1.innerText = match.point1;
+            const cardHeaderSeparator = document.createElement('p');
+            cardHeaderSeparator.innerText = "-";
+            const cardHeaderPointT2 = document.createElement('p');
+            cardHeaderPointT2.id = "pointT2" + match.id;
+            cardHeaderPointT2.innerText = match.point2;
+            cardHeaderPointDiv.appendChild(cardHeaderPointT1);
+            cardHeaderPointDiv.appendChild(cardHeaderSeparator);
+            cardHeaderPointDiv.appendChild(cardHeaderPointT2);
+            cardHeader.appendChild(cardHeaderPointDiv);
+        }
+        if(match.status === "finished"){
+            cardHeader.innerText = "";
+            const cardHeaderPointDiv = document.createElement('div');
+            cardHeaderPointDiv.className = "d-flex justify-content-evenly";
+            const cardHeaderPointT1 = document.createElement('p');
+            cardHeaderPointT1.id = "pointT1" + match.id;
+            cardHeaderPointT1.innerText = match.point1;
+            const cardHeaderSeparator = document.createElement('p');
+            cardHeaderSeparator.innerText = "-";
+            const cardHeaderPointT2 = document.createElement('p');
+            cardHeaderPointT2.id = "pointT2" + match.id;
+            cardHeaderPointT2.innerText = match.point2;
+            cardHeaderPointDiv.appendChild(cardHeaderPointT1);
+            cardHeaderPointDiv.appendChild(cardHeaderSeparator);
+            cardHeaderPointDiv.appendChild(cardHeaderPointT2);
+            cardHeader.appendChild(cardHeaderPointDiv);
+        }
+        const cardBody = document.createElement('div');
+        cardBody.className = "card-body bg-light-subtle text-emphasis-light";
+        //Affichage du nom des équipes
+        const cardTitle = document.createElement('h5');
+        cardTitle.className = "card-title text-center";
+        cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
+        //Affichage du sport
+        const cardText = document.createElement('p');
+        cardText.className = "card-text text-center";
+        cardText.innerText = match.expand.sport.name;
+        //Affichage du statut
+        const cardFooter = document.createElement('div');
+        if(match.status === "waiting") {
+            cardFooter.className = "card-footer bg-light-subtle text-primary-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
+            cardFooter.innerHTML = "Match en attente";
+        }
+        else if(match.status === "in_progress") {
+            cardFooter.className = "card-footer bg-light-subtle text-warning-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
+            cardFooter.innerHTML = "Match en cours";
+        }
+        else if(match.status === "finished") {
+            cardFooter.className = "card-footer bg-light-subtle text-success-emphasis";
+            cardFooter.id = "cardFooter" + match.id;
+            cardFooter.innerHTML = "Match terminé";
+        }
+        else{
+            cardFooter.className = "card-footer bg-light-subtle text-emphasis-light";
+            cardFooter.id = "cardFooter" + match.id;
+            cardFooter.innerHTML = "Erreur de statut";
+        }
+        //Ajout des éléments à la carte
+        card.appendChild(cardHeader);
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        card.appendChild(cardBody);
+        card.appendChild(cardFooter);
+        //Ajout de la carte au container
+        container.appendChild(card);
+    });
+}
+
+
+
 
 console.log("Backend match loaded!");
