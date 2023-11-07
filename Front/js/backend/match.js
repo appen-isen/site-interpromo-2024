@@ -339,7 +339,7 @@ if(window.location.href.includes("arbitrage.html")){
 if(window.location.href.includes("index.html") || window.location.href.includes("")){
     //Affichage des matchs
     matchList.forEach(match => {
-        const container = document.getElementById('cardContainer');
+        let container = document.getElementById('cardContainer');
         const card = document.createElement('div');
         card.className = "card my-3";
         const cardHeader = document.createElement('div');
@@ -379,6 +379,7 @@ if(window.location.href.includes("index.html") || window.location.href.includes(
             cardHeader.appendChild(cardHeaderPointDiv);
         }
         if(match.status === "finished"){
+            container = document.getElementById('cardContainer2');
             cardHeader.innerText = "";
             const cardHeaderPointDiv = document.createElement('div');
             cardHeaderPointDiv.className = "d-flex justify-content-evenly";
