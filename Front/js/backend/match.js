@@ -82,6 +82,7 @@ if(window.location.href.includes("arbitrage.html")){
         const container = document.getElementById('cardContainer');
         const card = document.createElement('div');
         card.className = "card my-3";
+        card.id = "card" + record.id;
         //Affichage de l'heure de début du match
         const cardHeader = document.createElement('div');
         cardHeader.className = "card-header text-center bg-light-subtle text-emphasis-light";
