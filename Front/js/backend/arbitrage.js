@@ -11,7 +11,6 @@ const data = {
 const record = await pb.collection('match').update(idMatch, data);
 
 
-
 //Récupération des données du match
 const currentStatus = await pb.collection('match').getOne(idMatch, {
     expand: 'sport,team1,team2',
@@ -19,6 +18,10 @@ const currentStatus = await pb.collection('match').getOne(idMatch, {
 
 const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport',
+});
+
+const MatchList = await pb.collection('match').getFullList({
+    filter: `team1 = ${currentStatus.team1}|| team2 = ${currentStatus.team1}|| team1 = ${currentStatus.team2}|| team2 = ${currentStatus.team2}`,
 });
 
 //Affichage des données initial du match
@@ -365,7 +368,18 @@ async function setTeamClassement(sportId){
             sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
         }
     })
-    sportTeams.sort((teamA, teamB) => parseInt(teamB.points, 10) - parseInt(teamA.points, 10))//On range les équipes par ordre de points décroissant
+    sportTeams.sort((teamA, teamB) => {
+        let diff = parseInt(teamB.points, 10) - parseInt(teamA.points, 10)
+        if(diff !== 0){
+            return diff;
+        } else {
+            try{
+                return goalsDiff(teamA, teamB);
+            } catch {
+                return 0;
+            }
+        }
+    })//On range les équipes par ordre de points décroissant
     for(let i = 1; i <= sportTeams.length; i++){
         const data = {
             "classement": i,
@@ -391,6 +405,26 @@ async function promoteNextStade(teamId){
             const record = await pb.collection("equipes").update(equipe.id, data);
         }
     }
+}
+
+function goalsDiff(teamA, teamB){
+    let totalA = 0
+    let totalB = 0
+    MatchList.forEach(match => {
+        if(match.team1 = teamA.id){
+            totalA += match.point1
+        }
+        if(match.team2 = teamA.id){
+            totalA += match.point2
+        }
+        if(match.team1 = teamB.id){
+            totalB += match.point1
+        }
+        if(match.team2 = teamB.id){
+            totalB += match.point2
+        }
+    })
+    return totalB - totalA
 }
 
 console.log("Backend arbitrage loaded!");
