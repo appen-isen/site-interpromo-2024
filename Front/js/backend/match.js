@@ -64,6 +64,11 @@ matchList.forEach(match => {
                     document.getElementById("cardFooter" + match.id).classList.remove("text-warning-emphasis");
                     document.getElementById("cardFooter" + match.id).classList.add("text-success-emphasis");
                     document.getElementById("cardFooter" + match.id).innerHTML = "Match terminé";
+                    //Déplace le match dans la div des matchs terminés
+                    const card = document.getElementById("card" + match.id);
+                    card.remove();
+                    const container = document.getElementById('cardContainer2');
+                    container.appendChild(card);
                 }
             }
         });
