@@ -30,7 +30,7 @@ function getSportIcon(sport){
 
 function getTeamClassementBadge(equipe){
     if(equipe.classement != 0){
-        return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
+        return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
     } else if(equipe.stade != ""){
         let stade = ""
             switch(equipe.stade){
@@ -166,10 +166,10 @@ EquipeList.forEach(equipe => {
         }
         teamSports[equipe.name][equipe.expand.sport.name] = equipe;
     }
-    if(!(equipe.expand.sport.name in numOfTeamsBySport)){
-        numOfTeamsBySport[equipe.expand.sport.name] = 0;
+    if(!(equipe.sport in numOfTeamsBySport)){
+        numOfTeamsBySport[equipe.sport] = 0;
     }
-    numOfTeamsBySport[equipe.expand.sport.name] += 1;
+    numOfTeamsBySport[equipe.sport] += 1;
 })
 
 //Affichage des équipes par promo
