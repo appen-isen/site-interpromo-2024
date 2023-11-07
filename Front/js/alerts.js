@@ -48,5 +48,11 @@ function newGoalAlert(match, goalTeam){
     </div>
     `
     alertsContainer.insertAdjacentHTML("beforeend", alert)
+    //Send a notification to the client if the browser supports it
+    if (Notification.permission === "granted") {
+        let notification = new Notification(`${match.expand.team1.name} - ${match.expand.team2.name}`, {
+            body: `${match.point1} - ${match.point2}`,
+        });
+    }
     setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
 }

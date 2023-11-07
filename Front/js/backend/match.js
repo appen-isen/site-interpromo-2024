@@ -6,6 +6,11 @@ let matchList = await pb.collection('match').getFullList({
     expand: 'team1,team2,sport',
 });
 
+//Ask for notifications permission
+if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+}
+
 const equipeList = await pb.collection('equipes').getFullList({});
 
 const sportList = await pb.collection('sport').getFullList({});
