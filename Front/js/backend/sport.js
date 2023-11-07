@@ -4,7 +4,7 @@ import pb from './login.js'
 const SportList = await pb.collection('sport').getFullList({});
 
 const EquipeList = await pb.collection('equipes').getFullList({
-    expand: 'promo',
+    expand: 'promo,sport',
 });
 
 const matchList = await pb.collection('match').getFullList({
@@ -35,7 +35,7 @@ function getOrderedTableTeams(sport){
         }
         return result
     } else if (sport.type === "tournois"){
-        let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
+        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
         for(let i = 0; i < teams.length; i++){
             let stade;
             switch(teams[i].stade){
