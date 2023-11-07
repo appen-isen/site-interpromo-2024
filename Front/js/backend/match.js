@@ -11,6 +11,13 @@ if (Notification.permission !== "granted") {
     Notification.requestPermission();
 }
 
+//Ask for notifications permission on page load
+window.addEventListener('load', function() {
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+});
+
 const equipeList = await pb.collection('equipes').getFullList({});
 
 const sportList = await pb.collection('sport').getFullList({});
