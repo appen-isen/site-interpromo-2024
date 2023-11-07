@@ -66,8 +66,11 @@ function getTeamsRow(sport, teams){
         <div class="mx-2">
             <div class="fw-bold d-flex align-items-start">${getSportIcon(sport)}${sport[0].toUpperCase()}${sport.slice(1)}</div>`
     teams.forEach(equipe => {
-        result += `<div class="d-flex justify-content-between align-items-start">${equipe.name}`
-        if(equipe.classement !== 0 || equipe.stade !== ""){
+        result += `<div class="d-flex justify-content-between align-items-start"><p class="mb-0">${equipe.name}</p>`
+        if(equipe.expand.sport.tableau != ""){
+            result += `<p class="text-secondary-emphasis fw-semibold mb-0">${equipe.expand.sport.tableau}</p>`
+        }
+        if(equipe.expand.sport.state !== "waiting"){
             result += getTeamClassementBadge(equipe)
         }
         result += `</div>`
@@ -112,7 +115,7 @@ function getSportRow(equipe){
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="mx-2">
-            <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)}</div>
+            <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)} (${equipe.expand.sport.tableau})</div>
             Membres : ${members}
         </div>`
     if(equipe.classement != 0){

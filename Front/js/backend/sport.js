@@ -4,7 +4,7 @@ import pb from './login.js'
 const SportList = await pb.collection('sport').getFullList({});
 
 const EquipeList = await pb.collection('equipes').getFullList({
-    expand: 'promo,sport',
+    expand: 'promo',
 });
 
 const matchList = await pb.collection('match').getFullList({
@@ -12,26 +12,30 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'sport,team1,team2',
 });
 
-function getOrderedSportsTeams(sport){
+function getOrderedTableTeams(sport){
+    let result = "";
+    if(sport.tableau !== ""){
+        result += `<h6 class="text-secondary-emphasis fw-semibold">${sport.tableau}</h6>`
+    }
     if(sport.state === "waiting"){
-        return "<h5>La compétition n'a pas commencé</h5>"
+        result += "<h5>La compétition n'a pas commencé</h5>"
+        return result;
     }
     if(sport.type === "poules"){
-        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name).sort((teamA, teamB) => teamA.classement - teamB.classement)
-        let result = `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts</span></h5>`
+        let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => teamA.classement - teamB.classement)
+        result += `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts</span></h5>`
         for(let i = 1; i < teams.length; i++){
-            let color = "bg-secondary"
-            if(teams[i].classement === 2){
+            let color = ""
+            if(teams[i].classement <= sport.qualified){
                 color = "bg-success"
-            } else if(teams[i].classement === 3){
+            } else {
                 color = "bg-primary"
             }
             result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts</span></div>`
         }
         return result
     } else if (sport.type === "tournois"){
-        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name).sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
-        let result = "";
+        let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
         for(let i = 0; i < teams.length; i++){
             let stade;
             switch(teams[i].stade){
@@ -64,13 +68,8 @@ function getOrderedSportsTeams(sport){
 }
 
 function getSportNextMatchText(sport){
-    let match = "";
-    matchList.forEach(matche => {
-        if(matche.expand.sport.name === sport.name){
-            match = matche;
-        }
-    });
-    if(match === ""){
+    let match = matchList.find(matche => matche.expand.sport.name === sport);
+    if(!match){
         return "Pas de match prévu";
     }
     const time_start = new Date(match.heure_debut);
@@ -92,20 +91,32 @@ function getSportIcon(sport){
     }
 }
 
-function getSportCard(sport){
-    return `
+function getSportCard(sportName){
+    let listeTableau = SportList.filter(sport => sport.name === sportName);
+    let result =  `
     <div class="card my-3">
-        <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-evenly">${getSportIcon(sport.name)}${sport.name.toUpperCase()}${getSportIcon(sport.name)}</div></div>
-        <div class="card-body bg-light-subtle text-emphasis-light">
-            ${getOrderedSportsTeams(sport)}
-        </div>
-        <div class="card-footer bg-light-subtle text-emphasis-light">${getSportNextMatchText(sport)}</div>
+        <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-evenly">${getSportIcon(sportName)}${sportName.toUpperCase()}${getSportIcon(sportName)}</div></div>
+        <div class="card-body bg-light-subtle text-emphasis-light">`
+        result += getOrderedTableTeams(listeTableau[0])
+        for(let i = 1; i < listeTableau.length; i++){
+            result += "<hr>"
+            result += getOrderedTableTeams(listeTableau[i])
+        }
+        result += `</div>
+        <div class="card-footer bg-light-subtle text-emphasis-light">${getSportNextMatchText(sportName)}</div>
     </div>`
+    return result;
 }
 
 const sportCardContainer = document.getElementById("sportContainer");
-SportList.forEach(sport => {
-    sportCardContainer.insertAdjacentHTML("beforeend", getSportCard(sport))
+let sportsList = SportList.reduce((accumulator, currentValue) => {
+    if(!(accumulator.some(elem => elem === currentValue.name))){
+        accumulator.push(currentValue.name);
+    }
+    return accumulator;
+}, [])
+sportsList.forEach(sportName => {
+    sportCardContainer.insertAdjacentHTML("beforeend", getSportCard(sportName))
 });
 
 
