@@ -351,6 +351,13 @@ if(window.location.href.includes("arbitrage.html")){
         const time_start = new Date(date + " " + time + ":00.000Z");
         //Décalage de l'heure de début de 1h pour la gestion du fuseau horaire
         time_start.setHours(time_start.getHours() - 1);
+        let currentMode = "";
+        if(sportID.name === "badminton"){
+            currentMode = "tournoi";
+        }
+        else{
+            currentMode = "poules"
+        }
         const data = {
             "team1": equipe1.id,
             "team2": equipe2.id,
@@ -358,6 +365,7 @@ if(window.location.href.includes("arbitrage.html")){
             "heure_debut": time_start.toISOString(),
             "point1": 0,
             "point2": 0,
+            "mode": currentMode,
             "status": "waiting",
         };
 
