@@ -6,17 +6,18 @@ let matchList = await pb.collection('match').getFullList({
     expand: 'team1,team2,sport',
 });
 
-//Ask for notifications permission
-if (Notification.permission !== "granted") {
-    Notification.requestPermission();
+//Check if navigator supports notifications
+if (!("Notification" in window)) {
+    console.error("Ce navigateur ne supporte pas les notifications desktop");
 }
-
-//Ask for notifications permission on page load
-window.addEventListener('load', function() {
-    if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-    }
-});
+else{
+    //Ask for notifications permission on page load
+    window.addEventListener('load', function() {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    });
+}
 
 const equipeList = await pb.collection('equipes').getFullList({});
 
