@@ -20,9 +20,9 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport',
 });
 
-/*const MatchList = await pb.collection('match').getFullList({
-    filter: `team1 = ${currentStatus.team1}|| team2 = ${currentStatus.team1}|| team1 = ${currentStatus.team2}|| team2 = ${currentStatus.team2}`,
-});*/
+const MatchList = await pb.collection('match').getFullList({
+    filter: `sport = "${currentStatus.sport}"`,
+});
 
 //Affichage des données initial du match
 const textPoint1 = document.getElementById("textPoint1")
@@ -373,8 +373,7 @@ async function setTeamClassement(sportId){
         if(diff !== 0){
             return diff;
         } else {
-            return 0;
-            //return goalsDiff(teamA, teamB);
+            return goalsDiff(teamA, teamB);
         }
     })//On range les équipes par ordre de points décroissant
     for(let i = 1; i <= sportTeams.length; i++){
@@ -408,17 +407,25 @@ function goalsDiff(teamA, teamB){
     let totalA = 0
     let totalB = 0
     MatchList.forEach(match => {
-        if(match.team1 = teamA.id){
-            totalA += match.point1
+        if(match.team1 === teamA.id){
+            if(match.point1 > match.point2){
+                totalA += match.point1 - match.point2
+            }
         }
-        if(match.team2 = teamA.id){
-            totalA += match.point2
+        if(match.team2 === teamA.id){
+            if(match.point1 < match.point2){
+                totalA += match.point2 - match.point1
+            }
         }
-        if(match.team1 = teamB.id){
-            totalB += match.point1
+        if(match.team1 === teamB.id){
+            if(match.point1 > match.point2){
+                totalB += match.point1 - match.point2
+            }
         }
-        if(match.team2 = teamB.id){
-            totalB += match.point2
+        if(match.team2 === teamB.id){
+            if(match.point1 < match.point2){
+                totalB += match.point2 - match.point1
+            }
         }
     })
     return totalB - totalA
