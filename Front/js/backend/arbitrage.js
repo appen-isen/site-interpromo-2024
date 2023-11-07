@@ -344,7 +344,7 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     
 
     //Redirection vers la page d'arbitrage
-    //window.location.href = "arbitrage.html";
+    window.location.href = "arbitrage.html";
 });
 
 async function addPoints(teamId, points){
