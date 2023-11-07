@@ -3,29 +3,8 @@ import pb from './login.js'
 
 const SportList = await pb.collection('sport').getFullList({});
 
-const classBasketballList = await pb.collection('class_basketball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classVoleyballList = await pb.collection('class_voleyball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classFootballList = await pb.collection('class_football').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classHandballList = await pb.collection('class_handball').getFullList({
-    sort: '+classement',
-    expand: 'team',
-});
-
-const classDefiList = await pb.collection('class_defi').getFullList({
-    sort: '+classement',
-    expand: 'team',
+const EquipeList = await pb.collection('equipes').getFullList({
+    expand: 'promo,sport',
 });
 
 const matchList = await pb.collection('match').getFullList({
@@ -33,36 +12,54 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'sport,team1,team2',
 });
 
-function selectWinner(orderedClassementList){
-    if(orderedClassementList.length != 0){
-        let firtClasse = orderedClassementList[0]
-        if(firtClasse.classement === 1){
-            return firtClasse.expand.team.name;
-        } else {
-            orderedClassementList.forEach(classe => {
-                if(classe.classement === 1){
-                    return classe.expand.team.name;
-                }
-            });
-        }
+function getOrderedSportsTeams(sport){
+    if(sport.state === "waiting"){
+        return "<h5>La compétition n'a pas commencé</h5>"
     }
-    return "";
-}
-
-function getSportWinningTeam(sport){
-    switch(sport.name){
-        case "basketball":
-            return selectWinner(classBasketballList)
-        case "volleyball":
-            return selectWinner(classVoleyballList)
-        case "football":
-            return selectWinner(classFootballList)
-        case "handball":
-            return selectWinner(classHandballList)
-        case "defi enduro":
-            return selectWinner(classDefiList) //TODO
-        case "badminton":
-            return "" //TODO
+    if(sport.type === "poules"){
+        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name).sort((teamA, teamB) => teamA.classement - teamB.classement)
+        let result = `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts</span></h5>`
+        for(let i = 1; i < teams.length; i++){
+            let color = "bg-secondary"
+            if(teams[i].classement === 2){
+                color = "bg-success"
+            } else if(teams[i].classement === 3){
+                color = "bg-primary"
+            }
+            result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts</span></div>`
+        }
+        return result
+    } else if (sport.type === "tournois"){
+        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name).sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
+        let result = "";
+        for(let i = 0; i < teams.length; i++){
+            let stade;
+            switch(teams[i].stade){
+                case "16":
+                    stade = "16èmes"
+                    break;
+                case "8":
+                    stade = "8èmes"
+                    break;
+                case "4":
+                    stade = "Quarts"
+                    break;
+                case "2":
+                    stade = "Demies"
+                    break;
+                case "1":
+                    stade = "Finale"
+                    break;
+            }
+            let color = ""
+            if(teams[i].eliminated){
+                color = "bg-danger"
+            } else {
+                color = "bg-success"
+            }
+            result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${stade}</span></div>`
+        }
+        return result
     }
 }
 
@@ -81,7 +78,7 @@ function getSportNextMatchText(sport){
 }
 
 function getSportIcon(sport){
-    switch(sport.name) {
+    switch(sport) {
         case "basketball":
             return ` <span class="material-symbols-outlined">sports_basketball</span>`
         case "volleyball":
@@ -96,13 +93,11 @@ function getSportIcon(sport){
 }
 
 function getSportCard(sport){
-    let winner = getSportWinningTeam(sport)
-    let title = winner === "" ? "La compétition n'a pas commencé" : ("Equipe en tête : " + winner)
     return `
     <div class="card my-3">
-        <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-center">${sport.name.toUpperCase()}${getSportIcon(sport)}</div></div>
+        <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-evenly">${getSportIcon(sport.name)}${sport.name.toUpperCase()}${getSportIcon(sport.name)}</div></div>
         <div class="card-body bg-light-subtle text-emphasis-light">
-            <h5 class="card-title">${title}</h5>
+            ${getOrderedSportsTeams(sport)}
         </div>
         <div class="card-footer bg-light-subtle text-emphasis-light">${getSportNextMatchText(sport)}</div>
     </div>`

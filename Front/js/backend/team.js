@@ -13,6 +13,21 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'team1,team2,sport',
 });
 
+function getSportIcon(sport){
+    switch(sport) {
+        case "basketball":
+            return ` <span class="material-symbols-outlined">sports_basketball</span>`
+        case "volleyball":
+            return ` <span class="material-symbols-outlined">sports_volleyball</span>`
+        case "football":
+            return ` <span class="material-symbols-outlined">sports_soccer</span>`
+        case "handball":
+            return ` <span class="material-symbols-outlined">sports_handball</span>`
+        case "badminton":
+            return ` <img src="assets/shuttlecock.svg" alt="shuttlecock" width="24" height="24">`
+    }
+}
+
 function getTeamClassementBadge(equipe){
     if(equipe.classement != 0){
         return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
@@ -49,7 +64,7 @@ function getTeamsRow(sport, teams){
     let result =  `
     <li class="list-group-item">
         <div class="mx-2">
-            <div class="fw-bold">${sport[0].toUpperCase()}${sport.slice(1)}</div>`
+            <div class="fw-bold d-flex align-items-start">${getSportIcon(sport)}${sport[0].toUpperCase()}${sport.slice(1)}</div>`
     teams.forEach(equipe => {
         result += `<div class="d-flex justify-content-between align-items-start">${equipe.name}`
         if(equipe.classement !== 0 || equipe.stade !== ""){
@@ -97,7 +112,7 @@ function getSportRow(equipe){
     let result =  `
     <li class="list-group-item d-flex justify-content-between align-items-start">
         <div class="mx-2">
-            <div class="fw-bold">${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)}</div>
+            <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)}</div>
             Membres : ${members}
         </div>`
     if(equipe.classement != 0){
