@@ -20,9 +20,9 @@ const EquipeList = await pb.collection('equipes').getFullList({
     expand: 'promo,sport',
 });
 
-const MatchList = await pb.collection('match').getFullList({
+/*const MatchList = await pb.collection('match').getFullList({
     filter: `team1 = ${currentStatus.team1}|| team2 = ${currentStatus.team1}|| team1 = ${currentStatus.team2}|| team2 = ${currentStatus.team2}`,
-});
+});*/
 
 //Affichage des données initial du match
 const textPoint1 = document.getElementById("textPoint1")
@@ -373,11 +373,8 @@ async function setTeamClassement(sportId){
         if(diff !== 0){
             return diff;
         } else {
-            try{
-                return goalsDiff(teamA, teamB);
-            } catch {
-                return 0;
-            }
+            return 0;
+            //return goalsDiff(teamA, teamB);
         }
     })//On range les équipes par ordre de points décroissant
     for(let i = 1; i <= sportTeams.length; i++){
