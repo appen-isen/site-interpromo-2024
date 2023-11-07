@@ -344,7 +344,7 @@ document.getElementById("btnStop").addEventListener('click', async function(even
     
 
     //Redirection vers la page d'arbitrage
-    window.location.href = "arbitrage.html";
+    //window.location.href = "arbitrage.html";
 });
 
 async function addPoints(teamId, points){
@@ -359,7 +359,8 @@ async function addPoints(teamId, points){
 
 async function setTeamClassement(sportId){
     let sportTeams = []
-    EquipeList.forEach(equipe => {
+    const equipesList = await pb.collection('equipes').getFullList({expand: 'sport',})
+    equipesList.forEach(equipe => {
         if(equipe.expand.sport.id === sportId){
             sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
         }
