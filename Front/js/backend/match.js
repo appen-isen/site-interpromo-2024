@@ -35,6 +35,28 @@ matchList.forEach(match => {
                     match.point2 = e.record.point2
                     newGoalAlert(match, "team2")
                 }
+                if(e.record.status === "in_progress"){
+                    document.getElementById("cardHeader" + match.id).classList.remove("text-primary-emphasis");
+                    document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
+                    document.getElementById("cardFooter" + match.id).classList.remove("text-primary-emphasis");
+                    document.getElementById("cardFooter" + match.id).classList.add("text-warning-emphasis");
+                    document.getElementById("cardFooter" + match.id).innerHTML = "Match en cours";
+                    document.getElementById("cardHeader" + match.id).innerHTML = "";
+                    const cardHeaderPointDiv = document.createElement('div');
+                    cardHeaderPointDiv.className = "d-flex justify-content-evenly";
+                    const cardHeaderPointT1 = document.createElement('p');
+                    cardHeaderPointT1.id = "pointT1" + match.id;
+                    cardHeaderPointT1.innerText = match.point1;
+                    const cardHeaderSeparator = document.createElement('p');
+                    cardHeaderSeparator.innerText = "-";
+                    const cardHeaderPointT2 = document.createElement('p');
+                    cardHeaderPointT2.id = "pointT2" + match.id;
+                    cardHeaderPointT2.innerText = match.point2;
+                    cardHeaderPointDiv.appendChild(cardHeaderPointT1);
+                    cardHeaderPointDiv.appendChild(cardHeaderSeparator);
+                    cardHeaderPointDiv.appendChild(cardHeaderPointT2);
+                    document.getElementById("cardHeader" + match.id).appendChild(cardHeaderPointDiv);
+                }
                 //Mise à jour du statut si le match est terminé
                 if (e.record.status === "finished") {
                     document.getElementById("cardHeader" + match.id).classList.remove("text-warning-emphasis");

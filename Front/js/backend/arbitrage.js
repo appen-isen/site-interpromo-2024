@@ -268,7 +268,7 @@ async function addPoints(teamId, points){
 async function setTeamClassement(sportId){
     let sportTeams = []
     EquipeList.forEach(equipe => {
-        if(equipe.sport === sportId){
+        if(equipe.expand.sport.id === sportId){
             sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
         }
     })
