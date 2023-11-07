@@ -115,9 +115,16 @@ if(window.location.href.includes("index.html") || window.location.href.includes(
         cardTitle.className = "card-title text-center";
         cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
         //Affichage du sport
-        const cardText = document.createElement('p');
-        cardText.className = "card-text text-center";
-        cardText.innerText = match.expand.sport.name;
+        const cardSport = document.createElement('p');
+        cardSport.innerText = match.expand.sport.name;
+        cardSport.className = "card-text text-center fw-semibold text-capitalize"
+        //Affichage du tableau
+        const cardTable = document.createElement('p');
+        if(match.expand.sport.tableau !== ""){
+            cardSport.className = "card-text text-center fw-semibold text-capitalize mb-0";
+            cardTable.className = "card-text text-center text-secondary-emphasis fw-semibold";
+            cardTable.innerText = match.expand.sport.tableau;
+        }
         //Affichage du statut
         const cardFooter = document.createElement('div');
         if(match.status === "waiting") {
@@ -143,7 +150,10 @@ if(window.location.href.includes("index.html") || window.location.href.includes(
         //Ajout des éléments à la carte
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
-        cardBody.appendChild(cardText);
+        cardBody.appendChild(cardSport);
+        if(match.expand.sport.tableau !== ""){
+            cardBody.appendChild(cardTable);
+        }
         card.appendChild(cardBody);
         card.appendChild(cardFooter);
         //Ajout de la carte au container
