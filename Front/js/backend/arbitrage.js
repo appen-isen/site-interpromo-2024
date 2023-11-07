@@ -239,7 +239,7 @@ document.getElementById("btnStop").addEventListener('click', async function(even
             await addPoints(currentStatus.team2, 3)
         }
         //Calcul du classement de chaque équipe
-        await setTeamClassement(currentStatus.expand.sport.name)
+        await setTeamClassement(currentStatus.sport)
     } else if(currentStatus.mode === "tournoi") {
         if(currentStatus.point1 > currentStatus.point2) {
             await eliminateTeam(currentStatus.team2)
@@ -265,10 +265,10 @@ async function addPoints(teamId, points){
     }
 }
 
-async function setTeamClassement(sport){
+async function setTeamClassement(sportId){
     let sportTeams = []
     EquipeList.forEach(equipe => {
-        if(equipe.expand.sport.name === sport){
+        if(equipe.sport === sportId){
             sportTeams.push(equipe)//On sélectionne toutes les équipes du sport indiqué en paramètres
         }
     })
