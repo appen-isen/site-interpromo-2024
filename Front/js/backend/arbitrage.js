@@ -410,21 +410,29 @@ function goalsDiff(teamA, teamB){
         if(match.team1 === teamA.id){
             if(match.point1 > match.point2){
                 totalA += match.point1 - match.point2
+            } else {
+                totalA += match.point2 - match.point1
             }
         }
         if(match.team2 === teamA.id){
             if(match.point1 < match.point2){
                 totalA += match.point2 - match.point1
+            } else {
+                totalA += match.point1 - match.point2
             }
         }
         if(match.team1 === teamB.id){
             if(match.point1 > match.point2){
                 totalB += match.point1 - match.point2
+            } else {
+                totalB += match.point2 - match.point1
             }
         }
         if(match.team2 === teamB.id){
             if(match.point1 < match.point2){
                 totalB += match.point2 - match.point1
+            } else {
+                totalB += match.point1 - match.point2
             }
         }
     })
