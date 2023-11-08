@@ -29,9 +29,13 @@ function getSportIcon(sport){
 }
 
 function getTeamClassementBadge(equipe){
-    if(equipe.classement !== 0){
-        return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
-    } else if(equipe.stade !== ""){
+    let color = ""
+    if(equipe.eliminated){
+        color = "bg-danger"
+    } else {
+        color = "bg-primary"
+    }
+    if(equipe.stade !== ""){
         let stade = ""
             switch(equipe.stade){
                 case "16":
@@ -50,13 +54,9 @@ function getTeamClassementBadge(equipe){
                     stade = "Finale"
                     break;
             }
-            let color = ""
-            if(equipe.eliminated){
-                color = "bg-danger"
-            } else {
-                color = "bg-primary"
-            }
             return `<span class="badge ${color} rounded-pill">${stade}</span>`
+    } else if(equipe.classement !== 0){
+        return `<span class="badge ${color} rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
     }
 }
 
@@ -67,7 +67,7 @@ function getTeamsRow(sport, teams){
             <div class="fw-bold d-flex align-items-start">${getSportIcon(sport)}${sport[0].toUpperCase()}${sport.slice(1)}</div>`
     teams.forEach(equipe => {
         result += `<div class="d-flex justify-content-between align-items-start"><p class="mb-0">${equipe.name}</p>`
-        if(equipe.expand.sport.tableau !== ""){
+        if(equipe.expand.sport.type === "poules"){
             result += `<p class="text-secondary-emphasis fw-semibold mb-0">${equipe.expand.sport.tableau}</p>`
         }
         if(equipe.expand.sport.state !== "waiting"){
