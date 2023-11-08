@@ -82,6 +82,7 @@ matchList.forEach(match => {
                     card.remove();
                     const container = document.getElementById('cardContainer2');
                     container.appendChild(card);
+                    matchEndAlert(match);
                 }
             }
         });
