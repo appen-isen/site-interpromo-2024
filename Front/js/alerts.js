@@ -37,7 +37,7 @@ function newGoalAlert(match, goalTeam){
           <h4>${match.point1} - ${match.point2}</h4>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <p>${goalTeam == "team1" ? match.expand.team1.name : match.expand.team2.name} vient de marquer un but en ${match.expand.sport.name} face à ${goalTeam == "team1" ? match.expand.team2.name : match.expand.team1.name} !</p>
+        <p>${goalTeam === "team1" ? match.expand.team1.name : match.expand.team2.name} vient de marquer un but en ${match.expand.sport.name} face à ${goalTeam === "team1" ? match.expand.team2.name : match.expand.team1.name} !</p>
         <hr>
         <div class="d-flex align-items-center justify-content-between">
           <p class="mb-0 d-inline-flex align-items-center">${getSportIconHTML(match.expand.sport.name)}${match.expand.sport.name}</p>
