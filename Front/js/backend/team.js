@@ -29,9 +29,9 @@ function getSportIcon(sport){
 }
 
 function getTeamClassementBadge(equipe){
-    if(equipe.classement != 0){
+    if(equipe.classement !== 0){
         return `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
-    } else if(equipe.stade != ""){
+    } else if(equipe.stade !== ""){
         let stade = ""
             switch(equipe.stade){
                 case "16":
@@ -67,7 +67,7 @@ function getTeamsRow(sport, teams){
             <div class="fw-bold d-flex align-items-start">${getSportIcon(sport)}${sport[0].toUpperCase()}${sport.slice(1)}</div>`
     teams.forEach(equipe => {
         result += `<div class="d-flex justify-content-between align-items-start"><p class="mb-0">${equipe.name}</p>`
-        if(equipe.expand.sport.tableau != ""){
+        if(equipe.expand.sport.tableau !== ""){
             result += `<p class="text-secondary-emphasis fw-semibold mb-0">${equipe.expand.sport.tableau}</p>`
         }
         if(equipe.expand.sport.state !== "waiting"){
@@ -102,7 +102,7 @@ function getPromoCard(promo, teamsBySport){
 
 function getSportRow(equipe){
     let members = ""
-    if(equipe.capitaine != ""){
+    if(equipe.capitaine !== ""){
         members += `<u>${equipe.expand.capitaine.prenom} ${equipe.expand.capitaine.name}</u>, `;
     }
     if(equipe.membres.length !== 0){
@@ -119,8 +119,8 @@ function getSportRow(equipe){
             <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)} (${equipe.expand.sport.tableau})</div>
             Membres : ${members}
         </div>`
-    if(equipe.classement != 0){
-        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.name]}</span>`
+    if(equipe.classement !== 0){
+        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.id]}</span>`
     }
     result += `</li>`
     return result
@@ -133,7 +133,7 @@ function getTeamCard(teamBySport){
         <div class="card-header text-center bg-light-subtle text-emphasis-light">${equipe.name}(${equipe.expand.promo.name})</div>
         <ul class="list-group list-group-flush">
     `
-    for(const [sportName, team] of Object.entries(teamBySport).filter(([sportName, team]) => sportName != "team")){
+    for(const [sportName, team] of Object.entries(teamBySport).filter(([sportName, team]) => sportName !== "team")){
         cardHtml += getSportRow(team)
     }
     cardHtml += `</ul>`
@@ -174,12 +174,14 @@ EquipeList.forEach(equipe => {
 })
 
 //Affichage des équipes par promo
+
 PromoList.forEach(promo => {
     if(!(promo.name in promoTeamsbySport)){
         promoTeamsbySport[promo.name] = {}
     }
     promoCardContainer.insertAdjacentHTML("beforeend", getPromoCard(promo, promoTeamsbySport[promo.name]));
 });
+
 
 Object.values(teamSports).forEach(teamBySport => {
     teamCardContainer.insertAdjacentHTML("beforeend", getTeamCard(teamBySport))
