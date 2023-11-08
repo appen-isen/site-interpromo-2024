@@ -119,8 +119,8 @@ function getSportRow(equipe){
             <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)} (${equipe.expand.sport.tableau})</div>
             Membres : ${members}
         </div>`
-    if(equipe.classement !== 0){
-        result += `<span class="badge bg-primary rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.expand.sport.id]}</span>`
+    if(equipe.expand.sport.state !== "waiting"){
+        result += getTeamClassementBadge(equipe)
     }
     result += `</li>`
     return result
