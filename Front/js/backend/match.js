@@ -69,6 +69,7 @@ matchList.forEach(match => {
                     cardHeaderPointDiv.appendChild(cardHeaderSeparator);
                     cardHeaderPointDiv.appendChild(cardHeaderPointT2);
                     document.getElementById("cardHeader" + match.id).appendChild(cardHeaderPointDiv);
+                    startMatchAlert(match);
                 }
                 //Mise à jour du statut si le match est terminé
                 if (e.record.status === "finished") {
