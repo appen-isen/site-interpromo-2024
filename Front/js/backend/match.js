@@ -14,11 +14,7 @@ else{
     //Ask for notifications permission on page load
     window.addEventListener('load', function() {
         if (Notification.permission !== "granted") {
-            Notification.requestPermission().then(r => {
-                if(r !== "granted"){
-                    console.error("Permission de notification refusée");
-                }
-            });
+            Notification.requestPermission();
         }
     });
 }
