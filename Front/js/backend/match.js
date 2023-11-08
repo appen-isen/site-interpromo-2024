@@ -92,7 +92,7 @@ matchList.forEach(match => {
 if(window.location.href.includes("arbitrage.html")){
     //Affichage des matchs
     matchList.forEach(record => {
-        const container = document.getElementById('cardContainer');
+        let container = document.getElementById('cardContainer');
         const card = document.createElement('div');
         card.className = "card my-3";
         //Affichage de l'heure de début du match
@@ -126,6 +126,7 @@ if(window.location.href.includes("arbitrage.html")){
         else if(record.status === "finished") {
             arbitrageButtonLink.className = "btn btn-success";
             arbitrageButtonLink.innerHTML = "Match terminé";
+            container = document.getElementById('cardContainer2');
         }
         else{
             arbitrageButtonLink.className = "btn btn-secondary";
@@ -376,7 +377,8 @@ if(window.location.href.includes("arbitrage.html")){
 }
 
 //Affichage des matchs sur la page d'accueil
-if(window.location.href.includes("index.html") || window.location.href.includes("")){
+//Elle s'appele indox.html ou bien n'as pas d'autre juste /
+if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/"){
     //Affichage des matchs
     matchList.forEach(match => {
         let container = document.getElementById('cardContainer');

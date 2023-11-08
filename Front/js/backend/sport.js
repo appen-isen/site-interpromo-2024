@@ -68,7 +68,7 @@ function getOrderedTableTeams(sport){
 }
 
 function getSportNextMatchText(sport){
-    let match = matchList.find(matche => matche.expand.sport.name === sport);
+    let match = matchList.find(matche => matche.expand.sport.name === sport&& matche.status === "waiting");
     if(!match){
         return "Pas de match prévu";
     }
