@@ -400,7 +400,7 @@ if(window.location.href.includes("arbitrage.html")){
 
 //Affichage des matchs sur la page d'accueil
 //Elle s'appele indox.html ou bien n'as pas d'autre juste /
-if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/"){
+if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr"){
     //Affichage des matchs
     matchList.forEach(match => {
         let container = document.getElementById('cardContainer');
