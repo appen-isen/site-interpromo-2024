@@ -83,15 +83,15 @@ function getOrderedTableTeams(sport){
                 switch(teams[i].stade){
                     case "16":
                         classement = "16èmes"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "8":
                         classement = "8èmes"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "4":
                         classement = "Quarts"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "2":
                         if(teams[i].eliminated){

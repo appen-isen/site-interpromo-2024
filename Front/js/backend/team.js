@@ -67,15 +67,15 @@ function getTeamClassementBadge(equipe){
                 switch(equipe.stade){
                     case "16":
                         classement = "16èmes"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "8":
                         classement = "8èmes"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "4":
                         classement = "Quarts"
-                        color = "bg-secondary-subtle"
+                        color = "bg-secondary"
                         break;
                     case "2":
                         if(equipe.eliminated){
