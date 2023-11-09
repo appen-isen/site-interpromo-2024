@@ -27,7 +27,7 @@ function getOrderedTableTeams(sport){
         if(teams[0].points === teams[1].points){
             goalAverageText = "(" + teams[0].goalAverage + ")"
         }
-        result += `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}${goalAverageText}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts</span></h5>`
+        result += `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts${goalAverageText}</span></h5>`
         for(let i = 1; i < teams.length; i++){
             let color = ""
             if(teams[i].classement <= sport.qualified){
@@ -44,7 +44,7 @@ function getOrderedTableTeams(sport){
                     goalAverageText = "(" + teams[i].goalAverage + ")"
                 }
             }
-            result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}${goalAverageText}<span class="badge ${color} rounded-pill">${teams[i].points} pts</span></div>`
+            result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts${goalAverageText}</span></div>`
         }
         return result
     } else if (sport.type === "tournois"){
