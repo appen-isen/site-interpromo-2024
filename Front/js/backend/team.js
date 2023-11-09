@@ -141,8 +141,11 @@ function getPromoCard(promo, teamsBySport){
     const nextMatch = MatchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id));
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
-        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
-    }
+        if(nextMatch.team1 && nextMatch.team2){
+            cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        } else {
+            cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        }    }
     cardHtml += `</div>`
     return cardHtml
 }
@@ -187,7 +190,11 @@ function getTeamCard(teamBySport){
     const nextMatch = MatchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.name === equipe.name || match.expand.team2.name === equipe.name));
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
-        cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        if(nextMatch.team1 && nextMatch.team2){
+            cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        } else {
+            cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
+        }
     }
     cardHtml += `</div>`
     return cardHtml
