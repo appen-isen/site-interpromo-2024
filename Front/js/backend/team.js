@@ -100,7 +100,8 @@ function getTeamClassementBadge(equipe){
                 return `<span class="badge ${color} rounded-pill ${textColor}">${classement}</span>`
             }
         }
-    } else if(equipe.classement !== 0){
+    } 
+    if(equipe.classement !== 0){
         return `<span class="badge ${color} rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
     }
     return "";
