@@ -109,7 +109,9 @@ if(window.location.href.includes("arbitrage.html")){
         //Affichage du nom des équipes
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
-        cardTitle.innerText = record.expand.team1.name + " VS " + record.expand.team2.name;
+        if(record.team1 && record.team2){
+            cardTitle.innerText = record.expand.team1.name + " VS " + record.expand.team2.name;
+        }
         //Affichage du sport
         const cardText = document.createElement('p');
         cardText.className = "card-text text-center text-capitalize mb-0";
@@ -146,7 +148,9 @@ if(window.location.href.includes("arbitrage.html")){
         //Ajout des éléments à la carte
         arbitrageButton.appendChild(arbitrageButtonLink);
         card.appendChild(cardHeader);
-        cardBody.appendChild(cardTitle);
+        if(record.team1 && record.team2){
+            cardBody.appendChild(cardTitle);
+        }
         cardBody.appendChild(cardText);
         if(record.name !== ""){
             cardBody.appendChild(cardDescr);
@@ -346,10 +350,14 @@ if(window.location.href.includes("arbitrage.html")){
 
         const delMatchOption = document.createElement('option');
         let time_start = new Date(record.heure_debut);
-        delMatchOption.innerHTML = record.expand.team1.name + " VS " + record.expand.team2.name + " - " + record.expand.sport.name + " - " + time_start.toLocaleString();
+        if(record.team1 && record.team2){
+            delMatchOption.innerHTML = record.expand.team1.name + " VS " + record.expand.team2.name + " - " + record.expand.sport.name + " - " + time_start.toLocaleString();
+        } else {
+            delMatchOption.innerHTML = record.name + ' - ' + record.expand.sport.name + " - " + time_start.toLocaleString();
+        }
         //Création de l'association entre le nom du match et son id
         const associationElement = {
-            "title": record.expand.team1.name + " VS " + record.expand.team2.name + " - " + record.expand.sport.name + " - " + time_start.toLocaleString(),
+            "title": delMatchOption.innerHTML,
             "id": record.id,
         }
         //Ajout de l'association dans le tableau
@@ -455,7 +463,9 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         //Affichage du nom des équipes
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
-        cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
+        if(match.team1 && match.team2){
+            cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
+        }
         //Affichage du sport
         const cardText = document.createElement('p');
         cardText.className = "card-text text-center text-capitalize mb-0";
@@ -487,7 +497,9 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         }
         //Ajout des éléments à la carte
         card.appendChild(cardHeader);
-        cardBody.appendChild(cardTitle);
+        if(match.team1 && match.team2){
+            cardBody.appendChild(cardTitle);
+        }
         cardBody.appendChild(cardText);
         if(match.name !== ""){
             cardBody.appendChild(cardDescr);
