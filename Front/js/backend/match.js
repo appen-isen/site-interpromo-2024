@@ -112,28 +112,31 @@ if(window.location.href.includes("arbitrage.html")){
         cardTitle.innerText = record.expand.team1.name + " VS " + record.expand.team2.name;
         //Affichage du sport
         const cardText = document.createElement('p');
-        cardText.className = "card-text text-center";
+        cardText.className = "card-text text-center text-capitalize mb-0";
         cardText.innerText = record.expand.sport.name;
+        const cardDescr = document.createElement('p');
+        cardDescr.className = "card-text text-center fw-semibold text-body-secondary";
+        cardDescr.innerText = record.name;
         //Affichage du bouton d'arbitrage
         const arbitrageButton = document.createElement('div');
         arbitrageButton.className = "text-center";
         const arbitrageButtonLink = document.createElement('a');
         //Gestion des couleurs du bouton en fonction du statut du match
         if(record.status === "waiting") {
-            arbitrageButtonLink.className = "btn btn-primary";
+            arbitrageButtonLink.className = "btn btn-primary mt-2";
             arbitrageButtonLink.innerHTML = "Démarrer et arbitrer ce match";
         }
         else if(record.status === "in_progress") {
-            arbitrageButtonLink.className = "btn btn-warning";
+            arbitrageButtonLink.className = "btn btn-warning mt-2";
             arbitrageButtonLink.innerHTML = "Arbitrer ce match";
         }
         else if(record.status === "finished") {
-            arbitrageButtonLink.className = "btn btn-success";
+            arbitrageButtonLink.className = "btn btn-success mt-2";
             arbitrageButtonLink.innerHTML = "Match terminé";
             container = document.getElementById('cardContainer2');
         }
         else{
-            arbitrageButtonLink.className = "btn btn-secondary";
+            arbitrageButtonLink.className = "btn btn-secondary mt-2";
             arbitrageButtonLink.innerHTML = "Erreur de statut";
         }
         //Gestion du lien du bouton
@@ -145,6 +148,9 @@ if(window.location.href.includes("arbitrage.html")){
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
+        if(record.name !== ""){
+            cardBody.appendChild(cardDescr);
+        }
         cardBody.appendChild(arbitrageButton);
         card.appendChild(cardBody);
         //Ajout de la carte au container
@@ -452,8 +458,11 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
         //Affichage du sport
         const cardText = document.createElement('p');
-        cardText.className = "card-text text-center";
+        cardText.className = "card-text text-center text-capitalize mb-0";
         cardText.innerText = match.expand.sport.name;
+        const cardDescr = document.createElement('p');
+        cardDescr.className = "card-text text-center fw-semibold text-body-secondary";
+        cardDescr.innerText = match.name;
         //Affichage du statut
         const cardFooter = document.createElement('div');
         if(match.status === "waiting") {
@@ -480,6 +489,9 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         card.appendChild(cardHeader);
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
+        if(match.name !== ""){
+            cardBody.appendChild(cardDescr);
+        }
         card.appendChild(cardBody);
         card.appendChild(cardFooter);
         //Ajout de la carte au container
