@@ -79,6 +79,7 @@ function getOrderedTableTeams(sport){
             for(let i = 0; i < teams.length; i++){
                 let classement;
                 let color = ""
+                let textColor = ""
                 switch(teams[i].stade){
                     case "16":
                         classement = "16èmes"
@@ -108,10 +109,11 @@ function getOrderedTableTeams(sport){
                         } else {
                             color = "bg-warning"
                             classement = "Vainqueur"
+                            textColor = "text-dark"
                         }
                         break;
                 }
-                result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${classement}</span></div>`
+                result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill ${textColor}">${classement}</span></div>`
             }
         }
     }

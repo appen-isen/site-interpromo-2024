@@ -8,10 +8,12 @@ const EquipeList = await pb.collection('equipes').getFullList({
 const PromoList = await pb.collection('promo').getFullList({
 });
 
-const matchList = await pb.collection('match').getFullList({
+const MatchList = await pb.collection('match').getFullList({
     sort: '+heure_debut',
     expand: 'team1,team2,sport',
 });
+
+const SportList = await pb.collection('sport').getFullList({});
 
 function getSportIcon(sport){
     switch(sport) {
@@ -36,28 +38,75 @@ function getTeamClassementBadge(equipe){
         color = "bg-primary"
     }
     if(equipe.stade !== ""){
-        let stade = ""
-            switch(equipe.stade){
-                case "16":
-                    stade = "16èmes"
-                    break;
-                case "8":
-                    stade = "8èmes"
-                    break;
-                case "4":
-                    stade = "Quarts"
-                    break;
-                case "2":
-                    stade = "Demies"
-                    break;
-                case "1":
-                    stade = "Finale"
-                    break;
+        let tournoi = SportList.find(sport => sport.name === equipe.expand.sport.name && sport.type === "tournois")
+        console.log(tournoi)
+        if(tournoi){
+            if(tournoi.state === "started"){
+                console.log("started")
+                let stade = ""
+                switch(equipe.stade){
+                    case "16":
+                        stade = "16èmes"
+                        break;
+                    case "8":
+                        stade = "8èmes"
+                        break;
+                    case "4":
+                        stade = "Quarts"
+                        break;
+                    case "2":
+                        stade = "Demies"
+                        break;
+                    case "1":
+                        stade = "Finale"
+                        break;
+                }
+                return `<span class="badge ${color} rounded-pill">${stade}</span>`
+            } else if(tournoi.state === "finished"){
+                console.log("finished")
+                let classement = "";
+                let color = ""
+                let textColor = ""
+                switch(equipe.stade){
+                    case "16":
+                        classement = "16èmes"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "8":
+                        classement = "8èmes"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "4":
+                        classement = "Quarts"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "2":
+                        if(equipe.eliminated){
+                            color = "bg-primary-subtle"
+                            classement = "Quatrième"
+                        } else {
+                            color = "bg-primary"
+                            classement = "Troisième"
+                        }
+                        break;
+                    case "1":
+                        if(equipe.eliminated){
+                            color = "bg-success"
+                            classement = "Second"
+                        } else {
+                            color = "bg-warning"
+                            classement = "Vainqueur"
+                            textColor = "text-dark"
+                        }
+                        break;
+                }
+                return `<span class="badge ${color} rounded-pill ${textColor}">${classement}</span>`
             }
-            return `<span class="badge ${color} rounded-pill">${stade}</span>`
+        }
     } else if(equipe.classement !== 0){
         return `<span class="badge ${color} rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
     }
+    return "";
 }
 
 function getTeamsRow(sport, teams){
@@ -91,7 +140,7 @@ function getPromoCard(promo, teamsBySport){
     }
     cardHtml += `</ul>`
     //Cherche le prochain match de la promo qui est en status "waiting"
-    const nextMatch = matchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id));
+    const nextMatch = MatchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.promo === promo.id || match.expand.team2.promo === promo.id));
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
         cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
@@ -137,7 +186,7 @@ function getTeamCard(teamBySport){
         cardHtml += getSportRow(team)
     }
     cardHtml += `</ul>`
-    const nextMatch = matchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.name === equipe.name || match.expand.team2.name === equipe.name));
+    const nextMatch = MatchList.find(match => match.team1 && match.team2 && match.status === "waiting" && (match.expand.team1.name === equipe.name || match.expand.team2.name === equipe.name));
     if(nextMatch){
         const time_start = new Date(nextMatch.heure_debut);
         cardHtml += `<div class="card-footer bg-light-subtle text-emphasis-light">Prochain match : <b>${nextMatch.expand.sport.name}</b> ${nextMatch.expand.team1.name} vs ${nextMatch.expand.team2.name} ${time_start.toLocaleString('fr', { weekday: 'long' })} à ${time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' })}</div>`    
