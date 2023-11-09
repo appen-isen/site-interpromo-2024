@@ -39,10 +39,8 @@ function getTeamClassementBadge(equipe){
     }
     if(equipe.stade !== ""){
         let tournoi = SportList.find(sport => sport.name === equipe.expand.sport.name && sport.type === "tournois")
-        console.log(tournoi)
         if(tournoi){
             if(tournoi.state === "started"){
-                console.log("started")
                 let stade = ""
                 switch(equipe.stade){
                     case "16":
@@ -63,7 +61,6 @@ function getTeamClassementBadge(equipe){
                 }
                 return `<span class="badge ${color} rounded-pill">${stade}</span>`
             } else if(tournoi.state === "finished"){
-                console.log("finished")
                 let classement = "";
                 let color = ""
                 let textColor = ""
