@@ -61,6 +61,25 @@ if (pb.authStore.isValid && window.location.href.includes("arbitrage.html") || w
     });
 }
 
+//Ajoute une deconnexion automatique au bout de 12 heures, a l'aide d'un cookie
+if (pb.authStore.isValid && window.location.href.includes("arbitrage.html") || window.location.href.includes("arbimatch.html")) {
+    //Si le cookie n'existe pas, on le crée
+    if (document.cookie.indexOf("logout") === -1) {
+        document.cookie = "logout=0; max-age=43200";
+    }
+    //Si le cookie existe, on le met à jour
+    else {
+        let cookie = document.cookie.split(";");
+        let time = parseInt(cookie[0].split("=")[1], 10);
+        time += 1;
+        document.cookie = "logout=" + time + "; max-age=43200";
+        //Si le cookie est supérieur à 12 heures, on déconnecte l'utilisateur
+        if (time > 43200) {
+            pb.authStore.clear();
+            window.location.href = "login.html";
+        }
+    }
+}
 
 
 console.log("Backend login loaded!");
