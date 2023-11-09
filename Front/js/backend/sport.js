@@ -126,7 +126,11 @@ function getSportNextMatchText(sport){
         return "Pas de match prévu";
     }
     const time_start = new Date(match.heure_debut);
-    return "Prochain match : " + match.expand.team1.name + " vs " + match.expand.team2.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
+    if(match.team1 && match.team2){
+        return "Prochain match : " + match.expand.team1.name + " vs " + match.expand.team2.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
+    } else {
+        return "Prochain match : " + match.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
+    }
 }
 
 function getSportIcon(sport){
