@@ -65,6 +65,10 @@ matchList.forEach(match => {
                     const cardHeaderPointT2 = document.createElement('p');
                     cardHeaderPointT2.id = "pointT2" + match.id;
                     cardHeaderPointT2.innerText = match.point2;
+                    if(match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball"){
+                        cardHeaderPointT1.innerText = match.point1 + ' (' + match.set1 + ')';
+                        cardHeaderPointT2.innerText = match.point2 + ' (' + match.set2 + ')';
+                    }
                     cardHeaderPointDiv.appendChild(cardHeaderPointT1);
                     cardHeaderPointDiv.appendChild(cardHeaderSeparator);
                     cardHeaderPointDiv.appendChild(cardHeaderPointT2);
