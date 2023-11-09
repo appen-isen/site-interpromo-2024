@@ -122,7 +122,7 @@ function startMatchAlert(match){
 function newSetAlert(match){
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
-    <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-info alert-dismissible fade show" role="alert">
+    <div id="${match.id}${match.set1}_${match.set2}" class="alert alert-info alert-dismissible fade show" role="alert">
         <div class="d-flex align-items-center justify-content-between">
           <h4 class="alert-heading d-inline-flex align-items-center"><span class="material-symbols-outlined">
             scoreboard
@@ -145,8 +145,8 @@ function newSetAlert(match){
     //Send a notification to the client if the browser supports it
     if (Notification.permission === "granted") {
         let notification = new Notification(`${match.expand.team1.name} - ${match.expand.team2.name}`, {
-            body: `${match.point1} - ${match.point2}`,
+            body: `${match.set1} - ${match.set2}`,
         });
     }
-    setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
+    setTimeout(deleteAlert, 5000, `${match.id}${match.set1}_${match.set2}`)
 }
