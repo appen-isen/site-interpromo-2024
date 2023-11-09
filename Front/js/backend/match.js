@@ -91,6 +91,9 @@ matchList.forEach(match => {
                     container.appendChild(card);
                     matchEndAlert(match);
                 }
+                if(e.record.set1 !== match.set1 || e.record.set2 !== match.set2){
+                    newSetAlert(match);
+                }
             }
         });
     }
@@ -400,7 +403,7 @@ if(window.location.href.includes("arbitrage.html")){
 
 //Affichage des matchs sur la page d'accueil
 //Elle s'appele indox.html ou bien n'as pas d'autre juste /
-if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr"){
+if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/"){
     //Affichage des matchs
     matchList.forEach(match => {
         let container = document.getElementById('cardContainer');
