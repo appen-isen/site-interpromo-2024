@@ -19,9 +19,7 @@ function getOrderedTableTeams(sport){
     }
     if(sport.state === "waiting"){
         result += "<h5>La compétition n'a pas commencé</h5>"
-        return result;
-    }
-    if(sport.type === "poules"){
+    } else if(sport.type === "poules"){
         let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => teamA.classement - teamB.classement)
         let goalAverageText = ""
         if(teams[0].points === teams[1].points){
@@ -46,38 +44,78 @@ function getOrderedTableTeams(sport){
             }
             result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts${goalAverageText}</span></div>`
         }
-        return result
-    } else if (sport.type === "tournois"){
-        let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
-        for(let i = 0; i < teams.length; i++){
-            let stade;
-            switch(teams[i].stade){
-                case "16":
-                    stade = "16èmes"
-                    break;
-                case "8":
-                    stade = "8èmes"
-                    break;
-                case "4":
-                    stade = "Quarts"
-                    break;
-                case "2":
-                    stade = "Demies"
-                    break;
-                case "1":
-                    stade = "Finale"
-                    break;
+    } else if(sport.type === "tournois"){
+        if(sport.state === "started"){
+            let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
+            for(let i = 0; i < teams.length; i++){
+                let stade;
+                switch(teams[i].stade){
+                    case "16":
+                        stade = "16èmes"
+                        break;
+                    case "8":
+                        stade = "8èmes"
+                        break;
+                    case "4":
+                        stade = "Quarts"
+                        break;
+                    case "2":
+                        stade = "Demies"
+                        break;
+                    case "1":
+                        stade = "Finale"
+                        break;
+                }
+                let color = ""
+                if(teams[i].eliminated){
+                    color = "bg-danger"
+                } else {
+                    color = "bg-success"
+                }
+                result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${stade}</span></div>`
             }
-            let color = ""
-            if(teams[i].eliminated){
-                color = "bg-danger"
-            } else {
-                color = "bg-success"
+        } else if(sport.state === "finished"){
+            let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
+            for(let i = 0; i < teams.length; i++){
+                let classement;
+                let color = ""
+                switch(teams[i].stade){
+                    case "16":
+                        classement = "16èmes"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "8":
+                        classement = "8èmes"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "4":
+                        classement = "Quarts"
+                        color = "bg-secondary-subtle"
+                        break;
+                    case "2":
+                        if(teams[i].eliminated){
+                            color = "bg-primary-subtle"
+                            classement = "Quatrième"
+                        } else {
+                            color = "bg-primary"
+                            classement = "Troisième"
+                        }
+                        break;
+                    case "1":
+                        if(teams[i].eliminated){
+                            color = "bg-success"
+                            classement = "Second"
+                        } else {
+                            color = "bg-warning"
+                            classement = "Vainqueur"
+                        }
+                        break;
+                }
+                result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${classement}</span></div>`
             }
-            result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${stade}</span></div>`
         }
-        return result
     }
+    return result;
 }
 
 function getSportNextMatchText(sport){
