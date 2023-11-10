@@ -6,6 +6,7 @@ const EquipeList = await pb.collection('equipes').getFullList({
 });
 
 const PromoList = await pb.collection('promo').getFullList({
+    sort: '-points'
 });
 
 const MatchList = await pb.collection('match').getFullList({
@@ -128,9 +129,19 @@ function getTeamsRow(sport, teams){
 }
 
 function getPromoCard(promo, teamsBySport){
+    let title = ""
+    if(promo.points !== 0){
+        let classement = PromoList.findIndex(e => e.id === promo.id);
+        title = `${classement+1}e ${promo.name} (${promo.points}pts)`
+        if(classement === 0){
+            title = `Vainqueur ${promo.name} (${promo.points}pts)` 
+        }
+    } else {
+        title = promo.name;
+    }
     let cardHtml = `
     <div class="card my-3">
-        <div class="card-header text-center bg-light-subtle text-emphasis-light">${promo.name}</div>
+        <div class="card-header text-center bg-light-subtle text-emphasis-light">${title}</div>
         <ul class="list-group list-group-flush">
     `
     for(let [sport, teams] of Object.entries(teamsBySport)){
