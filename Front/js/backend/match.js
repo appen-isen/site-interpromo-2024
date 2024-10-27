@@ -9,10 +9,9 @@ let matchList = await pb.collection('match').getFullList({
 //Check if navigator supports notifications
 if (!("Notification" in window)) {
     console.error("Ce navigateur ne supporte pas les notifications desktop");
-}
-else{
+} else {
     //Ask for notifications permission on page load
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         if (Notification.permission !== "granted") {
             Notification.requestPermission();
         }
@@ -26,7 +25,7 @@ const sportList = await pb.collection('sport').getFullList({});
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
     //Si le match est en cours
-    if(match.status === "in_progress" || match.status === "waiting"){
+    if (match.status === "in_progress" || match.status === "waiting") {
         //Abonnement au match
         pb.collection('match').subscribe(match.id, async function (e) {
             //Si le match a été mis à jour
@@ -48,7 +47,7 @@ matchList.forEach(match => {
                     match.point2 = e.record.point2
                     newGoalAlert(match, "team2")
                 }
-                if(e.record.status === "in_progress"){
+                if (e.record.status === "in_progress") {
                     document.getElementById("cardHeader" + match.id).classList.remove("text-primary-emphasis");
                     document.getElementById("cardHeader" + match.id).classList.add("text-warning-emphasis");
                     document.getElementById("cardFooter" + match.id).classList.remove("text-primary-emphasis");
@@ -65,7 +64,7 @@ matchList.forEach(match => {
                     const cardHeaderPointT2 = document.createElement('p');
                     cardHeaderPointT2.id = "pointT2" + match.id;
                     cardHeaderPointT2.innerText = match.point2;
-                    if(match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball"){
+                    if (match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball") {
                         cardHeaderPointT1.innerText = match.point1 + ' (' + match.set1 + ')';
                         cardHeaderPointT2.innerText = match.point2 + ' (' + match.set2 + ')';
                     }
@@ -73,7 +72,7 @@ matchList.forEach(match => {
                     cardHeaderPointDiv.appendChild(cardHeaderSeparator);
                     cardHeaderPointDiv.appendChild(cardHeaderPointT2);
                     document.getElementById("cardHeader" + match.id).appendChild(cardHeaderPointDiv);
-                    if(e.record.point1 === 0 && e.record.point2 === 0){
+                    if (e.record.point1 === 0 && e.record.point2 === 0) {
                         startMatchAlert(match);
                     }
                 }
@@ -91,7 +90,7 @@ matchList.forEach(match => {
                     container.appendChild(card);
                     matchEndAlert(match);
                 }
-                if(e.record.set1 !== match.set1 || e.record.set2 !== match.set2){
+                if (e.record.set1 !== match.set1 || e.record.set2 !== match.set2) {
                     newSetAlert(match);
                 }
             }
@@ -100,7 +99,7 @@ matchList.forEach(match => {
 });
 
 //Affichage des matchs sur la page d'arbitrage
-if(window.location.href.includes("arbitrage.html")){
+if (window.location.href.includes("arbitrage.html")) {
     //Affichage des matchs
     matchList.forEach(record => {
         let container = document.getElementById('cardContainer');
@@ -116,7 +115,7 @@ if(window.location.href.includes("arbitrage.html")){
         //Affichage du nom des équipes
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
-        if(record.team1 && record.team2){
+        if (record.team1 && record.team2) {
             cardTitle.innerText = record.expand.team1.name + " VS " + record.expand.team2.name;
         }
         //Affichage du sport
@@ -131,35 +130,32 @@ if(window.location.href.includes("arbitrage.html")){
         arbitrageButton.className = "text-center";
         const arbitrageButtonLink = document.createElement('a');
         //Gestion des couleurs du bouton en fonction du statut du match
-        if(record.status === "waiting") {
+        if (record.status === "waiting") {
             arbitrageButtonLink.className = "btn btn-primary mt-2";
             arbitrageButtonLink.innerHTML = "Démarrer et arbitrer ce match";
-        }
-        else if(record.status === "in_progress") {
+        } else if (record.status === "in_progress") {
             arbitrageButtonLink.className = "btn btn-warning mt-2";
             arbitrageButtonLink.innerHTML = "Arbitrer ce match";
-        }
-        else if(record.status === "finished") {
+        } else if (record.status === "finished") {
             arbitrageButtonLink.className = "btn btn-success mt-2";
             arbitrageButtonLink.innerHTML = "Match terminé";
             container = document.getElementById('cardContainer2');
-        }
-        else{
+        } else {
             arbitrageButtonLink.className = "btn btn-secondary mt-2";
             arbitrageButtonLink.innerHTML = "Erreur de statut";
         }
         //Gestion du lien du bouton
-        arbitrageButtonLink.addEventListener('click', async function(event) {
+        arbitrageButtonLink.addEventListener('click', async function (event) {
             window.location.href = "arbimatch.html?id=" + record.id;
         });
         //Ajout des éléments à la carte
         arbitrageButton.appendChild(arbitrageButtonLink);
         card.appendChild(cardHeader);
-        if(record.team1 && record.team2){
+        if (record.team1 && record.team2) {
             cardBody.appendChild(cardTitle);
         }
         cardBody.appendChild(cardText);
-        if(record.name !== ""){
+        if (record.name !== "") {
             cardBody.appendChild(cardDescr);
         }
         cardBody.appendChild(arbitrageButton);
@@ -170,7 +166,7 @@ if(window.location.href.includes("arbitrage.html")){
 }
 
 //Gestion des informations dans la modal
-if(window.location.href.includes("arbitrage.html")){
+if (window.location.href.includes("arbitrage.html")) {
     //Création de la modal
     const modal = document.getElementById('modalAddMatch');
     const modalDialog = document.createElement('div');
@@ -288,9 +284,9 @@ if(window.location.href.includes("arbitrage.html")){
 
 
 //Gestion de l'ajout d'un match
-if(window.location.href.includes("arbitrage.html")){
+if (window.location.href.includes("arbitrage.html")) {
     const addMatchForm = document.getElementById('addMatchForm');
-    addMatchForm.addEventListener('submit', async function(event) {
+    addMatchForm.addEventListener('submit', async function (event) {
         //Empêche le rechargement de la page
         event.preventDefault();
 
@@ -310,10 +306,9 @@ if(window.location.href.includes("arbitrage.html")){
         //Décalage de l'heure de début de 1h pour la gestion du fuseau horaire
         time_start.setHours(time_start.getHours() - 1);
         let currentMode = "";
-        if(sportID.name === "badminton"){
+        if (sportID.name === "badminton") {
             currentMode = "tournoi";
-        }
-        else{
+        } else {
             currentMode = "poules"
         }
         const data = {
@@ -342,7 +337,7 @@ if(window.location.href.includes("arbitrage.html")){
 const association = [];
 
 //Gestion de la modal de supression d'un match
-if(window.location.href.includes("arbitrage.html")){
+if (window.location.href.includes("arbitrage.html")) {
     //Création de la modal
     const delMatchDiv = document.getElementById('matchdelJS');
     const delMatchLabel = document.createElement('label');
@@ -357,7 +352,7 @@ if(window.location.href.includes("arbitrage.html")){
 
         const delMatchOption = document.createElement('option');
         let time_start = new Date(record.heure_debut);
-        if(record.team1 && record.team2){
+        if (record.team1 && record.team2) {
             delMatchOption.innerHTML = record.expand.team1.name + " VS " + record.expand.team2.name + " - " + record.expand.sport.name + " - " + time_start.toLocaleString();
         } else {
             delMatchOption.innerHTML = record.name + ' - ' + record.expand.sport.name + " - " + time_start.toLocaleString();
@@ -378,10 +373,10 @@ if(window.location.href.includes("arbitrage.html")){
 }
 
 //Gestion de la supression d'un match
-if(window.location.href.includes("arbitrage.html")){
+if (window.location.href.includes("arbitrage.html")) {
     //Récupération du formulaire
     const delMatchForm = document.getElementById('delMatchForm');
-    delMatchForm.addEventListener('submit', async function(event) {
+    delMatchForm.addEventListener('submit', async function (event) {
         //Empêche le rechargement de la page
         event.preventDefault();
 
@@ -403,7 +398,7 @@ if(window.location.href.includes("arbitrage.html")){
 
 //Affichage des matchs sur la page d'accueil
 //Elle s'appele indox.html ou bien n'as pas d'autre juste /
-if(window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/"){
+if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
     //Affichage des matchs
     matchList.forEach(match => {
         let container = document.getElementById('cardContainer');
@@ -414,23 +409,20 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         const cardHeader = document.createElement('div');
         cardHeader.className = "card-header text-center bg-light-subtle ";
         cardHeader.id = "cardHeader" + match.id;
-        if(match.status === "waiting") {
+        if (match.status === "waiting") {
             cardHeader.classList.add("text-primary-emphasis");
-        }
-        else if(match.status === "in_progress") {
+        } else if (match.status === "in_progress") {
             cardHeader.classList.add("text-warning-emphasis");
-        }
-        else if(match.status === "finished") {
+        } else if (match.status === "finished") {
             cardHeader.classList.add("text-success-emphasis");
-        }
-        else{
+        } else {
             cardHeader.classList.add("text-emphasis-light");
         }
         //Affichage de l'heure de début si le match n'est pas en cours ou a une erreur de statut
         const time_start = new Date(match.heure_debut);
         cardHeader.innerText = time_start.toLocaleString();
         //Affichage des points si le match est en cours ou terminé
-        if(match.status === "in_progress"){
+        if (match.status === "in_progress") {
             cardHeader.innerText = "";
             const cardHeaderPointDiv = document.createElement('div');
             cardHeaderPointDiv.className = "d-flex justify-content-evenly";
@@ -442,7 +434,7 @@ if(window.location.href.includes("index.html") || window.location.href === "http
             const cardHeaderPointT2 = document.createElement('p');
             cardHeaderPointT2.id = "pointT2" + match.id;
             cardHeaderPointT2.innerText = match.point2;
-            if(match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball"){
+            if (match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball") {
                 cardHeaderPointT1.innerText = match.point1 + ' (' + match.set1 + ')';
                 cardHeaderPointT2.innerText = match.point2 + ' (' + match.set2 + ')';
             }
@@ -451,7 +443,7 @@ if(window.location.href.includes("index.html") || window.location.href === "http
             cardHeaderPointDiv.appendChild(cardHeaderPointT2);
             cardHeader.appendChild(cardHeaderPointDiv);
         }
-        if(match.status === "finished"){
+        if (match.status === "finished") {
             container = document.getElementById('cardContainer2');
             cardHeader.innerText = "";
             const cardHeaderPointDiv = document.createElement('div');
@@ -464,7 +456,7 @@ if(window.location.href.includes("index.html") || window.location.href === "http
             const cardHeaderPointT2 = document.createElement('p');
             cardHeaderPointT2.id = "pointT2" + match.id;
             cardHeaderPointT2.innerText = match.point2;
-            if(match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball"){
+            if (match.expand.sport.name === "badminton" || match.expand.sport.name === "volleyball") {
                 cardHeaderPointT1.innerText = match.point1 + ' (' + match.set1 + ')';
                 cardHeaderPointT2.innerText = match.point2 + ' (' + match.set2 + ')';
             }
@@ -478,7 +470,7 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         //Affichage du nom des équipes
         const cardTitle = document.createElement('h5');
         cardTitle.className = "card-title text-center";
-        if(match.team1 && match.team2){
+        if (match.team1 && match.team2) {
             cardTitle.innerText = match.expand.team1.name + " VS " + match.expand.team2.name;
         }
         //Affichage du sport
@@ -490,33 +482,30 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         cardDescr.innerText = match.name;
         //Affichage du statut
         const cardFooter = document.createElement('div');
-        if(match.status === "waiting") {
+        if (match.status === "waiting") {
             cardFooter.className = "card-footer bg-light-subtle text-primary-emphasis";
             cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match en attente";
-        }
-        else if(match.status === "in_progress") {
+        } else if (match.status === "in_progress") {
             cardFooter.className = "card-footer bg-light-subtle text-warning-emphasis";
             cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match en cours";
-        }
-        else if(match.status === "finished") {
+        } else if (match.status === "finished") {
             cardFooter.className = "card-footer bg-light-subtle text-success-emphasis";
             cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Match terminé";
-        }
-        else{
+        } else {
             cardFooter.className = "card-footer bg-light-subtle text-emphasis-light";
             cardFooter.id = "cardFooter" + match.id;
             cardFooter.innerHTML = "Erreur de statut";
         }
         //Ajout des éléments à la carte
         card.appendChild(cardHeader);
-        if(match.team1 && match.team2){
+        if (match.team1 && match.team2) {
             cardBody.appendChild(cardTitle);
         }
         cardBody.appendChild(cardText);
-        if(match.name !== ""){
+        if (match.name !== "") {
             cardBody.appendChild(cardDescr);
         }
         card.appendChild(cardBody);
@@ -525,8 +514,6 @@ if(window.location.href.includes("index.html") || window.location.href === "http
         container.appendChild(card);
     });
 }
-
-
 
 
 console.log("Backend match loaded!");
