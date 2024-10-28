@@ -4,10 +4,10 @@ import PocketBase from '../pocketbase.es.mjs'
 const pb = new PocketBase("https://pocketbase.appen.fr");
 
 //Connexion
-if(window.location.href.includes("login.html")){
+if (window.location.href.includes("login.html")) {
     const loginButton = document.querySelector('button[type="submit"]');
 
-    loginButton.addEventListener('click', async function(event) {
+    loginButton.addEventListener('click', async function (event) {
         //Annulation du comportement par défaut
         event.preventDefault();
 
@@ -34,15 +34,15 @@ if(window.location.href.includes("login.html")){
 }
 
 //Redirection vers la page d'arbitrage si l'utilisateur est déjà connecté
-if(window.location.href.includes("login.html")){
-    if(pb.authStore.isValid === true){
+if (window.location.href.includes("login.html")) {
+    if (pb.authStore.isValid === true) {
         window.location.href = "arbitrage.html";
     }
 }
 
 //Redirection vers la page de login si l'utilisateur n'est pas connecté
-if(window.location.href.includes("arbitrage.html") || window.location.href.includes("arbimatch.html")){
-    if(pb.authStore.isValid === false){
+if (window.location.href.includes("arbitrage.html") || window.location.href.includes("arbimatch.html")) {
+    if (pb.authStore.isValid === false) {
         window.location.href = "login.html";
     }
 }
@@ -51,7 +51,7 @@ if(window.location.href.includes("arbitrage.html") || window.location.href.inclu
 //Déconnexion
 if (pb.authStore.isValid && window.location.href.includes("arbitrage.html") || window.location.href.includes("arbimatch.html")) {
     const logoutButton = document.getElementById('disconect');
-    logoutButton.addEventListener('click', async function(event) {
+    logoutButton.addEventListener('click', async function (event) {
         //Annulation du comportement par défaut
         event.preventDefault();
         //Déconnexion

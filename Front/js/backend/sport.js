@@ -12,44 +12,44 @@ const matchList = await pb.collection('match').getFullList({
     expand: 'sport,team1,team2',
 });
 
-function getOrderedTableTeams(sport){
+function getOrderedTableTeams(sport) {
     let result = "";
-    if(sport.tableau !== ""){
+    if (sport.tableau !== "") {
         result += `<h6 class="text-secondary-emphasis fw-semibold">${sport.tableau}</h6>`
     }
-    if(sport.state === "waiting"){
+    if (sport.state === "waiting") {
         result += "<h5>La compétition n'a pas commencé</h5>"
-    } else if(sport.type === "poules"){
+    } else if (sport.type === "poules") {
         let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => teamA.classement - teamB.classement)
         let goalAverageText = ""
-        if(teams[0].points === teams[1].points){
+        if (teams[0].points === teams[1].points) {
             goalAverageText = "(" + teams[0].goalAverage + ")"
         }
         result += `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts${goalAverageText}</span></h5>`
-        for(let i = 1; i < teams.length; i++){
+        for (let i = 1; i < teams.length; i++) {
             let color = ""
-            if(teams[i].classement <= sport.qualified){
+            if (teams[i].classement <= sport.qualified) {
                 color = "bg-success"
             } else {
                 color = "bg-danger"
             }
             goalAverageText = ""
-            if(teams[i].points === teams[i-1].points){
+            if (teams[i].points === teams[i - 1].points) {
                 goalAverageText = "(" + teams[i].goalAverage + ")"
             }
-            if(i+1 < teams.length){
-                if(teams[i].points === teams[i+1].points){
+            if (i + 1 < teams.length) {
+                if (teams[i].points === teams[i + 1].points) {
                     goalAverageText = "(" + teams[i].goalAverage + ")"
                 }
             }
             result += `<div class="d-flex justify-content-between align-items-start">${teams[i].classement}e : ${teams[i].name}<span class="badge ${color} rounded-pill">${teams[i].points} pts${goalAverageText}</span></div>`
         }
-    } else if(sport.type === "tournois"){
-        if(sport.state === "started"){
+    } else if (sport.type === "tournois") {
+        if (sport.state === "started") {
             let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
-            for(let i = 0; i < teams.length; i++){
+            for (let i = 0; i < teams.length; i++) {
                 let stade;
-                switch(teams[i].stade){
+                switch (teams[i].stade) {
                     case "16":
                         stade = "16èmes"
                         break;
@@ -67,20 +67,20 @@ function getOrderedTableTeams(sport){
                         break;
                 }
                 let color = ""
-                if(teams[i].eliminated){
+                if (teams[i].eliminated) {
                     color = "bg-danger"
                 } else {
                     color = "bg-success"
                 }
                 result += `<div class="d-flex justify-content-between align-items-start">${teams[i].name}<span class="badge ${color} rounded-pill">${stade}</span></div>`
             }
-        } else if(sport.state === "finished"){
+        } else if (sport.state === "finished") {
             let teams = EquipeList.filter(equipe => equipe.expand.sport.name === sport.name && equipe.stade !== '').sort((teamA, teamB) => parseInt(teamA.stade, 10) - parseInt(teamB.stade, 10))
-            for(let i = 0; i < teams.length; i++){
+            for (let i = 0; i < teams.length; i++) {
                 let classement;
                 let color = ""
                 let textColor = ""
-                switch(teams[i].stade){
+                switch (teams[i].stade) {
                     case "16":
                         classement = "16èmes"
                         color = "bg-secondary"
@@ -94,7 +94,7 @@ function getOrderedTableTeams(sport){
                         color = "bg-secondary"
                         break;
                     case "2":
-                        if(teams[i].eliminated){
+                        if (teams[i].eliminated) {
                             color = "bg-primary-subtle"
                             classement = "Quatrième"
                         } else {
@@ -103,7 +103,7 @@ function getOrderedTableTeams(sport){
                         }
                         break;
                     case "1":
-                        if(teams[i].eliminated){
+                        if (teams[i].eliminated) {
                             color = "bg-success"
                             classement = "Second"
                         } else {
@@ -120,21 +120,27 @@ function getOrderedTableTeams(sport){
     return result;
 }
 
-function getSportNextMatchText(sport){
-    let match = matchList.find(matche => matche.expand.sport.name === sport&& matche.status === "waiting");
-    if(!match){
+function getSportNextMatchText(sport) {
+    let match = matchList.find(matche => matche.expand.sport.name === sport && matche.status === "waiting");
+    if (!match) {
         return "Pas de match prévu";
     }
     const time_start = new Date(match.heure_debut);
-    if(match.team1 && match.team2){
-        return "Prochain match : " + match.expand.team1.name + " vs " + match.expand.team2.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
+    if (match.team1 && match.team2) {
+        return "Prochain match : " + match.expand.team1.name + " vs " + match.expand.team2.name + ' ' + time_start.toLocaleString('fr', {weekday: 'long'}) + " à " + time_start.toLocaleString('fr', {
+            hour: 'numeric',
+            minute: 'numeric'
+        });
     } else {
-        return "Prochain match : " + match.name + ' ' + time_start.toLocaleString('fr', { weekday: 'long' }) +  " à " +  time_start.toLocaleString('fr', { hour: 'numeric', minute: 'numeric' });
+        return "Prochain match : " + match.name + ' ' + time_start.toLocaleString('fr', {weekday: 'long'}) + " à " + time_start.toLocaleString('fr', {
+            hour: 'numeric',
+            minute: 'numeric'
+        });
     }
 }
 
-function getSportIcon(sport){
-    switch(sport) {
+function getSportIcon(sport) {
+    switch (sport) {
         case "basketball":
             return ` <span class="material-symbols-outlined">sports_basketball</span>`
         case "volleyball":
@@ -148,18 +154,18 @@ function getSportIcon(sport){
     }
 }
 
-function getSportCard(sportName){
+function getSportCard(sportName) {
     let listeTableau = SportList.filter(sport => sport.name === sportName);
-    let result =  `
+    let result = `
     <div class="card my-3">
         <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-evenly">${getSportIcon(sportName)}${sportName.toUpperCase()}${getSportIcon(sportName)}</div></div>
         <div class="card-body bg-light-subtle text-emphasis-light">`
-        result += getOrderedTableTeams(listeTableau[0])
-        for(let i = 1; i < listeTableau.length; i++){
-            result += "<hr>"
-            result += getOrderedTableTeams(listeTableau[i])
-        }
-        result += `</div>
+    result += getOrderedTableTeams(listeTableau[0])
+    for (let i = 1; i < listeTableau.length; i++) {
+        result += "<hr>"
+        result += getOrderedTableTeams(listeTableau[i])
+    }
+    result += `</div>
         <div class="card-footer bg-light-subtle text-emphasis-light">${getSportNextMatchText(sportName)}</div>
     </div>`
     return result;
@@ -167,7 +173,7 @@ function getSportCard(sportName){
 
 const sportCardContainer = document.getElementById("sportContainer");
 let sportsList = SportList.reduce((accumulator, currentValue) => {
-    if(!(accumulator.some(elem => elem === currentValue.name))){
+    if (!(accumulator.some(elem => elem === currentValue.name))) {
         accumulator.push(currentValue.name);
     }
     return accumulator;

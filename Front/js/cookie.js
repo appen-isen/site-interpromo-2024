@@ -2,10 +2,10 @@ document.cookie = "icons=wifi_tethering,trophy,fitness_center,login; expires=Fri
 
 document.cookie = "hideImage=true; expires=Fri, 10 Nov 2023 12:00:00 UTC; path=/";
 
-function getCookie(name){
+function getCookie(name) {
     let value = "; " + document.cookie;
     let parts = value.split("; " + name + "=");
-    if(parts.length === 2) return parts.pop().split(";").shift();
+    if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 let iconData = getCookie("icons");
@@ -14,7 +14,7 @@ let iconList = iconData.split(",");
 
 let iconContainer = document.querySelectorAll(".icons-display");
 
-for(let i = 0; i < iconContainer.length; i++){
+for (let i = 0; i < iconContainer.length; i++) {
     let icon = document.createElement("span");
     icon.className = "material-symbols-outlined";
     icon.innerHTML = iconList[i];
@@ -25,9 +25,8 @@ for(let i = 0; i < iconContainer.length; i++){
 
 let hideImage = getCookie("hideImage");
 
-if(hideImage === "true"){
+if (hideImage === "true") {
     document.querySelector(".logo-appen").style.display = "none";
-}
-else{
+} else {
     document.querySelector(".logo-appen").style.display = "block";
 }

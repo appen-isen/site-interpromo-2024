@@ -1,5 +1,5 @@
-function getSportIconHTML(sportName){
-    switch(sportName.toLowerCase()){
+function getSportIconHTML(sportName) {
+    switch (sportName.toLowerCase()) {
         case "football":
             return `<span class="material-symbols-outlined">
                 sports_soccer
@@ -21,12 +21,12 @@ function getSportIconHTML(sportName){
     }
 }
 
-function deleteAlert(alertId){
+function deleteAlert(alertId) {
     const alert = bootstrap.Alert.getOrCreateInstance(`body #alertsContainer #${alertId}`)
     alert.close()
 }
 
-function newGoalAlert(match, goalTeam){
+function newGoalAlert(match, goalTeam) {
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
     <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -57,7 +57,7 @@ function newGoalAlert(match, goalTeam){
     setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
 }
 
-function matchEndAlert(match){
+function matchEndAlert(match) {
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
     <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -88,7 +88,7 @@ function matchEndAlert(match){
     setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
 }
 
-function startMatchAlert(match){
+function startMatchAlert(match) {
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
     <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-info alert-dismissible fade show" role="alert">
@@ -119,7 +119,7 @@ function startMatchAlert(match){
     setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
 }
 
-function newSetAlert(match){
+function newSetAlert(match) {
     let alertsContainer = document.querySelector('body #alertsContainer');
     let alert = `
     <div id="${match.id}${match.set1}_${match.set2}" class="alert alert-info alert-dismissible fade show" role="alert">
