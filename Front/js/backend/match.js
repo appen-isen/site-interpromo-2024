@@ -314,4 +314,38 @@ if (window.location.href.includes("arbitrage.html")) {
     });
 }
 
+//Affichage de la liste des joueurs
+if (window.location.href.includes("arbitrage.html")) {
+    const allPlayerList = await pb.collection('joueurs').getFullList({
+        expand: 'promo'
+    });
+    const playerListContainer = document.getElementById('playersList');
+    //Affichage des joueurs dans la liste sous la forme nom prénom - promo
+    allPlayerList.forEach(player => {
+        const playerHTML = `
+            <li class="list-group list-group-item d-flex justify-content-between align-items-center">
+                ${player.name} ${player.prenom} - ${player.expand.promo.name}
+            </li>
+        `;
+        playerListContainer.innerHTML += playerHTML;
+    });
+    //Fonction de recherche de joueur
+    const searchPlayerInput = document.getElementById('searchPlayerInput');
+    searchPlayerInput.addEventListener('input', async function () {
+        const search = searchPlayerInput.value.toLowerCase();
+        console.log(search);
+        const filteredPlayerList = allPlayerList.filter(player => player.name.toLowerCase().includes(search) || player.prenom.toLowerCase().includes(search) || player.expand.promo.name.toLowerCase().includes(search));
+        console.log(filteredPlayerList);
+        playerListContainer.innerHTML = "";
+        filteredPlayerList.forEach(player => {
+            const playerHTML = `
+                <li class="list-group list-group-item d-flex justify-content-between align-items-center">
+                    ${player.name} ${player.prenom} - ${player.expand.promo.name}
+                </li>
+            `;
+            playerListContainer.innerHTML += playerHTML;
+        });
+    });
+}
+
 console.log("Backend match loaded!");
