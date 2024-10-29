@@ -333,9 +333,7 @@ if (window.location.href.includes("arbitrage.html")) {
     const searchPlayerInput = document.getElementById('searchPlayerInput');
     searchPlayerInput.addEventListener('input', async function () {
         const search = searchPlayerInput.value.toLowerCase();
-        console.log(search);
         const filteredPlayerList = allPlayerList.filter(player => player.name.toLowerCase().includes(search) || player.prenom.toLowerCase().includes(search) || player.expand.promo.name.toLowerCase().includes(search));
-        console.log(filteredPlayerList);
         playerListContainer.innerHTML = "";
         filteredPlayerList.forEach(player => {
             const playerHTML = `
@@ -345,6 +343,59 @@ if (window.location.href.includes("arbitrage.html")) {
             `;
             playerListContainer.innerHTML += playerHTML;
         });
+    });
+}
+
+if (window.location.href.includes("arbitrage.html")) {
+    const PromoList = await pb.collection('promo').getFullList({});
+    const promoSelect = document.getElementById('Teampromo');
+    promoSelect.innerHTML = PromoList.map(promo => `<option id="${promo.id}" value="${promo.id}">${promo.name}</option>`).join('');
+    const PlayerList = await pb.collection('joueurs').getFullList({});
+    const playerSelect = document.getElementById('TeamPlayers');
+    playerSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom}</option>`).join('');
+    const captaineSelect = document.getElementById('Teamcaptain');
+    captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom}</option>`).join('');
+    const SportList = await pb.collection('sport').getFullList({});
+    const sportSelect = document.getElementById('Teamsport');
+    sportSelect.innerHTML = SportList.map(sport => `<option id="${sport.id}" value="${sport.id}">${sport.name}</option>`).join('');
+    const teamAddForm = document.getElementById('addTeamForm');
+    teamAddForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const teamName = document.getElementById('TeamName').value;
+        const teamPromo = document.getElementById('Teampromo').selectedOptions[0].value;
+        const teamSport = document.getElementById('Teamsport').selectedOptions[0].value;
+        const teamPlayers = Array.from(document.getElementById('TeamPlayers').selectedOptions).map(option => option.value);
+        const teamCaptain = document.getElementById('Teamcaptain').selectedOptions[0].value;
+        const data = {
+            "name": teamName,
+            "promo": teamPromo,
+            "sport": teamSport,
+            "membres": teamPlayers,
+            "capitaine": teamCaptain
+        };
+        await pb.collection('equipes').create(data);
+        window.location.href = "arbitrage.html";
+    });
+}
+
+//Gestion de la suppression d'une équipe
+if (window.location.href.includes("arbitrage.html")) {
+    const allTeamList = await pb.collection('equipes').getFullList({
+        expand: 'promo,sport'
+    });
+    const teamDelListContainer = document.getElementById('TeamDelName');
+    allTeamList.forEach(team => {
+        const teamHTML = `
+            <option value="${team.id}">${team.name} - ${team.expand.promo.name} - ${team.expand.sport.name}</option>
+        `;
+        teamDelListContainer.innerHTML += teamHTML;
+    });
+    const teamDelForm = document.getElementById('delTeamForm');
+    teamDelForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const teamID = document.getElementById('TeamDelName').selectedOptions[0].value;
+        await pb.collection('equipes').delete(teamID);
+        window.location.href = "arbitrage.html";
     });
 }
 

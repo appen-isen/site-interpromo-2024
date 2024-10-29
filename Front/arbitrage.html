@@ -79,11 +79,15 @@
         <div class="text-center align-items-center">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddPlayer">Ajouter un joueur
             </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalListAllPlayers">Lister
+                tous les joueurs
+            </button>
         </div>
         <br>
         <div class="text-center align-items-center">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalListAllPlayers">Lister
-                tous les joueurs
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddTeam">Crée une équipe
+            </button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalRemoveTeam">Supprimer une équipe
             </button>
         </div>
         <br>
@@ -91,9 +95,6 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMatch">Ajouter
                 un match
             </button>
-        </div>
-        <br>
-        <div class="text-center align-items-center">
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalRemoveMatch">
                 Supprimer un match
             </button>
@@ -142,10 +143,78 @@
                 </div>
             </div>
         </div>
-        <div class="modal" tabindex="-3" id="modalAddMatch">
+        <div class="modal" tabindex="-3" id="modalAddTeam">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une équipe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addTeamForm">
+                            <div class="form-group">
+                                <label for="TeamName">Nom de l'équipe</label>
+                                <input type="text" class="form-control" id="TeamName" name="TeamName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Teampromo">Promo</label>
+                                <select class="form-control" id="Teampromo" name="Teampromo" required>
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="TeamPlayers">Joueurs</label>
+                                <select class="form-control" id="TeamPlayers" name="TeamPlayers" multiple required>
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Teamcaptain">Capitaine</label>
+                                <select class="form-control" id="Teamcaptain" name="Teamcaptain">
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Teamsport">Sport</label>
+                                <select class="form-control" id="Teamsport" name="Teamsport" required>
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary" id="addTeamButton">Ajouter cette équipe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-4" id="modalRemoveTeam">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Supprimer une équipe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="delTeamForm">
+                            <div class="form-group">
+                                <label for="TeamDelName">Nom de l'équipe</label>
+                                <select class="form-control" id="TeamDelName" name="TeamDelName" required>
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-danger">Supprimer cette équipe (attention cette action est
+                                irréversible)
+                            </button>
+                        </form>
+                    </div>
+                </div>  
+            </div>     
+        </div>  
+        <div class="modal" tabindex="-5" id="modalAddMatch">
 
         </div>
-        <div class="modal" tabindex="-4" id="modalRemoveMatch" aria-hidden="true">
+        <div class="modal" tabindex="-6" id="modalRemoveMatch" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
