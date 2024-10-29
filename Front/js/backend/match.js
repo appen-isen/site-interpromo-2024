@@ -254,7 +254,7 @@ if (window.location.href.includes("arbitrage.html")) {
 }
 
 //Affichage des matchs sur la page d'accueil
-//Elle s'appele indox.html ou bien n'as pas d'autre juste /
+//Elle s'appele index.html ou bien n'as pas d'autre juste /
 if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
     //Affichage des matchs
     matchList.forEach(match => {
@@ -282,6 +282,120 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
             </div>
         `;
         container.innerHTML += cardHTML;
+    });
+}
+
+//Fonctionne dans match.js mais pas dans player.js PARCE QUE: NIQUE
+//Gestion de l'ajout d'un joueur
+if (window.location.href.includes("arbitrage.html")) {
+    const promotions = await pb.collection('promo').getFullList({});
+    const promoSelect = document.getElementById('Playerpromo');
+
+    // Remplir dynamiquement les options de promo
+    const promoOptions = promotions.map(promo => `<option id="${promo.id}" value="${promo.id}">${promo.name}</option>`).join('');
+    promoSelect.innerHTML = promoOptions;
+
+
+    const playerAddForm = document.getElementById('addPlayerForm');
+    playerAddForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        
+        //Récupération des données du formulaire
+        const nom = document.getElementById('PlayerlastName').value;
+        const prenom = document.getElementById('PlayerfirstName').value;
+        const promoId = document.getElementById('Playerpromo').selectedOptions[0].value;
+
+        const data = {
+            "name": nom,
+            "prenom": prenom,
+            "promo": promoId
+        };
+        await pb.collection('joueurs').create(data);
+    });
+}
+
+//Affichage de la liste des joueurs
+if (window.location.href.includes("arbitrage.html")) {
+    const allPlayerList = await pb.collection('joueurs').getFullList({
+        expand: 'promo'
+    });
+    const playerListContainer = document.getElementById('playersList');
+    //Affichage des joueurs dans la liste sous la forme nom prénom - promo
+    allPlayerList.forEach(player => {
+        const playerHTML = `
+            <li class="list-group list-group-item d-flex justify-content-between align-items-center">
+                ${player.name} ${player.prenom} - ${player.expand.promo.name}
+            </li>
+        `;
+        playerListContainer.innerHTML += playerHTML;
+    });
+    //Fonction de recherche de joueur
+    const searchPlayerInput = document.getElementById('searchPlayerInput');
+    searchPlayerInput.addEventListener('input', async function () {
+        const search = searchPlayerInput.value.toLowerCase();
+        const filteredPlayerList = allPlayerList.filter(player => player.name.toLowerCase().includes(search) || player.prenom.toLowerCase().includes(search) || player.expand.promo.name.toLowerCase().includes(search));
+        playerListContainer.innerHTML = "";
+        filteredPlayerList.forEach(player => {
+            const playerHTML = `
+                <li class="list-group list-group-item d-flex justify-content-between align-items-center">
+                    ${player.name} ${player.prenom} - ${player.expand.promo.name}
+                </li>
+            `;
+            playerListContainer.innerHTML += playerHTML;
+        });
+    });
+}
+
+if (window.location.href.includes("arbitrage.html")) {
+    const PromoList = await pb.collection('promo').getFullList({});
+    const promoSelect = document.getElementById('Teampromo');
+    promoSelect.innerHTML = PromoList.map(promo => `<option id="${promo.id}" value="${promo.id}">${promo.name}</option>`).join('');
+    const PlayerList = await pb.collection('joueurs').getFullList({});
+    const playerSelect = document.getElementById('TeamPlayers');
+    playerSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom}</option>`).join('');
+    const captaineSelect = document.getElementById('Teamcaptain');
+    captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom}</option>`).join('');
+    const SportList = await pb.collection('sport').getFullList({});
+    const sportSelect = document.getElementById('Teamsport');
+    sportSelect.innerHTML = SportList.map(sport => `<option id="${sport.id}" value="${sport.id}">${sport.name}</option>`).join('');
+    const teamAddForm = document.getElementById('addTeamForm');
+    teamAddForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const teamName = document.getElementById('TeamName').value;
+        const teamPromo = document.getElementById('Teampromo').selectedOptions[0].value;
+        const teamSport = document.getElementById('Teamsport').selectedOptions[0].value;
+        const teamPlayers = Array.from(document.getElementById('TeamPlayers').selectedOptions).map(option => option.value);
+        const teamCaptain = document.getElementById('Teamcaptain').selectedOptions[0].value;
+        const data = {
+            "name": teamName,
+            "promo": teamPromo,
+            "sport": teamSport,
+            "membres": teamPlayers,
+            "capitaine": teamCaptain
+        };
+        await pb.collection('equipes').create(data);
+        window.location.href = "arbitrage.html";
+    });
+}
+
+//Gestion de la suppression d'une équipe
+if (window.location.href.includes("arbitrage.html")) {
+    const allTeamList = await pb.collection('equipes').getFullList({
+        expand: 'promo,sport'
+    });
+    const teamDelListContainer = document.getElementById('TeamDelName');
+    allTeamList.forEach(team => {
+        const teamHTML = `
+            <option value="${team.id}">${team.name} - ${team.expand.promo.name} - ${team.expand.sport.name}</option>
+        `;
+        teamDelListContainer.innerHTML += teamHTML;
+    });
+    const teamDelForm = document.getElementById('delTeamForm');
+    teamDelForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const teamID = document.getElementById('TeamDelName').selectedOptions[0].value;
+        await pb.collection('equipes').delete(teamID);
+        window.location.href = "arbitrage.html";
     });
 }
 
