@@ -14,6 +14,7 @@
     <script src="js/cookie.js" defer></script>
     <link rel="icon" href="assets/appen.png">
     <script src="js/backend/login.js" type="module" defer></script>
+    <script src="js/backend/player.js" type="module" defer></script>
     <script src="js/backend/match.js" type="module" defer></script>
     <script defer data-domain="appen.fr" src="https://plausible.mrqt.fr/js/script.js"></script>
 </head>
@@ -76,6 +77,17 @@
 <div class="container">
     <div class="col-8 offset-2 mt-6" id="cardContainer">
         <div class="text-center align-items-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddPlayer">Ajouter un joueur
+            </button>
+        </div>
+        <br>
+        <div class="text-center align-items-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalListAllPlayers">Lister
+                tous les joueurs
+            </button>
+        </div>
+        <br>
+        <div class="text-center align-items-center">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddMatch">Ajouter
                 un match
             </button>
@@ -86,10 +98,42 @@
                 Supprimer un match
             </button>
         </div>
-        <div class="modal" tabindex="-1" id="modalAddMatch">
+        <div class="modal" tabindex="-1" id="modalAddPlayer">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter un joueur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addPlayerForm">
+                            <div class="form-group">
+                                <label for="PlayerfirstName">Prénom</label>
+                                <input type="text" class="form-control" id="PlayerfirstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="PlayerlastName">Nom</label>
+                                <input type="text" class="form-control" id="PlayerlastName" name="lastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="Playerpromo">Promo</label>
+                                <select class="form-control" id="Playerpromo" name="Playerpromo" required>
+                                    <!-- Options dynamiques -->
+                                </select>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary" id="addPlayerButton">Ajouter ce joueur</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-2" id="modalListAllPlayers">
+        </div>
+        <div class="modal" tabindex="-3" id="modalAddMatch">
 
         </div>
-        <div class="modal" tabindex="-2" id="modalRemoveMatch" aria-hidden="true">
+        <div class="modal" tabindex="-4" id="modalRemoveMatch" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

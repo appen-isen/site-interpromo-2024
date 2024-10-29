@@ -254,7 +254,7 @@ if (window.location.href.includes("arbitrage.html")) {
 }
 
 //Affichage des matchs sur la page d'accueil
-//Elle s'appele indox.html ou bien n'as pas d'autre juste /
+//Elle s'appele index.html ou bien n'as pas d'autre juste /
 if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
     //Affichage des matchs
     matchList.forEach(match => {
@@ -282,6 +282,35 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
             </div>
         `;
         container.innerHTML += cardHTML;
+    });
+}
+
+//Fonctionne dans match.js mais pas dans player.js PARCE QUE: NIQUE
+//Gestion de l'ajout d'un joueur
+if (window.location.href.includes("arbitrage.html")) {
+    const promotions = await pb.collection('promo').getFullList({});
+    const promoSelect = document.getElementById('Playerpromo');
+
+    // Remplir dynamiquement les options de promo
+    const promoOptions = promotions.map(promo => `<option id="${promo.id}" value="${promo.id}">${promo.name}</option>`).join('');
+    promoSelect.innerHTML = promoOptions;
+
+
+    const playerAddForm = document.getElementById('addPlayerForm');
+    playerAddForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        
+        //Récupération des données du formulaire
+        const nom = document.getElementById('PlayerlastName').value;
+        const prenom = document.getElementById('PlayerfirstName').value;
+        const promoId = document.getElementById('Playerpromo').selectedOptions[0].value;
+
+        const data = {
+            "name": nom,
+            "prenom": prenom,
+            "promo": promoId
+        };
+        await pb.collection('joueurs').create(data);
     });
 }
 
