@@ -140,7 +140,7 @@ if (window.location.href.includes("arbitrage.html")) {
                         <div class="mb-3">
                             <label for="sport" class="form-label">Sport</label>
                             <select class="form-control" id="sport">
-                                ${sportList.map(sport => `<option>${sport.name}</option>`).join('')}
+                                ${sportList.map(sport => `<option>${sport.name} (${sport.tableau})</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -357,7 +357,7 @@ if (window.location.href.includes("arbitrage.html")) {
     captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom}</option>`).join('');
     const SportList = await pb.collection('sport').getFullList({});
     const sportSelect = document.getElementById('Teamsport');
-    sportSelect.innerHTML = SportList.map(sport => `<option id="${sport.id}" value="${sport.id}">${sport.name}</option>`).join('');
+    sportSelect.innerHTML = SportList.map(sport => `<option id="${sport.id}" value="${sport.id}">${sport.name} (${sport.tableau})</option>`).join('');
     const teamAddForm = document.getElementById('addTeamForm');
     teamAddForm.addEventListener('submit', async function (event) {
         event.preventDefault();
