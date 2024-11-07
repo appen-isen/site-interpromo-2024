@@ -352,9 +352,12 @@ if (window.location.href.includes("arbitrage.html")) {
     const PromoList = await pb.collection('promo').getFullList({});
     const promoSelect = document.getElementById('Teampromo');
     promoSelect.innerHTML = PromoList.map(promo => `<option id="${promo.id}" value="${promo.id}">${promo.name}</option>`).join('');
-    const PlayerList = await pb.collection('joueurs').getFullList({});
+    const PlayerList = await pb.collection('joueurs').getFullList({
+        expand: 'promo'
+    });
     const playerSelect = document.getElementById('TeamPlayers');
-    playerSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${promo.name}</option>`).join('');
+    // display the list of players with her name, firstname and promo
+    playerSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${player.expand.promo.name}</option>`).join('');
     const captaineSelect = document.getElementById('Teamcaptain');
     captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${promo.name}</option>`).join('');
     const SportList = await pb.collection('sport').getFullList({});
