@@ -102,7 +102,7 @@ if (window.location.href.includes("arbitrage.html")) {
                     ${record.team1 && record.team2 ? `<h5 class="card-title text-center">${record.expand.team1.name} VS ${record.expand.team2.name}</h5>` : ''}
                     <p class="card-text text-center text-capitalize mb-0">${record.expand.sport.name}</p>
                     ${record.name !== "" ? `<p class="card-text text-center fw-semibold text-body-secondary">${record.name}</p>` : ''}
-                    <div class="text-center">
+                    <div class="text-center" id="${record.id}">
                         <a class="btn ${record.status === "waiting" ? "btn-primary" : record.status === "in_progress" ? "btn-warning" : record.status === "finished" ? "btn-success" : "btn-secondary"} mt-2">
                             ${record.status === "waiting" ? "Démarrer et arbitrer ce match" : record.status === "in_progress" ? "Arbitrer ce match" : record.status === "finished" ? "Match terminé" : "Erreur de statut"}
                         </a>
@@ -111,6 +111,11 @@ if (window.location.href.includes("arbitrage.html")) {
             </div>
         `;
         container.innerHTML += cardHTML;
+        const button = document.getElementById(record.id);
+        console.log(button);
+        button.addEventListener('click', () => {
+            window.location.href = `arbimatch.html?id=${record.id}`;
+        });
     });
 }
 
@@ -173,9 +178,9 @@ if (window.location.href.includes("arbitrage.html")) {
         equipe1 = equipeList.find(equipe => equipe.name === equipe1);
         let equipe2 = document.getElementById('equipe2').value;
         equipe2 = equipeList.find(equipe => equipe.name === equipe2);
+        // Récupération de l'id du sport
         let sportID = document.getElementById("sport").value;
-        //Récupération de l'id du sport
-        sportID = sportList.find(sport => sport.name === sportID);
+        sportID = sportList.find(sport => `${sport.name} (${sport.tableau})` === sportID);
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
         //Création de la date de début du match
