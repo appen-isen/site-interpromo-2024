@@ -181,6 +181,22 @@ if (currentStatus.expand.sport.name === "basketball") {
         textPoint2.innerHTML = 0;
         location.reload();
     });
+    const point1Team1 = document.getElementById("btnPoint1");
+    const point2Team1 = document.getElementById("btnPoint2");
+    point1Team1.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const data = { "point1": currentStatus.point1 + 1 };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = currentStatus.point1 + 1;
+        location.reload();
+    });
+    point2Team1.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const data = { "point2": currentStatus.point2 + 1 };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint2.innerHTML = currentStatus.point2 + 1;
+        location.reload();
+    });
 } else {
     //Mise à jour de l'affichage des boutons
     buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
