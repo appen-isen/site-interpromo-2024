@@ -379,7 +379,7 @@ if (window.location.href.includes("arbitrage.html")) {
         const teamName = document.getElementById('TeamName').value;
         const teamPromo = document.getElementById('Teampromo').selectedOptions[0].value;
         const teamSport = document.getElementById('Teamsport').selectedOptions[0].value;
-        const teamPlayers = Array.from(document.querySelectorAll('TeamPlayers input:checked')).map(checkbox => checkbox.value);
+        const teamPlayers = Array.from(document.querySelectorAll('#TeamPlayers input:checked')).map(checkbox => checkbox.value);
         const teamCaptain = document.getElementById('Teamcaptain').selectedOptions[0].value;
         const data = {
             "name": teamName,
