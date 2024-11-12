@@ -373,19 +373,41 @@ if (window.location.href.includes("arbitrage.html")) {
         expand: 'promo'
     });
     const playerSelect = document.getElementById('TeamPlayers');
-    // display the list of players with her name, firstname and promo
-    playerSelect.innerHTML = PlayerList.map(player => `
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="${player.id}" id="${player.id}">
-        <label class="form-check-label" for="flexCheckDefault">
-            ${player.name} ${player.prenom} ${player.expand.promo.name}
-        </label>
-        </div>`).join('');
     const captaineSelect = document.getElementById('Teamcaptain');
-    captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${player.expand.promo.name}</option>`).join('');
-    const SportList = await pb.collection('sport').getFullList({});
     const sportSelect = document.getElementById('Teamsport');
+    const SportList = await pb.collection('sport').getFullList({});
     sportSelect.innerHTML = SportList.map(sport => `<option id="${sport.id}" value="${sport.id}">${sport.name} (${sport.tableau})</option>`).join('');
+
+    // Fonction pour mettre à jour la liste des options de capitaine en fonction des joueurs sélectionnés
+    function updateCaptainOptions() {
+        const selectedPlayerIds = Array.from(document.querySelectorAll('#TeamPlayers input:checked')).map(checkbox => checkbox.value);
+        const selectedPlayers = PlayerList.filter(player => selectedPlayerIds.includes(player.id));
+        captaineSelect.innerHTML = selectedPlayers.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${player.expand.promo.name}</option>`).join('');
+    }
+
+    // Fonction pour mettre à jour la liste des joueurs en fonction de la promo sélectionnée
+    function updatePlayerList(promoId) {
+        const filteredPlayers = PlayerList.filter(player => player.promo === promoId);
+        playerSelect.innerHTML = filteredPlayers.map(player => `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="${player.id}" id="${player.id}">
+                <label class="form-check-label" for="${player.id}">
+                    ${player.name} ${player.prenom} ${player.expand.promo.name}
+                </label>
+            </div>`).join('');
+        // Add event listeners to checkboxes
+        document.querySelectorAll('#TeamPlayers input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateCaptainOptions);
+        });
+        updateCaptainOptions();
+    }
+
+    // Ajout de l'événement change sur le champ de sélection de la promo
+    promoSelect.addEventListener('change', function () {
+        const selectedPromoId = promoSelect.value;
+        updatePlayerList(selectedPromoId);
+    });
+
     const teamAddForm = document.getElementById('addTeamForm');
     teamAddForm.addEventListener('submit', async function (event) {
         event.preventDefault();
