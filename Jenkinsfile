@@ -18,7 +18,7 @@ pipeline {
                         discordSend(
                             webhookURL: 'https://discord.com/api/webhooks/1305885867646259311/AmPEwWfhxlqBlGgMGPTxyP66H2_lZeYOw_KBhgnKJwrxnRHEFUzJFdsMZqXLoWmjyIqF',
                             title: 'Front deploy',
-                            description: 'Front deploy on server',
+                            description: 'Front deployed on the prod server (https://interpromo.appen.fr)',
                             link: 'https://interpromo.appen.fr',
                             result: 'SUCCESS'
                             )
