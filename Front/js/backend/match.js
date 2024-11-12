@@ -19,10 +19,13 @@ if (!("Notification" in window)) {
 }
 
 const equipeList = await pb.collection('equipes').getFullList({
-    expand: "sport"
+    sort: '+classement',
+    expand: 'sport'
 });
 
-const sportList = await pb.collection('sport').getFullList({});
+const sportList = await pb.collection('sport').getFullList({
+    expand: "following"
+});
 
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
@@ -90,11 +93,65 @@ matchList.forEach(match => {
     }
 });
 
+function getTableCard(sport){
+    console.log(sport)
+    let card = `
+    <div class="card my-3">
+        <div class="card-body bg-light-subtle text-emphasis-light border border-${sport.status === "waiting" ? "success" : "warning"}">
+            <h3 class="card-title text-center">${sport.name}</h5>
+            <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
+            <div class="text-center">
+                <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                    ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
+                </button>
+            </div>
+        </div>
+    </div>`
+    if(sport.state === "started" && sport.following != ""){
+        card = card + `
+        <div class="modal" tabindex="-1" id="modalTournoi${sport.id}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Mettre fin à ${sport.name} - ${sport.tableau} (qualificatif à ${sport.expand.following.tableau})</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="endTournoi${sport.id}">
+                            <div class="form-group">
+                                <h4>Les équipes suivantes seront qualifiées en finales :</h4>
+                                ${equipeList.filter(team => team.expand.sport.id === sport.id).reduce((prev, cur, i) => i < sport.qualified ? prev + '<p>' + cur.name + '</p>' : prev, '')}
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-danger">Mettre fin à ce tournoi ? Attention cette action est irréversible
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <div>`
+    }
+    return card;
+}
+
 //Affichage des matchs sur la page d'arbitrage
 if (window.location.href.includes("arbitrage.html")) {
+    let alreadyPrintedSports = [];
+    let finishedMatch = [];
+    let container = document.getElementById('cardContainer');
     //Affichage des matchs
+    sportList.filter(sport => sport.state === "started").forEach(sport => { // On met les tableaux en cours tout en haut
+        const cardTableauHTML = getTableCard(sport);
+        container.insertAdjacentHTML('beforeend', cardTableauHTML);
+        alreadyPrintedSports.push(sport.id);
+    })
     matchList.forEach(record => {
-        let container = document.getElementById('cardContainer');
+        if(!alreadyPrintedSports.includes(record.expand.sport.id) && !(record.expand.sport.state === "finished")){
+            //Si tableau pas encore affiché : on le met avant le premier match du tableau
+            const cardTableauHTML = getTableCard(record.expand.sport);
+            container.insertAdjacentHTML('beforeend', cardTableauHTML);
+            alreadyPrintedSports.push(sport.id);
+        }
         const cardHTML = `
             <div class="card my-3">
                 <div class="card-header text-center bg-light-subtle text-emphasis-light">
@@ -112,13 +169,76 @@ if (window.location.href.includes("arbitrage.html")) {
                 </div>
             </div>
         `;
-        container.insertAdjacentHTML('beforeend', cardHTML);
+        if(record.status == "finished"){
+            finishedMatch.push({id: record.id, html: cardHTML});
+        } else {
+            container.insertAdjacentHTML('beforeend', cardHTML);
+            const button = document.getElementById(record.id);
+            button.addEventListener('click', () => {
+                window.location.href = `arbimatch.html?id=${record.id}`;
+            });
+        }
+    });
+        finishedMatch.forEach(record => {
+        container.insertAdjacentHTML('beforeend', record.html);
         const button = document.getElementById(record.id);
         button.addEventListener('click', () => {
             window.location.href = `arbimatch.html?id=${record.id}`;
         });
-    });
+    })
 }
+
+sportList.forEach(sport => {
+    //Gestion des appui sur bouton pour les tournois
+    if(sport.state === "started" && sport.following != ""){
+        console.log("Adding event on " + "#endTournoi"+sport.id);
+        document.querySelector("#endTournoi"+sport.id).addEventListener("submit", async e => {
+            e.preventDefault();
+            const sportData = {"state": "finished"};
+            try {
+                console.log("trying to finish sport with following tournament");
+                await pb.collection('sport').update(sport.id, sportData);
+            } catch (error) {
+                console.error('Erreur de fin du tournoi :', error);
+            }
+            let i = 0;
+            /*equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
+                const teamData = {"sport": sport.expand.following.id};
+                try {
+                    await pb.collection('equipes').update(qualifiedTeam.id, teamData);
+                    i++;
+                    if(i === sport.qualified){
+                        //window.location.href = "arbitrage.html"; //reload only after all request are terminated
+                    }
+                } catch (error) {
+                    console.error('Erreur de fin du tournoi :', error);
+                }
+            })*/
+        })
+    } else if(sport.state === "started"){
+        document.querySelector("#"+sport.id).addEventListener("click", async e => {
+            const data = {"state": "finished"};
+            try {
+                console.log("trying to finish sport as final phase");
+                await pb.collection('sport').update(sport.id, data);
+                //window.location.href = "arbitrage.html";
+            } catch (error) {
+                console.error('Erreur de fin du tournoi :', error);
+            }
+        })
+    } else if(sport.state === "waiting"){ // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
+        document.querySelector("#"+sport.id).addEventListener("click", async e => {
+            const data = {"state": "started"};
+            try {
+                console.log("trying to start sport");
+                await pb.collection('sport').update(sport.id, data);
+                //window.location.href = "arbitrage.html";
+            } catch (error) {
+                console.error('Erreur de fin du tournoi :', error);
+            }
+        })
+    }
+});
 
 //Gestion des informations dans la modal
 if (window.location.href.includes("arbitrage.html")) {
@@ -263,8 +383,9 @@ if (window.location.href.includes("arbitrage.html")) {
 //Elle s'appele index.html ou bien n'as pas d'autre juste /
 if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
     //Affichage des matchs
+    let finishedMatch = [];
+    let container = document.getElementById('cardContainer');
     matchList.forEach(match => {
-        let container = document.getElementById('cardContainer');
         const cardHTML = `
             <div class="card my-3" id="card${match.id}">
                 <div class="card-header text-center bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardHeader${match.id}">
@@ -287,7 +408,14 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
                 </div>
             </div>
         `;
-        container.innerHTML += cardHTML;
+        if(match.status == "finished"){
+            finishedMatch.push(cardHTML);
+        } else {
+            container.insertAdjacentHTML('beforeend', cardHTML);
+        }
+    });
+    finishedMatch.forEach(card => {
+        container.insertAdjacentHTML('beforeend', card);
     });
 }
 
