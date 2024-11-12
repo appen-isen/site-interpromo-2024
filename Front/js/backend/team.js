@@ -38,7 +38,7 @@ function getTeamClassementBadge(equipe) {
     } else {
         color = "bg-primary"
     }
-    if (equipe.stade !== "") {
+    if ((equipe.stade !== "") && (equipe.expand.sport.state !== "waiting")) {
         let tournoi = SportList.find(sport => sport.name === equipe.expand.sport.name && sport.type === "tournois")
         if (tournoi) {
             if (tournoi.state === "started") {
@@ -105,7 +105,7 @@ function getTeamClassementBadge(equipe) {
     if (equipe.classement !== 0) {
         return `<span class="badge ${color} rounded-pill">${equipe.classement}/${numOfTeamsBySport[equipe.sport]}</span>`
     }
-    return "";
+    return `<span> </span>`;
 }
 
 function getTeamsRow(sport, teams) {
@@ -118,9 +118,7 @@ function getTeamsRow(sport, teams) {
         if (equipe.expand.sport.type === "poules") {
             result += `<p class="text-secondary-emphasis fw-semibold mb-0">${equipe.expand.sport.tableau}</p>`
         }
-        if (equipe.expand.sport.state !== "waiting") {
-            result += getTeamClassementBadge(equipe)
-        }
+        result += getTeamClassementBadge(equipe)
         result += `</div>`
     })
     result += `</div>
@@ -187,9 +185,7 @@ function getSportRow(equipe) {
             <div class="fw-bold d-flex align-items-start">${getSportIcon(equipe.expand.sport.name)}${equipe.expand.sport.name[0].toUpperCase()}${equipe.expand.sport.name.slice(1)} (${equipe.expand.sport.tableau})</div>
             Membres : ${members}
         </div>`
-    if (equipe.expand.sport.state !== "waiting") {
-        result += getTeamClassementBadge(equipe)
-    }
+    result += getTeamClassementBadge(equipe)
     result += `</li>`
     return result
 }
