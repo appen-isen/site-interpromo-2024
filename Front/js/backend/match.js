@@ -361,7 +361,13 @@ if (window.location.href.includes("arbitrage.html")) {
     });
     const playerSelect = document.getElementById('TeamPlayers');
     // display the list of players with her name, firstname and promo
-    playerSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${player.expand.promo.name}</option>`).join('');
+    playerSelect.innerHTML = PlayerList.map(player => `
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="${player.id}" id="${player.id}">
+        <label class="form-check-label" for="flexCheckDefault">
+            ${player.name} ${player.prenom} ${player.expand.promo.name}
+        </label>
+        </div>`).join('');
     const captaineSelect = document.getElementById('Teamcaptain');
     captaineSelect.innerHTML = PlayerList.map(player => `<option id="${player.id}" value="${player.id}">${player.name} ${player.prenom} ${player.expand.promo.name}</option>`).join('');
     const SportList = await pb.collection('sport').getFullList({});
@@ -373,7 +379,7 @@ if (window.location.href.includes("arbitrage.html")) {
         const teamName = document.getElementById('TeamName').value;
         const teamPromo = document.getElementById('Teampromo').selectedOptions[0].value;
         const teamSport = document.getElementById('Teamsport').selectedOptions[0].value;
-        const teamPlayers = Array.from(document.getElementById('TeamPlayers').selectedOptions).map(option => option.value);
+        const teamPlayers = Array.from(document.querySelectorAll('#TeamPlayers input:checked')).map(checkbox => checkbox.value);
         const teamCaptain = document.getElementById('Teamcaptain').selectedOptions[0].value;
         const data = {
             "name": teamName,
