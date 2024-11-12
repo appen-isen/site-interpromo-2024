@@ -9,19 +9,19 @@
 ### ✨ [Demo](https://interpromo.appen.fr)
 
 ## Point d'amélioration:
-[x] Verification de doublon dans les joueurs
+- [x] Verification de doublon dans les joueurs
 
-[ ] Import des equipes depuis un excel
+- [ ] Import des equipes depuis un excel
 
-[ ] Modifier les equipes
+- [ ] Modifier les equipes
 
-[x] Recherche des joueurs pour la creation d'une equipe
+- [x] Recherche des joueurs pour la creation d'une equipe
 
-[ ] Interface mettre tous les points d'un coup
+- [ ] Interface mettre tous les points d'un coup
 
-[x] Ajout d'équipes c'est afficher que les joueurs de la bonne promo
+- [x] Ajout d'équipes c'est afficher que les joueurs de la bonne promo
 
-[x] Capitaine que qqun qui est parmis les joueurs sélectionnés
+- [x] Capitaine que qqun qui est parmis les joueurs sélectionnés
 
 ## Show your support
 
