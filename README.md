@@ -17,7 +17,7 @@
 
 - [x] Recherche des joueurs pour la creation d'une equipe
 
-- [ ] Interface mettre tous les points d'un coup
+- [x] Interface mettre tous les points d'un coup
 
 - [x] Ajout d'équipes c'est afficher que les joueurs de la bonne promo
 
