@@ -402,11 +402,35 @@ if (window.location.href.includes("arbitrage.html")) {
         updateCaptainOptions();
     }
 
+    // Fonction pour filtrer les joueurs en fonction de la recherche
+    function filterPlayers() {
+        const searchValue = document.getElementById('searchPlayer').value.toLowerCase();
+        const filteredPlayers = PlayerList.filter(player =>
+            player.name.toLowerCase().includes(searchValue) ||
+            player.prenom.toLowerCase().includes(searchValue)
+        );
+        playerSelect.innerHTML = filteredPlayers.map(player => `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="${player.id}" id="${player.id}">
+                <label class="form-check-label" for="${player.id}">
+                    ${player.name} ${player.prenom} ${player.expand.promo.name}
+                </label>
+            </div>`).join('');
+        // Add event listeners to checkboxes
+        document.querySelectorAll('#TeamPlayers input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateCaptainOptions);
+        });
+        updateCaptainOptions();
+    }
+
     // Ajout de l'événement change sur le champ de sélection de la promo
     promoSelect.addEventListener('change', function () {
         const selectedPromoId = promoSelect.value;
         updatePlayerList(selectedPromoId);
     });
+
+    // Ajout de l'événement input sur le champ de recherche
+    document.getElementById('searchPlayer').addEventListener('input', filterPlayers);
 
     const teamAddForm = document.getElementById('addTeamForm');
     teamAddForm.addEventListener('submit', async function (event) {

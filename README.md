@@ -15,13 +15,13 @@
 
 [ ] Modifier les equipes
 
-[ ] Recherche des joueurs pour la creation d'une equipe
+[x] Recherche des joueurs pour la creation d'une equipe
 
 [ ] Interface mettre tous les points d'un coup
 
 [x] Ajout d'équipes c'est afficher que les joueurs de la bonne promo
 
-[ ] Capitaine que qqun qui est parmis les joueurs sélectionnés
+[x] Capitaine que qqun qui est parmis les joueurs sélectionnés
 
 ## Show your support
 
