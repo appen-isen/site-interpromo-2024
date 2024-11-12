@@ -304,9 +304,9 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
                     <p class="card-text text-center text-capitalize mb-0">${match.expand.sport.name}</p>
                     ${match.name !== "" ? `<p class="card-text text-center fw-semibold text-body-secondary">${match.name}</p>` : ''}
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center bg-dark p-2">
                     <button class="btn btn-primary" id="voteTeam1${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 1</button>
-                    <div class="progress w-50">
+                    <div class="progress w-50 bg-dark">
                         <div class="progress-bar bg-primary" id="progressTeam1${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                         <div class="progress-bar bg-danger" id="progressTeam2${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
