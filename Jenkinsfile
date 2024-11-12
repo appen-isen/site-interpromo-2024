@@ -13,16 +13,5 @@ pipeline {
                 }
             }
         }
-        stage('Send notification on Discord') {
-            steps {
-                discordSend(
-                    webhookURL: 'https://discord.com/api/webhooks/1305885867646259311/AmPEwWfhxlqBlGgMGPTxyP66H2_lZeYOw_KBhgnKJwrxnRHEFUzJFdsMZqXLoWmjyIqF',
-                    title: 'Front deploy',
-                    description: 'Front deploy on server',
-                    link: 'https://interpromo.appen.fr',
-                    result: 'SUCCESS'
-                    )
-            }
-        }
     }
 }
