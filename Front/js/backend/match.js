@@ -175,12 +175,17 @@ if (window.location.href.includes("arbitrage.html")) {
 
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
-        //Récupération de l'id de l'équipe
-        equipe1 = equipeList.find(equipe => equipe.name === equipe1);
+
         let equipe2 = document.getElementById('equipe2').value;
+        let sportID = document.getElementById("sport").value;
+        console.log(equipe1);
+        console.log(equipe1.substring(0, 6));
+        //Récupération de l'id de l'équipe
+        equipe1 = sportID.toLowerCase().includes("badminton") ? equipe1 : equipe1.substring(0, 6);
+        equipe2 = sportID.toLowerCase().includes("badminton") ? equipe2 : equipe2.substring(0, 6);
+        equipe1 = equipeList.find(equipe => equipe.name === equipe1);
         equipe2 = equipeList.find(equipe => equipe.name === equipe2);
         // Récupération de l'id du sport
-        let sportID = document.getElementById("sport").value;
         sportID = sportList.find(sport => `${sport.name} (${sport.tableau})` === sportID);
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
@@ -194,6 +199,7 @@ if (window.location.href.includes("arbitrage.html")) {
         } else {
             currentMode = "poules"
         }
+        console.log(equipe1);
         const data = {
             "team1": equipe1.id,
             "team2": equipe2.id,
@@ -206,6 +212,7 @@ if (window.location.href.includes("arbitrage.html")) {
         };
 
         try {
+            console.log(equipe1);
             //Ajout du match
             await pb.collection('match').create(data);
             //Rechargement de la page
