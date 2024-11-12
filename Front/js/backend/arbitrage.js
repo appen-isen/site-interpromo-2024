@@ -34,11 +34,12 @@ textPoint2.innerHTML = currentStatus.point2;
 const buttonPoint1 = document.getElementById("btnPoint1")
 const buttonPoint2 = document.getElementById("btnPoint2")
 
+const arbitrageDiv = document.getElementById("arbitrage");
+
 //Gestion du cas basketball
 if (currentStatus.expand.sport.name === "basketball") {
     //Suppression des boutons de points
     document.getElementById("arbitrage").innerHTML = "";
-    const arbitrageDiv = document.getElementById("arbitrage");
     //Création des boutons pour les différents points
     arbitrageDiv.innerHTML = `
         <div class="text-center d-flex justify-content-evenly">
@@ -118,6 +119,36 @@ if (currentStatus.expand.sport.name === "basketball") {
         textPoint2.innerHTML = currentStatus.point2 + 3;
         location.reload();
     });
+
+    // Ajout des champs de saisie pour les scores
+    arbitrageDiv.innerHTML += `
+    <div class="text-center">
+        <label for="manualScore1">Score manuel pour ${currentStatus.expand.team1.name}:</label>
+        <input type="number" id="manualScore1" value="${currentStatus.point1}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualScore2">Score manuel pour ${currentStatus.expand.team2.name}:</label>
+        <input type="number" id="manualScore2" value="${currentStatus.point2}" class="form-control">
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" id="updateManualScore">Mettre à jour le score</button>
+    </div>
+`;
+
+// Gestion de la mise à jour manuelle des scores
+    document.getElementById("updateManualScore").addEventListener('click', async function (event) {
+        event.preventDefault();
+        const manualScore1 = parseInt(document.getElementById("manualScore1").value, 10);
+        const manualScore2 = parseInt(document.getElementById("manualScore2").value, 10);
+        const data = {
+            "point1": manualScore1,
+            "point2": manualScore2
+        };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = manualScore1;
+        textPoint2.innerHTML = manualScore2;
+        location.reload();
+    });
 } else if (currentStatus.expand.sport.name === "volleyball" || currentStatus.expand.sport.name === "badminton") {
     //Mise à jour de l'affichage des boutons
     buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
@@ -141,7 +172,6 @@ if (currentStatus.expand.sport.name === "basketball") {
     });
 
     //Ajoute un bouton pour le set sous le button pour finir le match
-    const arbitrageDiv = document.getElementById("arbitrage");
     arbitrageDiv.innerHTML = `
         <div class="text-center d-flex justify-content-evenly">
             <a class="btn btn-primary" id="btnPoint1">1 point pour ${currentStatus.expand.team1.name}</a>
@@ -197,6 +227,48 @@ if (currentStatus.expand.sport.name === "basketball") {
         textPoint2.innerHTML = currentStatus.point2 + 1;
         location.reload();
     });
+
+    // Ajout des champs de saisie pour les scores
+    arbitrageDiv.innerHTML += `
+    <div class="text-center">
+        <label for="manualScore1">Score manuel pour ${currentStatus.expand.team1.name}:</label>
+        <input type="number" id="manualScore1" value="${currentStatus.point1}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualScore2">Score manuel pour ${currentStatus.expand.team2.name}:</label>
+        <input type="number" id="manualScore2" value="${currentStatus.point2}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualSet1">Set manuel pour ${currentStatus.expand.team1.name}:</label>
+        <input type="number" id="manualSet1" value="${currentStatus.set1}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualSet2">Set manuel pour ${currentStatus.expand.team2.name}:</label>
+        <input type="number" id="manualSet2" value="${currentStatus.set2}" class="form-control">
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" id="updateManualScoreSet">Mettre à jour le score et les sets</button>
+    </div>
+`;
+
+// Gestion de la mise à jour manuelle des scores et des sets
+    document.getElementById("updateManualScoreSet").addEventListener('click', async function (event) {
+        event.preventDefault();
+        const manualScore1 = parseInt(document.getElementById("manualScore1").value, 10);
+        const manualScore2 = parseInt(document.getElementById("manualScore2").value, 10);
+        const manualSet1 = parseInt(document.getElementById("manualSet1").value, 10);
+        const manualSet2 = parseInt(document.getElementById("manualSet2").value, 10);
+        const data = {
+            "point1": manualScore1,
+            "point2": manualScore2,
+            "set1": manualSet1,
+            "set2": manualSet2
+        };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = manualScore1;
+        textPoint2.innerHTML = manualScore2;
+        location.reload();
+    });
 } else {
     //Mise à jour de l'affichage des boutons
     buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
@@ -216,6 +288,37 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point2": currentStatus.point2 + 1 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 1;
+        location.reload();
+    });
+
+    // Ajout des champs de saisie pour les scores
+    const arbitrageDiv = document.getElementById("arbitrage");
+    arbitrageDiv.innerHTML += `
+    <div class="text-center">
+        <label for="manualScore1">Score manuel pour ${currentStatus.expand.team1.name}:</label>
+        <input type="number" id="manualScore1" value="${currentStatus.point1}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualScore2">Score manuel pour ${currentStatus.expand.team2.name}:</label>
+        <input type="number" id="manualScore2" value="${currentStatus.point2}" class="form-control">
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" id="updateManualScore">Mettre à jour le score</button>
+    </div>
+`;
+
+// Gestion de la mise à jour manuelle des scores
+    document.getElementById("updateManualScore").addEventListener('click', async function (event) {
+        event.preventDefault();
+        const manualScore1 = parseInt(document.getElementById("manualScore1").value, 10);
+        const manualScore2 = parseInt(document.getElementById("manualScore2").value, 10);
+        const data = {
+            "point1": manualScore1,
+            "point2": manualScore2
+        };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = manualScore1;
+        textPoint2.innerHTML = manualScore2;
         location.reload();
     });
 }
