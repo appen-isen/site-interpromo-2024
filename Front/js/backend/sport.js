@@ -155,7 +155,7 @@ function getSportIcon(sport) {
 }
 
 function getSportCard(sportName) {
-    let listeTableau = SportList.filter(sport => sport.name === sportName);
+    let listeTableau = SportList.filter(sport => sport.name === sportName).sort((tableau1, tableau2) => tableau1.tableau > tableau2.tableau);
     let result = `
     <div class="card my-3">
         <div class="card-header text-center bg-light-subtle text-emphasis-light"><div class="d-flex justify-content-evenly">${getSportIcon(sportName)}${sportName.toUpperCase()}${getSportIcon(sportName)}</div></div>
