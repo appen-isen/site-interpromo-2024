@@ -18,7 +18,9 @@ if (!("Notification" in window)) {
     });
 }
 
-const equipeList = await pb.collection('equipes').getFullList({});
+const equipeList = await pb.collection('equipes').getFullList({
+    expand: "sport"
+});
 
 const sportList = await pb.collection('sport').getFullList({});
 
@@ -132,13 +134,13 @@ if (window.location.href.includes("arbitrage.html")) {
                         <div class="mb-3">
                             <label for="equipe1" class="form-label">Equipe 1</label>
                             <select class="form-control" id="equipe1">
-                                ${equipeList.map(equipe => `<option>${equipe.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="equipe2" class="form-label">Equipe 2</label>
                             <select class="form-control" id="equipe2">
-                                ${equipeList.map(equipe => `<option>${equipe.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
