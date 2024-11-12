@@ -13,8 +13,6 @@
 
 - [ ] Import des equipes depuis un excel
 
-- [ ] Modifier les equipes
-
 - [x] Recherche des joueurs pour la creation d'une equipe
 
 - [x] Interface mettre tous les points d'un coup
