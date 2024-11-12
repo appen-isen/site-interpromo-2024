@@ -11,6 +11,9 @@
 ## Point d'amélioration:
 - Verification de doublon dans les joueurs
 - Import des equipes depuis un excel
+- Modifier les equipes
+- Recherche des joueurs pour la creation d'une equipe
+- Interface mettre tous les points d'un coup
 
 ## Show your support
 

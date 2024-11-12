@@ -314,9 +314,21 @@ if (window.location.href.includes("arbitrage.html")) {
             "prenom": prenom,
             "promo": promoId
         };
-        await pb.collection('joueurs').create(data);
-        //rechargement de la page
-        window.location.href = "arbitrage.html";
+        const allPlayerList = await pb.collection('joueurs').getFullList({
+            expand: 'promo'
+        });
+        const existingPlayer = allPlayerList.find(player =>
+            player.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === nom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") &&
+            player.prenom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === prenom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") &&
+            player.promo === promoId
+        );
+
+        if (existingPlayer) {
+            alert("Un joueur avec ce nom, prénom et promo existe déjà.");
+        } else {
+            await pb.collection('joueurs').create(data);
+            window.location.href = "arbitrage.html";
+        }
     });
 }
 
