@@ -352,6 +352,7 @@ if (window.location.href.includes("arbitrage.html")) {
     });
 }
 
+// Gestion de l'ajout d'une équipe
 if (window.location.href.includes("arbitrage.html")) {
     const PromoList = await pb.collection('promo').getFullList({});
     const promoSelect = document.getElementById('Teampromo');
@@ -388,6 +389,7 @@ if (window.location.href.includes("arbitrage.html")) {
             "membres": teamPlayers,
             "capitaine": teamCaptain
         };
+        console.log(data);
         await pb.collection('equipes').create(data);
         window.location.href = "arbitrage.html";
     });

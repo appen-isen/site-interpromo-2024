@@ -8,6 +8,10 @@
 
 ### ✨ [Demo](https://interpromo.appen.fr)
 
+## Point d'amélioration:
+- Verification de doublon dans les joueurs
+- Import des equipes depuis un excel
+
 ## Show your support
 
 Give a ⭐️ if this project helped you!
