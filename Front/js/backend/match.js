@@ -97,7 +97,7 @@ function getTableCard(sport){
     console.log(sport)
     let card = `
     <div class="card my-3">
-        <div class="card-body bg-light-subtle text-emphasis-light border border-${sport.status === "waiting" ? "success" : "warning"}">
+        <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
             <h3 class="card-title text-center">${sport.name}</h5>
             <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
             <div class="text-center">
@@ -150,7 +150,7 @@ if (window.location.href.includes("arbitrage.html")) {
             //Si tableau pas encore affiché : on le met avant le premier match du tableau
             const cardTableauHTML = getTableCard(record.expand.sport);
             container.insertAdjacentHTML('beforeend', cardTableauHTML);
-            alreadyPrintedSports.push(sport.id);
+            alreadyPrintedSports.push(record.expand.sport.id);
         }
         const cardHTML = `
             <div class="card my-3">
@@ -202,18 +202,18 @@ sportList.forEach(sport => {
                 console.error('Erreur de fin du tournoi :', error);
             }
             let i = 0;
-            /*equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
+            equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
                 const teamData = {"sport": sport.expand.following.id};
                 try {
                     await pb.collection('equipes').update(qualifiedTeam.id, teamData);
                     i++;
                     if(i === sport.qualified){
-                        //window.location.href = "arbitrage.html"; //reload only after all request are terminated
+                        window.location.href = "arbitrage.html"; //reload only after all request are terminated
                     }
                 } catch (error) {
                     console.error('Erreur de fin du tournoi :', error);
                 }
-            })*/
+            })
         })
     } else if(sport.state === "started"){
         document.querySelector("#"+sport.id).addEventListener("click", async e => {
@@ -221,7 +221,7 @@ sportList.forEach(sport => {
             try {
                 console.log("trying to finish sport as final phase");
                 await pb.collection('sport').update(sport.id, data);
-                //window.location.href = "arbitrage.html";
+                window.location.href = "arbitrage.html";
             } catch (error) {
                 console.error('Erreur de fin du tournoi :', error);
             }
@@ -232,7 +232,7 @@ sportList.forEach(sport => {
             try {
                 console.log("trying to start sport");
                 await pb.collection('sport').update(sport.id, data);
-                //window.location.href = "arbitrage.html";
+                window.location.href = "arbitrage.html";
             } catch (error) {
                 console.error('Erreur de fin du tournoi :', error);
             }
