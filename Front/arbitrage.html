@@ -99,6 +99,12 @@
                 Supprimer un match
             </button>
         </div>
+        <br>
+        <div class="text-center align-items-center">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddAlert">Ajouter
+                une alerte
+            </button>
+        </div>
         <div class="modal" tabindex="-1" id="modalAddPlayer">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -233,6 +239,45 @@
                             <button type="submit" class="btn btn-danger">Supprimer ce match (attention cette action est
                                 irréversible)
                             </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" id="modalAddAlert">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une alerte</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addAlertForm">
+                            <div class="form-group">
+                                <label for="alertTitle">Titre</label>
+                                <input type="text" class="form-control" id="alertTitle" name="alertTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="alertBody">Texte</label>
+                                <input type="text" class="form-control" id="alertBody" name="alertBody" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateStart" class="form-label">Date de début</label>
+                                <input type="dateStart" class="form-control" id="dateStart">
+                            </div>
+                            <div class="mb-3">
+                                <label for="timeStart" class="form-label">Heure de début</label>
+                                <input type="timeStart" class="form-control" id="timeStart">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateEnd" class="form-label">Date de fin</label>
+                                <input type="dateEnd" class="form-control" id="dateEnd">
+                            </div>
+                            <div class="mb-3">
+                                <label for="timeEnd" class="form-label">Heure de fin</label>
+                                <input type="timeEnd" class="form-control" id="timeEnd">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Déclencher cette alert maintenant</button>
                         </form>
                     </div>
                 </div>

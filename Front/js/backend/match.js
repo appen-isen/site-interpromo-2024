@@ -27,6 +27,17 @@ const sportList = await pb.collection('sport').getFullList({
     expand: "following"
 });
 
+const alertList = await pb.collection('alert').getFullList({});
+
+//Gestion des alertes
+alertList.forEach(alert => {
+    if(alert.start < Date.now() && alert.end > Date.now()){ //modify
+        //TODO afficher sauf si sauvegardée dans un cookie comme déjà affichée
+    }
+    //TODO subscribe aux nouvelles alertes
+})
+
+
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
     //Si le match est en cours
@@ -629,6 +640,49 @@ if (window.location.href.includes("arbitrage.html")) {
         const teamID = document.getElementById('TeamDelName').selectedOptions[0].value;
         await pb.collection('equipes').delete(teamID);
         window.location.href = "arbitrage.html";
+    });
+}
+
+//Gestion de l'ajout d'une alerte
+if (window.location.href.includes("arbitrage.html")) {
+    const addAlertForm = document.getElementById('addAlertForm');
+    addAlertForm.addEventListener('submit', async function (event) {
+        //Empêche le rechargement de la page
+        event.preventDefault();
+
+        //Récupération des données du formulaire
+        let title = document.getElementById('equipe1').value;
+        let body = document.getElementById('equipe2').value;
+        const dateStart = document.getElementById('dateStart').value;
+        const timeStart = document.getElementById('timeStart').value;
+        const dateEnd = document.getElementById('dateEnd').value;
+        const timeEnd = document.getElementById('timeEnd').value;
+        const time_start = new Date(dateStart + " " + timeStart + ":00.000Z");
+        const time_end = new Date(dateEnd + " " + timeEnd + ":00.000Z");
+        //Décalage de l'heure de début de 1h pour la gestion du fuseau horaire
+        time_start.setHours(time_start.getHours() - 1);
+        let currentMode = "";
+        if (sportID.name === "badminton") {
+            currentMode = "tournoi";
+        } else {
+            currentMode = "poules"
+        }
+        const data = {
+            "title": title,
+            "body": body,
+            "start": time_start.toISOString(),
+            "end": time_end.toISOString(),
+        };
+
+        try {
+            //Ajout du match
+            await pb.collection('alert').create(data);
+            //Rechargement de la page
+            window.location.href = "arbitrage.html";
+        } catch (error) {
+            //Affichage de l'erreur dans la console
+            console.error("Erreur d'ajout de l'alerte :", error);
+        }
     });
 }
 

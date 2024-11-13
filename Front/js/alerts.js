@@ -150,3 +150,34 @@ function newSetAlert(match) {
     }
     setTimeout(deleteAlert, 5000, `${match.id}${match.set1}_${match.set2}`)
 }
+
+function customAlert(alert) {
+    let alertsContainer = document.querySelector('body #alertsContainer');
+    let alert = `
+    <div id="${match.id}${match.point1}_${match.point2}" class="alert alert-info alert-dismissible fade show" role="alert">
+        <div class="d-flex align-items-center justify-content-between">
+          <h4 class="alert-heading d-inline-flex align-items-center"><span class="material-symbols-outlined">
+            scoreboard
+          </span>DEBUT DU MATCH !</h4>
+          <h4>${match.point1} - ${match.point2}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <p>Le match entre ${match.expand.team1.name} et ${match.expand.team2.name} en ${match.expand.sport.name} vient de commencer !</p>
+        <hr>
+        <div class="d-flex align-items-center justify-content-between">
+          <p class="mb-0 d-inline-flex align-items-center">${getSportIconHTML(match.expand.sport.name)}${match.expand.sport.name}</p>
+          <p class="mb-0">${match.expand.team1.name}</p>
+          <b><p class="mb-0">${match.point1} - ${match.point2}</p></b>
+          <p class="mb-0">${match.expand.team2.name}</p>
+        </div>
+    </div>
+    `
+    alertsContainer.insertAdjacentHTML("beforeend", alert);
+    //Send a notification to the client if the browser supports it
+    if (Notification.permission === "granted") {
+        let notification = new Notification(`${match.expand.team1.name} - ${match.expand.team2.name}`, {
+            body: `${match.point1} - ${match.point2}`,
+        });
+    }
+    setTimeout(deleteAlert, 5000, `${match.id}${match.point1}_${match.point2}`)
+}
