@@ -3,6 +3,8 @@ import PocketBase from '../pocketbase.es.mjs'
 
 const pb = new PocketBase("https://pocketbase.appen.fr");
 
+pb.autoCancellation(false);
+
 //Connexion
 if (window.location.href.includes("login.html")) {
     const loginButton = document.querySelector('button[type="submit"]');
