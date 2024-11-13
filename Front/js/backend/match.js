@@ -186,67 +186,66 @@ if (window.location.href.includes("arbitrage.html")) {
             window.location.href = `arbimatch.html?id=${record.id}`;
         });
     })
-}
 
-sportList.forEach(sport => {
-    //Gestion des appui sur bouton pour les tournois
-    if(sport.state === "started" && sport.following != ""){
-        console.log("Adding event on " + "#endTournoi"+sport.id);
-        document.querySelector("#endTournoi"+sport.id).addEventListener("submit", async e => {
-            e.preventDefault();
-            const sportData = {"state": "finished"};
-            try {
-                console.log("trying to finish sport with following tournament");
-                await pb.collection('sport').update(sport.id, sportData);
-            } catch (error) {
-                console.error('Erreur de fin du tournoi :', error);
-            }
-            let i = 0;
-            equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
-                const teamData = {"sport": sport.expand.following.id};
+
+    sportList.forEach(sport => {
+        //Gestion des appui sur bouton pour les tournois
+        if(sport.state === "started" && sport.following != ""){
+            console.log("Adding event on " + "#endTournoi"+sport.id);
+            document.querySelector("#endTournoi"+sport.id).addEventListener("submit", async e => {
+                e.preventDefault();
+                const sportData = {"state": "finished"};
                 try {
-                    await pb.collection('equipes').update(qualifiedTeam.id, teamData);
-                    i++;
-                    if(i === sport.qualified){
-                        window.location.href = "arbitrage.html"; //reload only after all request are terminated
-                    }
+                    console.log("trying to finish sport with following tournament");
+                    await pb.collection('sport').update(sport.id, sportData);
                 } catch (error) {
                     console.error('Erreur de fin du tournoi :', error);
                 }
+                let i = 0;
+                equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
+                    const teamData = {"sport": sport.expand.following.id};
+                    try {
+                        await pb.collection('equipes').update(qualifiedTeam.id, teamData);
+                        i++;
+                        if(i === sport.qualified){
+                            window.location.href = "arbitrage.html"; //reload only after all request are terminated
+                        }
+                    } catch (error) {
+                        console.error('Erreur de fin du tournoi :', error);
+                    }
+                })
             })
-        })
-    } else if(sport.state === "started"){
-        document.querySelector("#"+sport.id).addEventListener("click", async e => {
-            const data = {"state": "finished"};
-            try {
-                console.log("trying to finish sport as final phase");
-                await pb.collection('sport').update(sport.id, data);
-                window.location.href = "arbitrage.html";
-            } catch (error) {
-                console.error('Erreur de fin du tournoi :', error);
-            }
-        })
-    } else if(sport.state === "waiting"){
-        try {
+        } else if(sport.state === "started"){
             document.querySelector("#"+sport.id).addEventListener("click", async e => {
-                const data = {"state": "started"};
+                const data = {"state": "finished"};
                 try {
-                    console.log("trying to start sport");
+                    console.log("trying to finish sport as final phase");
                     await pb.collection('sport').update(sport.id, data);
                     window.location.href = "arbitrage.html";
                 } catch (error) {
                     console.error('Erreur de fin du tournoi :', error);
                 }
             })
-        } // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
-        catch (e){
-            console.log("Erreur card de tournoi, aucun match dans ce tournoi : " + e);
+        } else if(sport.state === "waiting"){
+            try {
+                document.querySelector("#"+sport.id).addEventListener("click", async e => {
+                    const data = {"state": "started"};
+                    try {
+                        console.log("trying to start sport");
+                        await pb.collection('sport').update(sport.id, data);
+                        window.location.href = "arbitrage.html";
+                    } catch (error) {
+                        console.error('Erreur de fin du tournoi :', error);
+                    }
+                })
+            } // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
+            catch (e){
+                console.log("Erreur card de tournoi, aucun match dans ce tournoi : " + e);
+            }
         }
-    }
-});
+    });
 
 //Gestion des informations dans la modal
-if (window.location.href.includes("arbitrage.html")) {
     const modalHTML = `
         <div class="modal-dialog">
             <div class="modal-content">
