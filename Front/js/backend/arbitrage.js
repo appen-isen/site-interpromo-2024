@@ -355,7 +355,7 @@ document.getElementById("btnStop").addEventListener('click', async function (eve
         }
     }
 
-
+    console.log("Match terminé, redirection en cours ....");
     //Redirection vers la page d'arbitrage
     window.location.href = "arbitrage.html";
 });

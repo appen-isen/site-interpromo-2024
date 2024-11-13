@@ -300,6 +300,9 @@ if (window.location.href.includes("arbitrage.html")) {
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
         let equipe2 = document.getElementById('equipe2').value;
+        equipe2 = equipeList.find(equipe => equipe.name === equipe2);
+        console.log("equipe 1 id = " + equipe1);
+        console.log("equipe 2 id = " + equipe2);
         // Récupération de l'id du sport
         let sportID = document.getElementById("sport").value;
         const date = document.getElementById('date').value;
