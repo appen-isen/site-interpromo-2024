@@ -95,24 +95,42 @@ matchList.forEach(match => {
 
 function getTableCard(sport){
     console.log(sport)
-    let card = `
-    <div class="card my-3">
-        <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
-            <h3 class="card-title text-center">${sport.name}</h5>
-            <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
-            <div class="text-center">
-                <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
-                    ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
-                </button>
+    let card = ``;
+    if(sport.expand) {
+        card = `
+        <div class="card my-3">
+            <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
+                <h3 class="card-title text-center">${sport.name}</h5>
+                <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
+                <div class="text-center">
+                    <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                        ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>`
-    if(sport.state === "started" && sport.following != ""){
+        </div>`
+    }
+    else {
+        card = `
+        <div class="card my-3">
+            <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
+                <h3 class="card-title text-center">${sport.name}</h5>
+                <p class="card-text text-center text-capitalize mb-0">${sport.tableau}</p>
+                <div class="text-center">
+                    <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                        ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
+                    </button>
+                </div>
+            </div>
+        </div>`
+    }
+    if(sport.state === "started" && sport.following != "" && sport.expand){
         card = card + `
         <div class="modal" tabindex="-1" id="modalTournoi${sport.id}">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                    ${console.log(sport)}
                         <h5 class="modal-title">Mettre fin à ${sport.name} - ${sport.tableau} (qualificatif à ${sport.expand.following.tableau})</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                     </div>
