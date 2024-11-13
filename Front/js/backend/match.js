@@ -101,7 +101,7 @@ function getTableCard(sport){
             <h3 class="card-title text-center">${sport.name}</h5>
             <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
             <div class="text-center">
-                <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
                     ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
                 </button>
             </div>
@@ -216,7 +216,7 @@ if (window.location.href.includes("arbitrage.html")) {
                 })
             })
         } else if(sport.state === "started"){
-            document.querySelector("#"+sport.id).addEventListener("click", async e => {
+            document.querySelector("#boutonTableau"+sport.id).addEventListener("click", async e => {
                 const data = {"state": "finished"};
                 try {
                     console.log("trying to finish sport as final phase");
@@ -228,7 +228,7 @@ if (window.location.href.includes("arbitrage.html")) {
             })
         } else if(sport.state === "waiting"){
             try {
-                document.querySelector("#"+sport.id).addEventListener("click", async e => {
+                document.querySelector("#boutonTableau"+sport.id).addEventListener("click", async e => {
                     const data = {"state": "started"};
                     try {
                         console.log("trying to start sport");
