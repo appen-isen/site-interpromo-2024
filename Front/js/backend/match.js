@@ -634,7 +634,7 @@ if (window.location.href.includes("arbitrage.html")) {
 
 if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
     //Envoie une alert Bonjour Madame Daniau
-    alert("Bonjour Madame Daniau");
+    //alert("Bonjour Madame Daniau");
 }
 
 console.log("Backend match loaded!");
