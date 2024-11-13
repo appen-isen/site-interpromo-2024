@@ -17,7 +17,7 @@ const MatchList = await pb.collection('match').getFullList({
 const SportList = await pb.collection('sport').getFullList({});
 
 function getSportIcon(sport) {
-    switch (sport) {
+    switch (sport.toLowerCase()) {
         case "basketball":
             return ` <span class="material-symbols-outlined">sports_basketball</span>`
         case "volleyball":
