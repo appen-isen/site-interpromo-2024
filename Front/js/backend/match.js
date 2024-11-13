@@ -226,17 +226,22 @@ sportList.forEach(sport => {
                 console.error('Erreur de fin du tournoi :', error);
             }
         })
-    } else if(sport.state === "waiting"){ // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
-        document.querySelector("#"+sport.id).addEventListener("click", async e => {
-            const data = {"state": "started"};
-            try {
-                console.log("trying to start sport");
-                await pb.collection('sport').update(sport.id, data);
-                window.location.href = "arbitrage.html";
-            } catch (error) {
-                console.error('Erreur de fin du tournoi :', error);
-            }
-        })
+    } else if(sport.state === "waiting"){
+        try {
+            document.querySelector("#"+sport.id).addEventListener("click", async e => {
+                const data = {"state": "started"};
+                try {
+                    console.log("trying to start sport");
+                    await pb.collection('sport').update(sport.id, data);
+                    window.location.href = "arbitrage.html";
+                } catch (error) {
+                    console.error('Erreur de fin du tournoi :', error);
+                }
+            })
+        } // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
+        catch (e){
+            console.log("Erreur card de tournoi, aucun match dans ce tournoi : " + e);
+        }
     }
 });
 
@@ -295,21 +300,12 @@ if (window.location.href.includes("arbitrage.html")) {
 
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
-
-        let equipe2 = document.getElementById('equipe2').value;
-        let sportID = document.getElementById("sport").value;
         //Récupération de l'id de l'équipe
-        if (!sportID.toLowerCase().includes("badminton")) {
-            equipe1 = equipe1.substring(0, 6);
-            equipe2 = equipe2.substring(0, 6);
-        } else {
-            equipe1 = equipe1.slice(0, -12);
-            equipe2 = equipe2.slice(0, -12);
-            console.log(equipe2);
-        }
         equipe1 = equipeList.find(equipe => equipe.name === equipe1);
+        let equipe2 = document.getElementById('equipe2').value;
         equipe2 = equipeList.find(equipe => equipe.name === equipe2);
         // Récupération de l'id du sport
+        let sportID = document.getElementById("sport").value;
         sportID = sportList.find(sport => `${sport.name} (${sport.tableau})` === sportID);
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
