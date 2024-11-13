@@ -258,19 +258,19 @@ if (window.location.href.includes("arbitrage.html")) {
                         <div class="mb-3">
                             <label for="equipe1" class="form-label">Equipe 1</label>
                             <select class="form-control" id="equipe1">
-                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option value=${equipe.id}>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="equipe2" class="form-label">Equipe 2</label>
                             <select class="form-control" id="equipe2">
-                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option value=${equipe.id}>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="sport" class="form-label">Sport</label>
                             <select class="form-control" id="sport">
-                                ${sportList.map(sport => `<option>${sport.name} (${sport.tableau})</option>`).join('')}
+                                ${sportList.map(sport => `<option value=${sport.id}>${sport.name} (${sport.tableau})</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -299,13 +299,9 @@ if (window.location.href.includes("arbitrage.html")) {
 
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
-        //Récupération de l'id de l'équipe
-        equipe1 = equipeList.find(equipe => equipe.name === equipe1);
         let equipe2 = document.getElementById('equipe2').value;
-        equipe2 = equipeList.find(equipe => equipe.name === equipe2);
         // Récupération de l'id du sport
         let sportID = document.getElementById("sport").value;
-        sportID = sportList.find(sport => `${sport.name} (${sport.tableau})` === sportID);
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
         //Création de la date de début du match
@@ -319,9 +315,9 @@ if (window.location.href.includes("arbitrage.html")) {
             currentMode = "poules"
         }
         const data = {
-            "team1": equipe1.id,
-            "team2": equipe2.id,
-            "sport": sportID.id,
+            "team1": equipe1,
+            "team2": equipe2,
+            "sport": sportID,
             "heure_debut": time_start.toISOString(),
             "point1": 0,
             "point2": 0,
