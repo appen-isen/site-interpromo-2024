@@ -28,6 +28,10 @@ function getSportIcon(sport) {
             return ` <span class="material-symbols-outlined">sports_handball</span>`
         case "badminton":
             return ` <img src="assets/shuttlecock.svg" alt="shuttlecock" width="24" height="24">`
+        case "beer and run":
+            return ` <span class="material-symbols-outlined">sports_bar</span>`
+        default:
+            return ` <span></span>`
     }
 }
 
