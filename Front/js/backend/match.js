@@ -671,13 +671,18 @@ matchList.forEach(record => {
 
     voteTeam1Button.addEventListener('click', handleVoteTeam1);
     voteTeam1Button.addEventListener('touchstart', handleVoteTeam1);
+    voteTeam1Button.addEventListener('touchend', handleVoteTeam1);
+    voteTeam1Button.addEventListener('touchmove', handleVoteTeam1);
 
     voteTeam2Button.addEventListener('click', handleVoteTeam2);
     voteTeam2Button.addEventListener('touchstart', handleVoteTeam2);
+    voteTeam2Button.addEventListener('touchend', handleVoteTeam2);
+    voteTeam2Button.addEventListener('touchmove', handleVoteTeam2);
 });
 
 // Function to handle voting
 async function handleVote(matchId, team, progressTeam1, progressTeam2) {
+    console.log(`handleVote called for matchId: ${matchId}, team: ${team}`);
     const match = await pb.collection('match').getOne(matchId);
     if (match.status === "finished") {
         alert('Pas le droit de voté pour un match déjà fini petit malin.');
@@ -703,10 +708,12 @@ async function handleVote(matchId, team, progressTeam1, progressTeam2) {
         progressTeam1.setAttribute('aria-valuenow', team1Percentage);
         progressTeam2.style.width = `${team2Percentage}%`;
         progressTeam2.setAttribute('aria-valuenow', team2Percentage);
+        console.log(`Vote updated: team1Percentage=${team1Percentage}, team2Percentage=${team2Percentage}`);
     } catch (error) {
         console.error('Error updating vote:', error);
     }
 }
+
 // Récupérer les votes depuis la base de données et mettre à jour les barres de progression
 async function updateVotesFromDB() {
     const matchList = await pb.collection('match').getFullList({
