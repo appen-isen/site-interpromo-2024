@@ -670,14 +670,8 @@ matchList.forEach(record => {
     const handleVoteTeam2 = () => handleVote(record.id, 'team2', progressTeam1, progressTeam2);
 
     voteTeam1Button.addEventListener('click', handleVoteTeam1);
-    voteTeam1Button.addEventListener('touchstart', handleVoteTeam1);
-    voteTeam1Button.addEventListener('touchend', handleVoteTeam1);
-    voteTeam1Button.addEventListener('touchmove', handleVoteTeam1);
 
     voteTeam2Button.addEventListener('click', handleVoteTeam2);
-    voteTeam2Button.addEventListener('touchstart', handleVoteTeam2);
-    voteTeam2Button.addEventListener('touchend', handleVoteTeam2);
-    voteTeam2Button.addEventListener('touchmove', handleVoteTeam2);
 });
 
 // Function to handle voting
