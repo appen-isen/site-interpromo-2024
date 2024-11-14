@@ -331,7 +331,7 @@ if (window.location.href.includes("arbitrage.html")) {
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
         let equipe2 = document.getElementById('equipe2').value;
-        let sportID = document.getElementById("sport").value;
+        sportID = document.getElementById("sport").value;
         //Récupération de l'id de l'équipe
         if (!sportID.toLowerCase().includes("badminton")) {
             equipe1 = equipe1.substring(0, 6);
@@ -430,44 +430,42 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
     let finishedMatch = [];
     let container = document.getElementById('cardContainer');
     matchList.forEach(match => {
+        const isFinished = match.status === "finished"; // Define isFinished here
         const cardHTML = `
-            <div class="card my-3" id="card${match.id}">
-                <div class="card-header text-center bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardHeader${match.id}">
-                    ${match.status === "in_progress" || match.status === "finished" ? '' : new Date(match.heure_debut).toLocaleString()}
-                    ${match.status === "in_progress" || match.status === "finished" ? `
-                        <div class="d-flex justify-content-evenly">
-                            <p id="pointT1${match.id}">${match.point1}</p>
-                            <p>-</p>
-                            <p id="pointT2${match.id}">${match.point2}</p>
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="card-body bg-light-subtle text-emphasis-light">
-                    ${match.team1 && match.team2 ? `<h5 class="card-title text-center">${match.expand.team1.name} VS ${match.expand.team2.name}</h5>` : ''}
-                    <p class="card-text text-center text-capitalize mb-0">${match.expand.sport.name}</p>
-                    ${match.name !== "" ? `<p class="card-text text-center fw-semibold text-body-secondary">${match.name}</p>` : ''}
-                </div>
-                <div class="d-flex justify-content-between align-items-center bg-dark p-2">
-                    <button class="btn btn-primary" id="voteTeam1${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 1</button>
-                    <div class="progress w-50 bg-dark">
-                        <div class="progress-bar bg-primary" id="progressTeam1${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                        <div class="progress-bar bg-danger" id="progressTeam2${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+        <div class="card my-3" id="card${match.id}">
+            <div class="card-header text-center bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardHeader${match.id}">
+                ${match.status === "in_progress" || match.status === "finished" ? '' : new Date(match.heure_debut).toLocaleString()}
+                ${match.status === "in_progress" || match.status === "finished" ? `
+                    <div class="d-flex justify-content-evenly">
+                        <p id="pointT1${match.id}">${match.point1}</p>
+                        <p>-</p>
+                        <p id="pointT2${match.id}">${match.point2}</p>
                     </div>
-                    <button class="btn btn-danger" id="voteTeam2${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 2</button>
-                </div>
-                <div class="card-footer bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardFooter${match.id}">
-                    ${match.status === "waiting" ? "Match en attente" : match.status === "in_progress" ? "Match en cours" : match.status === "finished" ? "Match terminé" : "Erreur de statut"}
-                </div>
+                ` : ''}
             </div>
-        `;
+            <div class="card-body bg-light-subtle text-emphasis-light">
+                ${match.team1 && match.team2 ? `<h5 class="card-title text-center">${match.expand.team1.name} VS ${match.expand.team2.name}</h5>` : ''}
+                <p class="card-text text-center text-capitalize mb-0">${match.expand.sport.name}</p>
+                ${match.name !== "" ? `<p class="card-text text-center fw-semibold text-body-secondary">${match.name}</p>` : ''}
+            </div>
+            <div class="d-flex justify-content-between align-items-center bg-dark p-2">
+                <button class="btn btn-primary" id="voteTeam1${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 1</button>
+                <div class="progress w-50 bg-dark">
+                    <div class="progress-bar bg-primary" id="progressTeam1${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar bg-danger" id="progressTeam2${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <button class="btn btn-danger" id="voteTeam2${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 2</button>
+            </div>
+            <div class="card-footer bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardFooter${match.id}">
+                ${match.status === "waiting" ? "Match en attente" : match.status === "in_progress" ? "Match en cours" : match.status === "finished" ? "Match terminé" : "Erreur de statut"}
+            </div>
+        </div>
+    `;
         if(match.status == "finished"){
             finishedMatch.push(cardHTML);
         } else {
             container.insertAdjacentHTML('beforeend', cardHTML);
         }
-    });
-    finishedMatch.forEach(card => {
-        container.insertAdjacentHTML('beforeend', card);
     });
 }
 
@@ -478,10 +476,13 @@ matchList.forEach(record => {
     const progressTeam1 = document.getElementById(`progressTeam1${record.id}`);
     const progressTeam2 = document.getElementById(`progressTeam2${record.id}`);
 
-    voteTeam1Button.addEventListener('click', () => handleVote(record.id, 'team1', progressTeam1, progressTeam2));
-    voteTeam2Button.addEventListener('click', () => handleVote(record.id, 'team2', progressTeam1, progressTeam2));
+    if (voteTeam1Button) {
+        voteTeam1Button.addEventListener('click', () => handleVote(record.id, 'team1', progressTeam1, progressTeam2));
+    }
+    if (voteTeam2Button) {
+        voteTeam2Button.addEventListener('click', () => handleVote(record.id, 'team2', progressTeam1, progressTeam2));
+    }
 });
-
 // Function to handle voting
 async function handleVote(matchId, team, progressTeam1, progressTeam2) {
     const match = await pb.collection('match').getOne(matchId);
