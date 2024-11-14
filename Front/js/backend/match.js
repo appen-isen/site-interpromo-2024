@@ -683,8 +683,16 @@ matchList.forEach(record => {
 // Function to handle voting
 async function handleVote(matchId, team, progressTeam1, progressTeam2) {
     console.log(`handleVote called for matchId: ${matchId}, team: ${team}`);
+    if (!matchId) {
+        console.error('Invalid matchId:', matchId);
+        return;
+    }
     try {
         const match = await pb.collection('match').getOne(matchId);
+        if (!match) {
+            console.error('Match not found for matchId:', matchId);
+            return;
+        }
         console.log(`Match retrieved: ${JSON.stringify(match)}`);
         if (match.status === "finished") {
             alert('Pas le droit de voté pour un match déjà fini petit malin.');
@@ -735,6 +743,7 @@ async function updateVotesFromDB() {
         }
     });
 }
+
 // Appeler la fonction lors du chargement de la page
 updateVotesFromDB();
 
