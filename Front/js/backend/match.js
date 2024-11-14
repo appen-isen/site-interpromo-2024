@@ -416,8 +416,8 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
     //Affichage des matchs
     let finishedMatch = [];
     let container = document.getElementById('cardContainer');
-    const isFinished = match.status === "finished";
     matchList.forEach(match => {
+        let isFinished = match.status === "finished";
         const cardHTML = `
             <div class="card my-3" id="card${match.id}">
                 <div class="card-header text-center bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardHeader${match.id}">
