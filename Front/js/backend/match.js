@@ -683,17 +683,18 @@ matchList.forEach(record => {
 // Function to handle voting
 async function handleVote(matchId, team, progressTeam1, progressTeam2) {
     console.log(`handleVote called for matchId: ${matchId}, team: ${team}`);
-    const match = await pb.collection('match').getOne(matchId);
-    if (match.status === "finished") {
-        alert('Pas le droit de voté pour un match déjà fini petit malin.');
-        return;
-    }
-    const cookieName = `votedForMatch${matchId}`;
-    if (document.cookie.split(';').some((item) => item.trim().startsWith(`${cookieName}=`))) {
-        alert('You have already voted for this match.');
-        return;
-    }
     try {
+        const match = await pb.collection('match').getOne(matchId);
+        console.log(`Match retrieved: ${JSON.stringify(match)}`);
+        if (match.status === "finished") {
+            alert('Pas le droit de voté pour un match déjà fini petit malin.');
+            return;
+        }
+        const cookieName = `votedForMatch${matchId}`;
+        if (document.cookie.split(';').some((item) => item.trim().startsWith(`${cookieName}=`))) {
+            alert('You have already voted for this match.');
+            return;
+        }
         if (team === 'team1') {
             match.voteFor1 = (match.voteFor1 || 0) + 1;
         } else {
