@@ -658,14 +658,23 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
 }
 
 // Add event listeners for voting buttons
+// Add event listeners for voting buttons
 matchList.forEach(record => {
     const voteTeam1Button = document.getElementById(`voteTeam1${record.id}`);
     const voteTeam2Button = document.getElementById(`voteTeam2${record.id}`);
     const progressTeam1 = document.getElementById(`progressTeam1${record.id}`);
     const progressTeam2 = document.getElementById(`progressTeam2${record.id}`);
-    voteTeam1Button.addEventListener('click', () => handleVote(record.id, 'team1', progressTeam1, progressTeam2));
-    voteTeam2Button.addEventListener('click', () => handleVote(record.id, 'team2', progressTeam1, progressTeam2));
+
+    const handleVoteTeam1 = () => handleVote(record.id, 'team1', progressTeam1, progressTeam2);
+    const handleVoteTeam2 = () => handleVote(record.id, 'team2', progressTeam1, progressTeam2);
+
+    voteTeam1Button.addEventListener('click', handleVoteTeam1);
+    voteTeam1Button.addEventListener('touchstart', handleVoteTeam1);
+
+    voteTeam2Button.addEventListener('click', handleVoteTeam2);
+    voteTeam2Button.addEventListener('touchstart', handleVoteTeam2);
 });
+
 // Function to handle voting
 async function handleVote(matchId, team, progressTeam1, progressTeam2) {
     const match = await pb.collection('match').getOne(matchId);
