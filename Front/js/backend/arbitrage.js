@@ -77,7 +77,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point1": currentStatus.point1 + 1 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 1;
-        location.reload();
+        //location.reload();
     });
 
     point2Team1.addEventListener('click', async function (event) {
@@ -85,7 +85,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point1": currentStatus.point1 + 2 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 2;
-        location.reload();
+        //location.reload();
     });
 
     point3Team1.addEventListener('click', async function (event) {
@@ -93,7 +93,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point1": currentStatus.point1 + 3 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 3;
-        location.reload();
+        //location.reload();
     });
 
     point1Team2.addEventListener('click', async function (event) {
@@ -101,7 +101,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point2": currentStatus.point2 + 1 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 1;
-        location.reload();
+        //location.reload();
     });
 
     point2Team2.addEventListener('click', async function (event) {
@@ -109,7 +109,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point2": currentStatus.point2 + 2 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 2;
-        location.reload();
+        //location.reload();
     });
 
     point3Team2.addEventListener('click', async function (event) {
@@ -117,7 +117,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point2": currentStatus.point2 + 3 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 3;
-        location.reload();
+        //location.reload();
     });
 
     // Ajout des champs de saisie pour les scores
@@ -147,7 +147,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = manualScore1;
         textPoint2.innerHTML = manualScore2;
-        location.reload();
+        //location.reload();
     });
 } else if (currentStatus.expand.sport.name === "volleyball" || currentStatus.expand.sport.name === "badminton") {
     //Mise à jour de l'affichage des boutons
@@ -157,18 +157,22 @@ if (currentStatus.expand.sport.name === "basketball") {
     //Comptage des points
     buttonPoint1.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "point1": currentStatus.point1 + 1 };
+        const data = {"point1": currentStatus.point1 + 1};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 1;
-        location.reload();
+        console.log(currentStatus.point1)
+        console.log(currentStatus);
+        //location.reload();
     });
 
     buttonPoint2.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "point2": currentStatus.point2 + 1 };
+        const data = {"point2": currentStatus.point2 + 1};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 1;
-        location.reload();
+        console.log(currentStatus.point2)
+        console.log(currentStatus);
+        //location.reload();
     });
 
     //Ajoute un bouton pour le set sous le button pour finir le match
@@ -197,35 +201,35 @@ if (currentStatus.expand.sport.name === "basketball") {
     const set1Team2 = document.getElementById("btnSet2");
     set1Team1.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "set1": currentStatus.set1 + 1, "point1": 0, "point2": 0 };
+        const data = {"set1": currentStatus.set1 + 1, "point1": 0, "point2": 0};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = 0;
         textPoint2.innerHTML = 0;
-        location.reload();
+        //location.reload();
     });
     set1Team2.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "set2": currentStatus.set2 + 1, "point1": 0, "point2": 0 };
+        const data = {"set2": currentStatus.set2 + 1, "point1": 0, "point2": 0};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = 0;
         textPoint2.innerHTML = 0;
-        location.reload();
+        //location.reload();
     });
     const point1Team1 = document.getElementById("btnPoint1");
     const point2Team1 = document.getElementById("btnPoint2");
     point1Team1.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "point1": currentStatus.point1 + 1 };
+        const data = {"point1": currentStatus.point1 + 1};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 1;
-        location.reload();
+        //location.reload();
     });
     point2Team1.addEventListener('click', async function (event) {
         event.preventDefault();
-        const data = { "point2": currentStatus.point2 + 1 };
+        const data = {"point2": currentStatus.point2 + 1};
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 1;
-        location.reload();
+        //location.reload();
     });
 
     // Ajout des champs de saisie pour les scores
@@ -267,7 +271,62 @@ if (currentStatus.expand.sport.name === "basketball") {
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = manualScore1;
         textPoint2.innerHTML = manualScore2;
-        location.reload();
+        //location.reload();
+    });
+} else if (currentStatus.expand.sport.name === "handball") {
+    // Mise à jour de l'affichage des boutons
+    buttonPoint1.innerHTML = "1 point pour " + currentStatus.expand.team1.name;
+    buttonPoint2.innerHTML = "1 point pour " + currentStatus.expand.team2.name;
+
+    // Comptage des points
+    buttonPoint1.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const data = {"point1": currentStatus.point1 + 1};
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = currentStatus.point1 + 1;
+        console.log(currentStatus.point1)
+        console.log(currentStatus);
+        //location.reload();
+    });
+
+    buttonPoint2.addEventListener('click', async function (event) {
+        event.preventDefault();
+        const data = {"point2": currentStatus.point2 + 1};
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint2.innerHTML = currentStatus.point2 + 1;
+        console.log(currentStatus.point2)
+        console.log(currentStatus);
+        //location.reload();
+    });
+
+    // Ajout des champs de saisie pour les scores
+    arbitrageDiv.innerHTML += `
+    <div class="text-center">
+        <label for="manualScore1">Score manuel pour ${currentStatus.expand.team1.name}:</label>
+        <input type="number" id="manualScore1" value="${currentStatus.point1}" class="form-control">
+    </div>
+    <div class="text-center">
+        <label for="manualScore2">Score manuel pour ${currentStatus.expand.team2.name}:</label>
+        <input type="number" id="manualScore2" value="${currentStatus.point2}" class="form-control">
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" id="updateManualScore">Mettre à jour le score</button>
+    </div>
+`;
+
+// Gestion de la mise à jour manuelle des scores
+    document.getElementById("updateManualScore").addEventListener('click', async function (event) {
+        event.preventDefault();
+        const manualScore1 = parseInt(document.getElementById("manualScore1").value, 10);
+        const manualScore2 = parseInt(document.getElementById("manualScore2").value, 10);
+        const data = {
+            "point1": manualScore1,
+            "point2": manualScore2
+        };
+        const record = await pb.collection('match').update(idMatch, data);
+        textPoint1.innerHTML = manualScore1;
+        textPoint2.innerHTML = manualScore2;
+        //location.reload();
     });
 } else {
     //Mise à jour de l'affichage des boutons
@@ -280,7 +339,9 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point1": currentStatus.point1 + 1 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = currentStatus.point1 + 1;
-        location.reload();
+        console.log(currentStatus.point1)
+        console.log(currentStatus);
+        //location.reload();
     });
 
     buttonPoint2.addEventListener('click', async function (event) {
@@ -288,7 +349,9 @@ if (currentStatus.expand.sport.name === "basketball") {
         const data = { "point2": currentStatus.point2 + 1 };
         const record = await pb.collection('match').update(idMatch, data);
         textPoint2.innerHTML = currentStatus.point2 + 1;
-        location.reload();
+        console.log(currentStatus.point2)
+        console.log(currentStatus);
+        //location.reload();
     });
 
     // Ajout des champs de saisie pour les scores
@@ -319,7 +382,7 @@ if (currentStatus.expand.sport.name === "basketball") {
         const record = await pb.collection('match').update(idMatch, data);
         textPoint1.innerHTML = manualScore1;
         textPoint2.innerHTML = manualScore2;
-        location.reload();
+        //location.reload();
     });
 }
 
