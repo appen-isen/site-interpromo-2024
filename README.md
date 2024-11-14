@@ -15,6 +15,8 @@
 
 - [ ] Import des matchs depuis un excel
 
+- [ ] Recherche equipe dans création de match
+
 - [x] Recherche des joueurs pour la creation d'une equipe
 
 - [x] Interface mettre tous les points d'un coup
