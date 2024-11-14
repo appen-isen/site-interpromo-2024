@@ -1,6 +1,8 @@
 console.log("Backend match start loading...");
 import pb from './login.js'
 
+pb.autoCancellation(false);
+
 let matchList = await pb.collection('match').getFullList({
     sort: '+heure_debut',
     expand: 'team1,team2,sport',
@@ -657,7 +659,6 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
     //alert("Bonjour Madame Daniau");
 }
 
-// Add event listeners for voting buttons
 // Add event listeners for voting buttons
 matchList.forEach(record => {
     const voteTeam1Button = document.getElementById(`voteTeam1${record.id}`);
