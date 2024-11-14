@@ -88,6 +88,19 @@ matchList.forEach(match => {
                 if (e.record.set1 !== match.set1 || e.record.set2 !== match.set2) {
                     newSetAlert(match);
                 }
+                const totalVotes = (e.record.voteFor1 || 0) + (e.record.voteFor2 || 0);
+                const team1Percentage = totalVotes ? ((e.record.voteFor1 || 0) / totalVotes) * 100 : 50;
+                const team2Percentage = totalVotes ? ((e.record.voteFor2 || 0) / totalVotes) * 100 : 50;
+
+                const progressTeam1 = document.getElementById(`progressTeam1${match.id}`);
+                const progressTeam2 = document.getElementById(`progressTeam2${match.id}`);
+
+                if (progressTeam1 && progressTeam2) {
+                    progressTeam1.style.width = `${team1Percentage}%`;
+                    progressTeam1.setAttribute('aria-valuenow', team1Percentage);
+                    progressTeam2.style.width = `${team2Percentage}%`;
+                    progressTeam2.setAttribute('aria-valuenow', team2Percentage);
+                }
             }
         });
     }
@@ -318,6 +331,17 @@ if (window.location.href.includes("arbitrage.html")) {
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
         let equipe2 = document.getElementById('equipe2').value;
+        let sportID = document.getElementById("sport").value;
+        //Récupération de l'id de l'équipe
+        if (!sportID.toLowerCase().includes("badminton")) {
+            equipe1 = equipe1.substring(0, 6);
+            equipe2 = equipe2.substring(0, 6);
+        } else {
+            equipe1 = equipe1.slice(0, -12);
+            equipe2 = equipe2.slice(0, -12);
+        }
+        equipe1 = equipeList.find(equipe => equipe.name === equipe1);
+        equipe2 = equipeList.find(equipe => equipe.name === equipe2);
         console.log("equipe 1 id = " + equipe1);
         console.log("equipe 2 id = " + equipe2);
         // Récupération de l'id du sport
@@ -423,6 +447,14 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
                     <p class="card-text text-center text-capitalize mb-0">${match.expand.sport.name}</p>
                     ${match.name !== "" ? `<p class="card-text text-center fw-semibold text-body-secondary">${match.name}</p>` : ''}
                 </div>
+                <div class="d-flex justify-content-between align-items-center bg-dark p-2">
+                    <button class="btn btn-primary" id="voteTeam1${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 1</button>
+                    <div class="progress w-50 bg-dark">
+                        <div class="progress-bar bg-primary" id="progressTeam1${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        <div class="progress-bar bg-danger" id="progressTeam2${match.id}" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <button class="btn btn-danger" id="voteTeam2${match.id}" ${isFinished ? 'disabled' : ''}>Vote for Team 2</button>
+                </div>
                 <div class="card-footer bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardFooter${match.id}">
                     ${match.status === "waiting" ? "Match en attente" : match.status === "in_progress" ? "Match en cours" : match.status === "finished" ? "Match terminé" : "Erreur de statut"}
                 </div>
@@ -438,6 +470,81 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
         container.insertAdjacentHTML('beforeend', card);
     });
 }
+
+// Add event listeners for voting buttons
+matchList.forEach(record => {
+    const voteTeam1Button = document.getElementById(`voteTeam1${record.id}`);
+    const voteTeam2Button = document.getElementById(`voteTeam2${record.id}`);
+    const progressTeam1 = document.getElementById(`progressTeam1${record.id}`);
+    const progressTeam2 = document.getElementById(`progressTeam2${record.id}`);
+
+    voteTeam1Button.addEventListener('click', () => handleVote(record.id, 'team1', progressTeam1, progressTeam2));
+    voteTeam2Button.addEventListener('click', () => handleVote(record.id, 'team2', progressTeam1, progressTeam2));
+});
+
+// Function to handle voting
+async function handleVote(matchId, team, progressTeam1, progressTeam2) {
+    const match = await pb.collection('match').getOne(matchId);
+    if (match.status === "finished") {
+        alert('Pas le droit de voté pour un match déjà fini petit malin.');
+        return;
+    }
+
+    const cookieName = `votedForMatch${matchId}`;
+    if (document.cookie.split(';').some((item) => item.trim().startsWith(`${cookieName}=`))) {
+        alert('You have already voted for this match.');
+        return;
+    }
+
+    try {
+        if (team === 'team1') {
+            match.voteFor1 = (match.voteFor1 || 0) + 1;
+        } else {
+            match.voteFor2 = (match.voteFor2 || 0) + 1;
+        }
+
+        await pb.collection('match').update(matchId, match);
+        document.cookie = `${cookieName}=true; path=/; max-age=31536000`;
+
+        const totalVotes = (match.voteFor1 || 0) + (match.voteFor2 || 0);
+        const team1Percentage = ((match.voteFor1 || 0) / totalVotes) * 100;
+        const team2Percentage = ((match.voteFor2 || 0) / totalVotes) * 100;
+
+        progressTeam1.style.width = `${team1Percentage}%`;
+        progressTeam1.setAttribute('aria-valuenow', team1Percentage);
+        progressTeam2.style.width = `${team2Percentage}%`;
+        progressTeam2.setAttribute('aria-valuenow', team2Percentage);
+    } catch (error) {
+        console.error('Error updating vote:', error);
+    }
+}
+
+// Récupérer les votes depuis la base de données et mettre à jour les barres de progression
+async function updateVotesFromDB() {
+    const matchList = await pb.collection('match').getFullList({
+        sort: '+heure_debut',
+        expand: 'team1,team2,sport',
+    });
+
+    matchList.forEach(match => {
+        const totalVotes = (match.voteFor1 || 0) + (match.voteFor2 || 0);
+        const team1Percentage = totalVotes ? ((match.voteFor1 || 0) / totalVotes) * 100 : 50;
+        const team2Percentage = totalVotes ? ((match.voteFor2 || 0) / totalVotes) * 100 : 50;
+
+        const progressTeam1 = document.getElementById(`progressTeam1${match.id}`);
+        const progressTeam2 = document.getElementById(`progressTeam2${match.id}`);
+
+        if (progressTeam1 && progressTeam2) {
+            progressTeam1.style.width = `${team1Percentage}%`;
+            progressTeam1.setAttribute('aria-valuenow', team1Percentage);
+            progressTeam2.style.width = `${team2Percentage}%`;
+            progressTeam2.setAttribute('aria-valuenow', team2Percentage);
+        }
+    });
+}
+
+// Appeler la fonction lors du chargement de la page
+updateVotesFromDB();
 
 //Fonctionne dans match.js mais pas dans player.js PARCE QUE: NIQUE
 //Gestion de l'ajout d'un joueur
@@ -605,7 +712,6 @@ if (window.location.href.includes("arbitrage.html")) {
             "membres": teamPlayers,
             "capitaine": teamCaptain
         };
-        console.log(data);
         await pb.collection('equipes').create(data);
         window.location.href = "arbitrage.html";
     });

@@ -23,6 +23,8 @@
 
 - [x] Capitaine que qqun qui est parmis les joueurs sélectionnés
 
+- [x] Possibilité de voter pour les équipes
+
 ## Show your support
 
 Give a ⭐️ if this project helped you!
