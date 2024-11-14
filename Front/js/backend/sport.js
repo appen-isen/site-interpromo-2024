@@ -22,7 +22,7 @@ function getOrderedTableTeams(sport) {
     } else if (sport.type === "poules") {
         let teams = EquipeList.filter(equipe => equipe.sport === sport.id).sort((teamA, teamB) => teamA.classement - teamB.classement)
         let goalAverageText = ""
-        if (teams[0].points === teams[1].points) {
+        if((teams.length > 1) && (teams[0].points === teams[1].points)){
             goalAverageText = "(" + teams[0].goalAverage + ")"
         }
         result += `<h5 class="d-flex justify-content-between align-items-start">${teams[0].name}<span class="badge bg-warning text-black rounded-pill">${teams[0].points} pts${goalAverageText}</span></h5>`

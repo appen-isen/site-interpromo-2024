@@ -19,10 +19,13 @@ if (!("Notification" in window)) {
 }
 
 const equipeList = await pb.collection('equipes').getFullList({
-    expand: "sport"
+    sort: '+classement',
+    expand: 'sport'
 });
 
-const sportList = await pb.collection('sport').getFullList({});
+const sportList = await pb.collection('sport').getFullList({
+    expand: "following"
+});
 
 //Gestion des mises à jour en temps réel des matchs
 matchList.forEach(match => {
@@ -103,11 +106,83 @@ matchList.forEach(match => {
     }
 });
 
+function getTableCard(sport){
+    console.log(sport)
+    let card = ``;
+    if(sport.expand) {
+        card = `
+        <div class="card my-3">
+            <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
+                <h3 class="card-title text-center">${sport.name}</h5>
+                <p class="card-text text-center text-capitalize mb-0">${sport.tableau} ${sport.following != "" ? "(qualificatif à " + sport.expand.following.tableau + ")" : "(finale)"}</p>
+                <div class="text-center">
+                    <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                        ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
+                    </button>
+                </div>
+            </div>
+        </div>`
+    }
+    else {
+        card = `
+        <div class="card my-3">
+            <div class="card-body bg-light-subtle text-emphasis-light border border-3 border-${sport.state === "waiting" ? "info" : "warning"}">
+                <h3 class="card-title text-center">${sport.name}</h5>
+                <p class="card-text text-center text-capitalize mb-0">${sport.tableau}</p>
+                <div class="text-center">
+                    <button class="btn ${sport.state === "waiting" ? "btn-primary" : "btn-warning"} mt-2" id="boutonTableau${sport.id}" ${sport.state === "started" && sport.following != "" ? 'data-bs-toggle="modal" data-bs-target="#modalTournoi' + sport.id + '"' : ""}>
+                        ${sport.state === "waiting" ? "Démarrer ce tournoi" : "Mettre fin à ce tournoi"}
+                    </button>
+                </div>
+            </div>
+        </div>`
+    }
+    if(sport.state === "started" && sport.following != "" && sport.expand){
+        card = card + `
+        <div class="modal" tabindex="-1" id="modalTournoi${sport.id}">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    ${console.log(sport)}
+                        <h5 class="modal-title">Mettre fin à ${sport.name} - ${sport.tableau} (qualificatif à ${sport.expand.following.tableau})</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="endTournoi${sport.id}">
+                            <div class="form-group">
+                                <h4>Les équipes suivantes seront qualifiées en finales :</h4>
+                                ${equipeList.filter(team => team.expand.sport.id === sport.id).reduce((prev, cur, i) => i < sport.qualified ? prev + '<p>' + cur.name + '</p>' : prev, '')}
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-danger">Mettre fin à ce tournoi ? Attention cette action est irréversible
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <div>`
+    }
+    return card;
+}
+
 //Affichage des matchs sur la page d'arbitrage
 if (window.location.href.includes("arbitrage.html")) {
+    let alreadyPrintedSports = [];
+    let finishedMatch = [];
+    let container = document.getElementById('cardContainer');
     //Affichage des matchs
+    sportList.filter(sport => sport.state === "started").forEach(sport => { // On met les tableaux en cours tout en haut
+        const cardTableauHTML = getTableCard(sport);
+        container.insertAdjacentHTML('beforeend', cardTableauHTML);
+        alreadyPrintedSports.push(sport.id);
+    })
     matchList.forEach(record => {
-        let container = document.getElementById('cardContainer');
+        if(!alreadyPrintedSports.includes(record.expand.sport.id) && !(record.expand.sport.state === "finished")){
+            //Si tableau pas encore affiché : on le met avant le premier match du tableau
+            const cardTableauHTML = getTableCard(record.expand.sport);
+            container.insertAdjacentHTML('beforeend', cardTableauHTML);
+            alreadyPrintedSports.push(record.expand.sport.id);
+        }
         const cardHTML = `
             <div class="card my-3">
                 <div class="card-header text-center bg-light-subtle text-emphasis-light">
@@ -125,16 +200,83 @@ if (window.location.href.includes("arbitrage.html")) {
                 </div>
             </div>
         `;
-        container.insertAdjacentHTML('beforeend', cardHTML);
+        if(record.status == "finished"){
+            finishedMatch.push({id: record.id, html: cardHTML});
+        } else {
+            container.insertAdjacentHTML('beforeend', cardHTML);
+            const button = document.getElementById(record.id);
+            button.addEventListener('click', () => {
+                window.location.href = `arbimatch.html?id=${record.id}`;
+            });
+        }
+    });
+        finishedMatch.forEach(record => {
+        container.insertAdjacentHTML('beforeend', record.html);
         const button = document.getElementById(record.id);
         button.addEventListener('click', () => {
             window.location.href = `arbimatch.html?id=${record.id}`;
         });
+    })
+
+
+    sportList.forEach(sport => {
+        //Gestion des appui sur bouton pour les tournois
+        if(sport.state === "started" && sport.following != ""){
+            console.log("Adding event on " + "#endTournoi"+sport.id);
+            document.querySelector("#endTournoi"+sport.id).addEventListener("submit", async e => {
+                e.preventDefault();
+                const sportData = {"state": "finished"};
+                try {
+                    console.log("trying to finish sport with following tournament");
+                    await pb.collection('sport').update(sport.id, sportData);
+                } catch (error) {
+                    console.error('Erreur de fin du tournoi :', error);
+                }
+                let i = 0;
+                equipeList.filter(team => team.expand.sport.id === sport.id).slice(0,sport.qualified).forEach(async qualifiedTeam => {
+                    const teamData = {"sport": sport.expand.following.id};
+                    try {
+                        await pb.collection('equipes').update(qualifiedTeam.id, teamData);
+                        i++;
+                        if(i === sport.qualified){
+                            window.location.href = "arbitrage.html"; //reload only after all request are terminated
+                        }
+                    } catch (error) {
+                        console.error('Erreur de fin du tournoi :', error);
+                    }
+                })
+            })
+        } else if(sport.state === "started"){
+            document.querySelector("#boutonTableau"+sport.id).addEventListener("click", async e => {
+                const data = {"state": "finished"};
+                try {
+                    console.log("trying to finish sport as final phase");
+                    await pb.collection('sport').update(sport.id, data);
+                    window.location.href = "arbitrage.html";
+                } catch (error) {
+                    console.error('Erreur de fin du tournoi :', error);
+                }
+            })
+        } else if(sport.state === "waiting"){
+            try {
+                document.querySelector("#boutonTableau"+sport.id).addEventListener("click", async e => {
+                    const data = {"state": "started"};
+                    try {
+                        console.log("trying to start sport");
+                        await pb.collection('sport').update(sport.id, data);
+                        window.location.href = "arbitrage.html";
+                    } catch (error) {
+                        console.error('Erreur de fin du tournoi :', error);
+                    }
+                })
+            } // Si erreur ici : pas grave c'est qu'il n'y a aucun match de créé pour un tournoi en waiting donc la card de tournoi n'est pas créée
+            catch (e){
+                console.log("Erreur card de tournoi, aucun match dans ce tournoi : " + e);
+            }
+        }
     });
-}
 
 //Gestion des informations dans la modal
-if (window.location.href.includes("arbitrage.html")) {
     const modalHTML = `
         <div class="modal-dialog">
             <div class="modal-content">
@@ -147,19 +289,19 @@ if (window.location.href.includes("arbitrage.html")) {
                         <div class="mb-3">
                             <label for="equipe1" class="form-label">Equipe 1</label>
                             <select class="form-control" id="equipe1">
-                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option value=${equipe.id}>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="equipe2" class="form-label">Equipe 2</label>
                             <select class="form-control" id="equipe2">
-                                ${equipeList.map(equipe => `<option>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
+                                ${equipeList.map(equipe => `<option value=${equipe.id}>${equipe.name} - ${equipe.expand.sport.name}</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="sport" class="form-label">Sport</label>
                             <select class="form-control" id="sport">
-                                ${sportList.map(sport => `<option>${sport.name} (${sport.tableau})</option>`).join('')}
+                                ${sportList.map(sport => `<option value=${sport.id}>${sport.name} (${sport.tableau})</option>`).join('')}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -188,7 +330,6 @@ if (window.location.href.includes("arbitrage.html")) {
 
         //Récupération des données du formulaire
         let equipe1 = document.getElementById('equipe1').value;
-
         let equipe2 = document.getElementById('equipe2').value;
         let sportID = document.getElementById("sport").value;
         //Récupération de l'id de l'équipe
@@ -201,8 +342,10 @@ if (window.location.href.includes("arbitrage.html")) {
         }
         equipe1 = equipeList.find(equipe => equipe.name === equipe1);
         equipe2 = equipeList.find(equipe => equipe.name === equipe2);
+        console.log("equipe 1 id = " + equipe1);
+        console.log("equipe 2 id = " + equipe2);
         // Récupération de l'id du sport
-        sportID = sportList.find(sport => `${sport.name} (${sport.tableau})` === sportID);
+        let sportID = document.getElementById("sport").value;
         const date = document.getElementById('date').value;
         const time = document.getElementById('time').value;
         //Création de la date de début du match
@@ -216,9 +359,9 @@ if (window.location.href.includes("arbitrage.html")) {
             currentMode = "poules"
         }
         const data = {
-            "team1": equipe1.id,
-            "team2": equipe2.id,
-            "sport": sportID.id,
+            "team1": equipe1,
+            "team2": equipe2,
+            "sport": sportID,
             "heure_debut": time_start.toISOString(),
             "point1": 0,
             "point2": 0,
@@ -283,10 +426,10 @@ if (window.location.href.includes("arbitrage.html")) {
 //Affichage des matchs sur la page d'accueil
 //Elle s'appele index.html ou bien n'as pas d'autre juste /
 if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
-    // Affichage des matchs
+    //Affichage des matchs
+    let finishedMatch = [];
+    let container = document.getElementById('cardContainer');
     matchList.forEach(match => {
-        let container = document.getElementById('cardContainer');
-        const isFinished = match.status === "finished";
         const cardHTML = `
             <div class="card my-3" id="card${match.id}">
                 <div class="card-header text-center bg-light-subtle ${match.status === "waiting" ? "text-primary-emphasis" : match.status === "in_progress" ? "text-warning-emphasis" : match.status === "finished" ? "text-success-emphasis" : "text-emphasis-light"}" id="cardHeader${match.id}">
@@ -317,7 +460,14 @@ if (window.location.href.includes("index.html") || window.location.href === "htt
                 </div>
             </div>
         `;
-        container.innerHTML += cardHTML;
+        if(match.status == "finished"){
+            finishedMatch.push(cardHTML);
+        } else {
+            container.insertAdjacentHTML('beforeend', cardHTML);
+        }
+    });
+    finishedMatch.forEach(card => {
+        container.insertAdjacentHTML('beforeend', card);
     });
 }
 
@@ -586,6 +736,11 @@ if (window.location.href.includes("arbitrage.html")) {
         await pb.collection('equipes').delete(teamID);
         window.location.href = "arbitrage.html";
     });
+}
+
+if (window.location.href.includes("index.html") || window.location.href === "https://interpromo.appen.fr/") {
+    //Envoie une alert Bonjour Madame Daniau
+    //alert("Bonjour Madame Daniau");
 }
 
 console.log("Backend match loaded!");
